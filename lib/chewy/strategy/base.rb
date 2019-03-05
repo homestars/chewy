@@ -11,17 +11,17 @@ module Chewy
       def name
         self.class.name.demodulize.underscore.to_sym
       end
+
       # This method called when some model tries to update index
       #
-      def update type, objects, options = {}
-        raise UndefinedUpdateStrategy.new(type)
+      def update(type, _objects, _options = {})
+        raise UndefinedUpdateStrategy, type
       end
 
       # This method called when strategy pops from the
       # strategies stack
       #
-      def leave
-      end
+      def leave; end
     end
   end
 end

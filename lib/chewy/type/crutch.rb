@@ -9,9 +9,10 @@ module Chewy
       end
 
       class Crutches
-        def initialize type, collection
-          @type, @collection = type, collection
-          @type._crutches.keys.each do |name|
+        def initialize(type, collection)
+          @type = type
+          @collection = collection
+          @type._crutches.each_key do |name|
             singleton_class.class_eval <<-METHOD, __FILE__, __LINE__ + 1
               def #{name}
                 @#{name} ||= @type._crutches[:#{name}].call @collection
@@ -22,7 +23,7 @@ module Chewy
       end
 
       module ClassMethods
-        def crutch name, &block
+        def crutch(name, &block)
           self._crutches = _crutches.merge(name.to_sym => block)
         end
       end

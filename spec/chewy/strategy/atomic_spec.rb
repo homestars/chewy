@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Strategy::Atomic do
+describe Chewy::Strategy::Atomic, :orm do
   around { |example| Chewy.strategy(:bypass) { example.run } }
 
   before do
@@ -19,13 +19,13 @@ describe Chewy::Strategy::Atomic do
   specify do
     expect { [country, other_country].map(&:save!) }
       .to update_index(CountriesIndex::Country, strategy: :atomic)
-      .and_reindex(country, other_country)
+      .and_reindex(country, other_country).only
   end
 
   specify do
     expect { [country, other_country].map(&:destroy) }
       .to update_index(CountriesIndex::Country, strategy: :atomic)
-      .and_delete(country, other_country)
+      .and_delete(country, other_country).only
   end
 
   context do
@@ -41,19 +41,22 @@ describe Chewy::Strategy::Atomic do
     specify do
       expect { [country, other_country].map(&:save!) }
         .to update_index(CountriesIndex::Country, strategy: :atomic)
-        .and_reindex('HL', 'WD')
+        .and_reindex('HL', 'WD').only
     end
 
     specify do
       expect { [country, other_country].map(&:destroy) }
         .to update_index(CountriesIndex::Country, strategy: :atomic)
-        .and_delete('HL', 'WD')
+        .and_delete('HL', 'WD').only
     end
 
     specify do
-      expect { country.save!; other_country.destroy }
+      expect do
+        country.save!
+        other_country.destroy
+      end
         .to update_index(CountriesIndex::Country, strategy: :atomic)
-        .and_reindex('HL').and_delete('WD')
+        .and_reindex('HL').and_delete('WD').only
     end
   end
 end

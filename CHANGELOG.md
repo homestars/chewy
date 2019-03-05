@@ -1,5 +1,212 @@
 # master
 
+# Version 5.0.0
+
+## Breaking changes
+
+  * Try to align the gem version with the ElasticSearch version we support
+
+  * `Chewy.default_field_type` is `text` now.
+
+  * `Chewy::Stash` was split onto two indexes - `Chewy::Stash::Specification` and `Chewy::Stash::Journal`
+
+  * Data for journal and specification is stored in binary fields base64-encoded to bypass the limits of other fields.
+
+  * Don't underscore suggested index name (@dm1try, #626)
+
+## Changes
+
+  * `pipeline` import option support (@eManPrague, #598)
+
+  * Proper Rails check (@nattfodd, #625)
+
+  * Bypass strategy performance improvements (@DNNX, #623)
+
+  * Avoid index update calls for empty data (@robertasg, #620)
+
+  * Do not underscore suggested index name on `Chewy::Index.index_name` call.
+
+  * It is possible now to call `root` method several times inside a single type definition, the options will be merged. Also, the block isn't required anymore.
+
+  * Fixed some Sequel deprecation warnings (@arturtr - #565, @matchbookmac - #577)
+
+## Bugfixes
+
+  * Fixed index settings logic error (@yahooguntu, #593)
+
+  * Missed check in higlight method (@heartfulbird, #567)
+
+# Version 0.10.1
+
+## Changes
+
+  * Improved parallel worker titles (#558)
+
+## Bugfixes
+
+  * Fixed request strategy initial debug message (#557)
+
+  * Fixed will objects paginated array initialization when pagination was not used (#556)
+
+  * Fixed fields symbol/string value (#555)
+
+  * Fixed root field value proc (#554)
+
+# Version 0.10.0
+
+## Breaking changes
+
+  * Changed behavior of `Chewy::Index.index_name`, it doesn't cache the values anymore.
+
+  * Journal interfaces, related code and rake tasks were completely refactored and are not compatible with the previous version.
+
+## Changes
+
+  * Less noisy strategies logging (@Borzik, #543)
+
+  * Parallel import and the corresponding rake tasks.
+
+  * `:shoryuken` async strategy (@josephchoe, #532)
+
+  * Deprecate `Chewy::Index.build_index_name`.
+
+  * Rename `Chewy::Index.default_prefix` to `Chewy::Index.prefix`. The old one is deprecated.
+
+  * Add `Chewy::Type.derivable_name` for consistency.
+
+  * Rename `Chewy::Index.derivable_index_name` to `Chewy::Index.derivable_name`.
+    `Chewy::Index.derivable_index_name` and `Chewy::Type.derivable_index_name` are deprecated.
+
+  * Use normal YAML loading, for the config, we don't need the safe one.
+
+  * `default_root_options` option (@barthez, #526)
+
+  * Partial indexing ability: it is possible to update only specified fields.
+
+  * New cool `rake chewy:deploy` task.
+
+  * Selective reset (resets only if necessary): `rake chewy:upgrade`.
+
+  * Consistency checks and synchronization: `rake chewy:sync`.
+
+  * Brand new request DSL. Supports ElasticSearch 2 and 5, better usability, architecture and docs.
+
+  * Add Kaminari 1.0 support.
+
+  * `skip_index_creation_on_import` option (@sergey-kintsel, #483)
+
+  * Ability to use procs for settings (@parallel588, #481)
+
+  * Bulk indexing optimizations with new additional options (@eproulx-petalmd, #467)
+
+  * Configurable sidekiq options (@averell23, #438)
+
+# Version 0.9.0
+
+## Changes
+
+  * Add `preference` param to Query (@menglewis, #443)
+
+  * Add the `track_scores` option to the query; `_score` to be computed and tracked even when there are no `_score` in sort. (@dmitry, #417)
+
+  * Confugurable `Chewy.indices_path` (@robacarp, #414, #433, #439)
+
+  * [Journaling](https://github.com/toptal/chewy/#journaling) implementation (@sergey-kintsel, #409, #425, #428, #432, #434, #463)
+
+  * Minitest helpers (@robacarp, #396)
+
+  * `Chewy::Query#unlimited` to fetch all the documents (@sergey-kintsel, #393)
+
+  * `Chewy::Query#exists?` (@sergey-kintsel, #386)
+
+  * Import otimizations (#381, #376)
+
+  * Additional import optimization technique - [raw import](https://github.com/toptal/chewy/#raw-import) (@DNNX, #375)
+
+  * `weight` scoring dunction was added to the search DSL (@sevab, #380)
+
+  * Rake tasks support multiple indexes and exceptions: `rake chewy:reset[users,projects]`, `rake chewy:update[-projects]`
+
+  * Witchcraft™ supports dynamically generated procs with variables from closure.
+
+  * Added `Query#preference` for specifying shard replicas to query against. (@menglewis)
+
+## Bugfixes
+
+  * `.script_fields` method in the Index class (@dmitry, #415)
+
+  * Fix routing_missing_exception on delete with parent missing (@guigs, #398)
+
+  * Sequesl custom primary keys handling fix (@okliv, #385)
+
+  * Bulk import fixes (@0x0badc0de, #374)
+
+# Version 0.8.4
+
+## Changes
+
+  * Brand new import `:bulk_size` option, set desired ElasticSearch bulk size in bytes
+
+  * Witchcraft™ technology
+
+  * Configurable per-type default import options (@barthez, #341)
+
+  * Various codebase optimizations (@DNNX, @pyromaniac)
+
+  * `update_index` Rspec matcher messages improvements
+
+  * `:all` rake tasks deprecation
+
+  * Scoped notification subscriptions in rake tasks (@0x0badc0de, #335)
+
+  * Async strategies workers accept options (@dnd, #321)
+
+  * Prefix is configurable per-index (@mikeyhogarth, #314)
+
+  * Ability to pass proc for transport configuration (@feymartynov, @reidab, #302, #339)
+
+  * ElasticSearch 2 support (@sergeygaychuk, #297)
+
+  * Accessing types with methods is deprecated. Use `MyIndex::MyType` constant reference instead of `MyIndex.my_type` method.
+
+  * Sequel adapter improvements (@mrbrdo, #294)
+
+## Bugfixes
+
+  * Mongoid atomic strategy fix (#325)
+
+  * Method missing fix (@jesjos, #324)
+
+  * Hash fields composition fix (@eproulx-petalmd, #319)
+
+  * Better errors handling in strategies (@barthez, #306)
+
+  * Assets strategies silencer fix for Rails 5 API mode (@clupprich, #303)
+
+# Version 0.8.3
+
+## Breaking changes:
+
+  * `Chewy.atomic` and `Chewy.urgent_update=` methods was removed from the codebase, use `Chewy.strategy` block instead.
+
+  * `delete_from_index?` hook is removed from the codebase.
+
+## Changes
+
+  * Sequel support completely reworked to use common ORM implementations + better sequel specs covarage.
+
+## Bugfixes
+
+  * Sequel objects transactional destruction fix
+
+  * Correct Rspec mocking framework checking (@mainameiz)
+
+  * Atomic strategy is now compatible with custom ids proc.
+
+  * Safe unsubscribe on import (@marshall-lee)
+
+  * Correct custom assets path silencer (@davekaro)
+
 # Version 0.8.2
 
 ## Changes
@@ -35,7 +242,7 @@
 
 # Version 0.8.0
 
-## Incompatible changes:
+## Breaking changes:
 
   * `:atomic` and `:urgent` strategies are using `import!` method raising exceptions
 
@@ -61,7 +268,7 @@
 
 # Version 0.7.0
 
-## Incompatible changes:
+## Breaking changes:
 
   * `Chewy.use_after_commit_callbacks = false` returns previous RDBMS behavior
   in tests
@@ -190,7 +397,7 @@
 
   * `min_score` query option support (@jshirley)
 
-  * `Chewy::Query#find` method for finding records by id
+  * `Chewy::Query#find` method for finding documents by id
 
 # Version 0.6.0
 
@@ -210,7 +417,7 @@
 
 # Version 0.5.2
 
-## Incompatible changes:
+## Breaking changes:
 
   * `Chewy::Type::Base` removed in favour of using `Chewy::Type` as a base class for all types
 
@@ -250,7 +457,7 @@
 
 # Version 0.5.0
 
-## Incompatible changes:
+## Breaking changes:
 
   * 404 exception (IndexMissingException) while query is swallowed and treated like an empty result set.
 

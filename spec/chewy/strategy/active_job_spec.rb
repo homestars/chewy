@@ -43,7 +43,18 @@ if defined?(::ActiveJob)
       ::ActiveJob::Base.queue_adapter = :inline
       expect { [city, other_city].map(&:save!) }
         .to update_index(CitiesIndex::City, strategy: :active_job)
-        .and_reindex(city, other_city)
+        .and_reindex(city, other_city).only
+    end
+
+    specify do
+      expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601')
+      Chewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+    end
+
+    specify do
+      allow(Chewy).to receive(:disable_refresh_async).and_return(true)
+      expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601', refresh: false)
+      Chewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
   end
 end

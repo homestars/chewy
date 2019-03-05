@@ -14,7 +14,7 @@ describe Chewy::Strategy do
   end
 
   describe '#push' do
-    specify { expect { strategy.push(:unexistant) }.to raise_error(NameError).with_message(/uninitialized constant.*Unexistant/) }
+    specify { expect { strategy.push(:unexistant) }.to raise_error(RuntimeError).with_message("Can't find update strategy `unexistant`") }
 
     specify do
       expect { strategy.push(:atomic) }
@@ -31,6 +31,18 @@ describe Chewy::Strategy do
       expect { strategy.pop }
         .to change { strategy.current }
         .to(an_instance_of(Chewy::Strategy::Base))
+    end
+  end
+
+  describe '#wrap' do
+    specify { expect { strategy.wrap(:unexistant) {} }.to raise_error(RuntimeError).with_message("Can't find update strategy `unexistant`") }
+
+    specify do
+      expect do
+        strategy.wrap(:urgent) do
+          expect(strategy.current).to be_a(Chewy::Strategy::Urgent)
+        end
+      end.not_to change { strategy.current }
     end
   end
 
@@ -52,12 +64,12 @@ describe Chewy::Strategy do
       around { |example| Chewy.strategy(:bypass) { example.run } }
 
       specify do
-        expect(CitiesIndex::City).not_to receive(:import)
+        expect(CitiesIndex::City).not_to receive(:import!)
         [city, other_city].map(&:save!)
       end
 
       specify do
-        expect(CitiesIndex::City).to receive(:import).with([city.id, other_city.id]).once
+        expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id]).once
         Chewy.strategy(:atomic) { [city, other_city].map(&:save!) }
       end
     end
@@ -66,12 +78,12 @@ describe Chewy::Strategy do
       around { |example| Chewy.strategy(:urgent) { example.run } }
 
       specify do
-        expect(CitiesIndex::City).to receive(:import).at_least(2).times
+        expect(CitiesIndex::City).to receive(:import!).at_least(2).times
         [city, other_city].map(&:save!)
       end
 
       specify do
-        expect(CitiesIndex::City).to receive(:import).with([city.id, other_city.id]).once
+        expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id]).once
         Chewy.strategy(:atomic) { [city, other_city].map(&:save!) }
       end
 
@@ -82,7 +94,7 @@ describe Chewy::Strategy do
           end
 
           stub_model(:city) do
-            update_index('cities#city') { { name: name } }
+            update_index('cities#city') { {name: name} }
           end
         end
 
@@ -94,7 +106,7 @@ describe Chewy::Strategy do
         context do
           before do
             stub_model(:city) do
-              update_index('cities#city') { { id: id.to_s, name: name } }
+              update_index('cities#city') { {id: id.to_s, name: name} }
             end
           end
 

@@ -6,12 +6,15 @@ begin
   require 'active_record'
   require 'sequel'
 rescue LoadError
+  nil
 end
 
 require 'rspec/its'
 require 'rspec/collection_matchers'
 
-Kaminari::Hooks.init if defined?(::Kaminari)
+require 'timecop'
+
+Kaminari::Hooks.init if defined?(::Kaminari::Hooks)
 
 require 'support/fail_helpers'
 require 'support/class_helpers'
@@ -27,12 +30,25 @@ Chewy.settings = {
   }
 }
 
+Chewy.default_field_type = 'string' if Chewy::Runtime.version < '5.0'
+# Chewy.transport_logger = Logger.new(STDERR)
+
+KEYWORD_FIELD = if Chewy::Runtime.version < '5.0'
+  {type: 'string', index: 'not_analyzed'}
+else
+  {type: 'keyword'}
+end
+
 RSpec.configure do |config|
   config.mock_with :rspec
   config.order = :random
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
 
   config.include FailHelpers
   config.include ClassHelpers
+
+  Aws.config.update(stub_responses: true) if defined?(::Aws)
 end
 
 if defined?(::ActiveRecord)
@@ -43,7 +59,7 @@ elsif defined?(::Sequel)
   require 'support/sequel'
 else
   RSpec.configure do |config|
-    [:orm, :mongoid, :active_record, :sequel].each do |group|
+    %i[orm mongoid active_record sequel].each do |group|
       config.filter_run_excluding(group)
     end
   end

@@ -1,16 +1,17 @@
 module Chewy
   class Index
-
     # Stores ElasticSearch index settings and resolves `analysis`
     # hash. At first, you need to store some analyzers or other
     # analysis options to the corresponding repository:
     #
+    # @example
     #   Chewy.analyzer :title_analyzer, type: 'custom', filter: %w(lowercase icu_folding title_nysiis)
     #   Chewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
     #
     # `title_nysiis` filter here will be expanded automatically when
     # `title_analyzer` analyser will be used in index settings:
     #
+    # @example
     #   class ProductsIndex < Chewy::Index
     #     settings analysis: {
     #       analyzer: [
@@ -24,14 +25,17 @@ module Chewy
     # might be used as well.
     #
     class Settings
-      def initialize(params = {})
+      def initialize(params = {}, &block)
         @params = params
+        @proc_params = block
       end
 
       def to_hash
         settings = @params.deep_symbolize_keys
+        settings.merge!((@proc_params.call || {}).deep_symbolize_keys) if @proc_params
 
         settings[:analysis] = resolve_analysis(settings[:analysis]) if settings[:analysis]
+
         if settings[:index] || Chewy.configuration[:index]
           settings[:index] = (Chewy.configuration[:index] || {})
             .deep_merge((settings[:index] || {}).deep_symbolize_keys)
@@ -45,14 +49,15 @@ module Chewy
       def resolve_analysis(analysis)
         analyzer = resolve(analysis[:analyzer], Chewy.analyzers)
 
-        options = [:tokenizer, :filter, :char_filter].each.with_object({}) do |type, result|
+        options = %i[tokenizer filter char_filter].each.with_object({}) do |type, result|
           dependencies = collect_dependencies(type, analyzer)
           resolved = resolve(dependencies.push(analysis[type]), Chewy.send(type.to_s.pluralize))
           result.merge!(type => resolved) if resolved.present?
         end
 
-        options.merge!(analyzer: analyzer) if analyzer.present?
-        options
+        options[:analyzer] = analyzer if analyzer.present?
+        analysis = analysis.except(:analyzer, :tokenizer, :filter, :char_filter)
+        analysis.merge(options)
       end
 
       def collect_dependencies(type, analyzer)

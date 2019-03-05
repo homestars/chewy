@@ -8,7 +8,21 @@ module Chewy
           options = args.extract_options!
           method = args.first
 
-          Proc.new do
+          proc do
+            reference = if type_name.is_a?(Proc)
+              if type_name.arity.zero?
+                instance_exec(&type_name)
+              else
+                type_name.call(self)
+              end
+            else
+              type_name
+            end
+
+            type = Chewy.derive_type(reference)
+
+            next if Chewy.strategy.current.name == :bypass
+
             backreference = if method && method.to_s == 'self'
               self
             elsif method
@@ -17,25 +31,17 @@ module Chewy
               instance_eval(&block)
             end
 
-            reference = if type_name.is_a?(Proc)
-              type_name.arity == 0 ?
-                instance_exec(&type_name) :
-                type_name.call(self)
-            else
-              type_name
-            end
-
-            Chewy.derive_type(reference).update_index(backreference, options)
+            type.update_index(backreference, options)
           end
         end
 
         def extract_callback_options!(args)
           options = args.extract_options!
-          options.each_key.with_object({}) { |key, hash|
-            hash[key] = options.delete(key) if [:if, :unless].include?(key)
-          }.tap {
-            args.push(options) unless options.empty?
-          }
+          result = options.each_key.with_object({}) do |key, hash|
+            hash[key] = options.delete(key) if %i[if unless].include?(key)
+          end
+          args.push(options) unless options.empty?
+          result
         end
       end
 

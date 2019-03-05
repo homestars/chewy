@@ -3,22 +3,22 @@ module Chewy
     module Nodes
       class Range < Expr
         EXECUTION = {
-          :i => :index,
-          :index => :index,
-          :f => :fielddata,
-          :fielddata => :fielddata,
-        }
+          i: :index,
+          index: :index,
+          f: :fielddata,
+          fielddata: :fielddata
+        }.freeze
 
-        def initialize name, *args
+        def initialize(name, *args)
           @name = name.to_s
           @options = args.extract_options!
-          @range = @options.reject { |k, v| ![:gt, :lt].include?(k) }
-          @bounds = @options.reject { |k, v| ![:left_closed, :right_closed].include?(k) }
+          @range = @options.select { |k, _v| %i[gt lt].include?(k) }
+          @bounds = @options.select { |k, _v| %i[left_closed right_closed].include?(k) }
           execution = EXECUTION[args.first.to_sym] if args.first
           @options[:execution] = execution if execution
         end
 
-        def & other
+        def &(other)
           if other.is_a?(self.class) && other.__name__ == @name
             state = __state__.merge(other.__state__)
 
