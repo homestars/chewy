@@ -143,7 +143,7 @@ module Chewy
     def yaml_settings
       @yaml_settings ||= begin
         if defined?(Rails::VERSION)
-          file = Rails.root.join('config', 'chewy.yml')
+          file = Rails.root.join('config', 'hs_chewy.yml')
 
           if File.exist?(file)
             yaml = ERB.new(File.read(file)).result

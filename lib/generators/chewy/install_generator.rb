@@ -4,7 +4,7 @@ module Chewy
       source_root File.expand_path('../../templates', __FILE__)
 
       def copy_configuration
-        template 'chewy.yml', 'config/chewy.yml'
+        template 'hs_chewy.yml', 'config/hs_chewy.yml'
       end
     end
   end

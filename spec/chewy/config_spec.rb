@@ -139,7 +139,7 @@ describe Chewy::Config do
     end
 
     context 'when Rails::VERSION constant is defined' do
-      it 'looks for configuration in "config/chewy.yml"' do
+      it 'looks for configuration in "config/hs_chewy.yml"' do
         module Rails
           VERSION = '5.1.0'.freeze
 
@@ -149,7 +149,7 @@ describe Chewy::Config do
         end
 
         expect(File).to receive(:exist?)
-          .with(Pathname.new(__dir__).join('config', 'chewy.yml'))
+          .with(Pathname.new(__dir__).join('config', 'hs_chewy.yml'))
         subject.configuration
       end
     end
