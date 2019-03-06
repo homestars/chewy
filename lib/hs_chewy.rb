@@ -72,7 +72,7 @@ ActiveSupport.on_load(:mongoid) do
   end
 end
 
-module Chewy
+module HSChewy
   @adapters = [
     Chewy::Type::Adapter::ActiveRecord,
     Chewy::Type::Adapter::Mongoid,
