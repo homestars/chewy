@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'chewy/version'
 
 Gem::Specification.new do |spec| # rubocop:disable BlockLength
-  spec.name          = 'chewy'
+  spec.name          = 'hs-chewy'
   spec.version       = Chewy::VERSION
   spec.authors       = ['pyromaniac']
   spec.email         = ['kinwizard@gmail.com']
