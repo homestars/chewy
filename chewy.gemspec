@@ -1,10 +1,10 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'chewy/version'
+require 'hs_chewy/version'
 
 Gem::Specification.new do |spec| # rubocop:disable BlockLength
   spec.name          = 'hs-chewy'
-  spec.version       = Chewy::VERSION
+  spec.version       = HSChewy::VERSION
   spec.authors       = ['pyromaniac']
   spec.email         = ['kinwizard@gmail.com']
   spec.summary       = 'Elasticsearch ODM client wrapper'

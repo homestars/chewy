@@ -1,4 +1,4 @@
-require 'chewy/rake_helper'
+require 'hs_chewy/rake_helper'
 
 def parse_classes(args)
   if args.present? && args.first.tr!('-', '')

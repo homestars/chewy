@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'chewy/minitest'
+require 'hs_chewy/minitest'
 
 describe :search_index_receiver do
   def search_request(item_count = 2, verb: :index)

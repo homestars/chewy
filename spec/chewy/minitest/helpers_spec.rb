@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'chewy/minitest'
+require 'hs_chewy/minitest'
 
 describe :minitest_helper do
   class << self

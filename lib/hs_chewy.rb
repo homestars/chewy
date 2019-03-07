@@ -15,7 +15,7 @@ require 'active_support/core_ext/object/inclusion'
 require 'active_support/core_ext/string/inflections'
 
 require 'i18n/core_ext/hash'
-require 'chewy/backports/deep_dup' unless Object.respond_to?(:deep_dup)
+require 'hs_chewy/backports/deep_dup' unless Object.respond_to?(:deep_dup)
 require 'singleton'
 require 'base64'
 
@@ -43,20 +43,20 @@ ActiveSupport.on_load(:mongoid) do
   try_require 'kaminari/mongoid'
 end
 
-require 'chewy/version'
-require 'chewy/errors'
-require 'chewy/config'
-require 'chewy/rake_helper'
-require 'chewy/repository'
-require 'chewy/runtime'
-require 'chewy/log_subscriber'
-require 'chewy/strategy'
-require 'chewy/index'
-require 'chewy/type'
-require 'chewy/fields/base'
-require 'chewy/fields/root'
-require 'chewy/journal'
-require 'chewy/railtie' if defined?(::Rails::Railtie)
+require 'hs_chewy/version'
+require 'hs_chewy/errors'
+require 'hs_chewy/config'
+require 'hs_chewy/rake_helper'
+require 'hs_chewy/repository'
+require 'hs_chewy/runtime'
+require 'hs_chewy/log_subscriber'
+require 'hs_chewy/strategy'
+require 'hs_chewy/index'
+require 'hs_chewy/type'
+require 'hs_chewy/fields/base'
+require 'hs_chewy/fields/root'
+require 'hs_chewy/journal'
+require 'hs_chewy/railtie' if defined?(::Rails::Railtie)
 
 ActiveSupport.on_load(:active_record) do
   extend Chewy::Type::Observe::ActiveRecordMethods
@@ -238,4 +238,4 @@ module HSChewy
   end
 end
 
-require 'chewy/stash'
+require 'hs_chewy/stash'

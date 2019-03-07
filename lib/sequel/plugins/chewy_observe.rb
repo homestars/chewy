@@ -19,7 +19,7 @@ module Sequel
     #     update_index('albums#album') { self }
     #   end
     #
-    module ChewyObserve
+    module HSChewyObserve
       extend ::Chewy::Type::Observe::Helpers
 
       def self.apply(model)

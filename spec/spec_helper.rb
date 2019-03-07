@@ -19,7 +19,7 @@ Kaminari::Hooks.init if defined?(::Kaminari::Hooks)
 require 'support/fail_helpers'
 require 'support/class_helpers'
 
-require 'chewy/rspec'
+require 'hs_chewy/rspec'
 
 Chewy.settings = {
   host: 'localhost:9250',
