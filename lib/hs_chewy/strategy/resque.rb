@@ -20,7 +20,7 @@ module HSChewy
       end
 
       def leave
-        @stash.all? { |type, ids| ::Resque.enqueue(Chewy::Strategy::Resque::Worker, type.name, ids) }
+        @stash.all? { |type, ids| ::Resque.enqueue(HSChewy::Strategy::Resque::Worker, type.name, ids) }
       end
     end
   end

@@ -2,7 +2,7 @@ module ClassHelpers
   extend ActiveSupport::Concern
 
   def stub_index(name, superclass = nil, &block)
-    stub_class("#{name.to_s.camelize}Index", superclass || Chewy::Index)
+    stub_class("#{name.to_s.camelize}Index", superclass || HSChewy::Index)
       .tap { |i| i.class_eval(&block) if block }
   end
 

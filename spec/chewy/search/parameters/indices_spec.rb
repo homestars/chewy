@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::Indices do
+describe HSChewy::Search::Parameters::Indices do
   before do
     stub_index(:first) do
       define_type :one

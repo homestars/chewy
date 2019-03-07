@@ -21,7 +21,7 @@ module HSChewy
 
       def leave
         @stash.each do |type, ids|
-          Chewy::Strategy::ActiveJob::Worker.perform_later(type.name, ids) unless ids.empty?
+          HSChewy::Strategy::ActiveJob::Worker.perform_later(type.name, ids) unless ids.empty?
         end
       end
     end

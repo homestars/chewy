@@ -5,8 +5,8 @@ module HSChewy
     class Parameters
       # Just a standard hash storage. Nothing to see here.
       #
-      # @see Chewy::Search::Parameters::HashStorage
-      # @see Chewy::Search::Request#aggregations
+      # @see HSChewy::Search::Parameters::HashStorage
+      # @see HSChewy::Search::Request#aggregations
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html
       class Aggs < Storage
         include HashStorage

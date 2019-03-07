@@ -2,12 +2,12 @@ module HSChewy
   # A class to perform journal-related actions for the specified indexes/types.
   #
   # @example
-  #   journal = Chewy::Journal.new('places#city', UsersIndex)
+  #   journal = HSChewy::Journal.new('places#city', UsersIndex)
   #   journal.apply(20.minutes.ago)
   #   journal.clean
   #
   class Journal
-    # @param only [Array<String, Chewy::Index, Chewy::Type>] indexes/types or even string references to perform actions on
+    # @param only [Array<String, HSChewy::Index, HSChewy::Type>] indexes/types or even string references to perform actions on
     def initialize(*only)
       @only = only
     end
@@ -23,7 +23,7 @@ module HSChewy
       since_time -= 1
       count = 0
       while stage <= retries
-        entries = Chewy::Stash::Journal.entries(since_time, only: @only).to_a.presence or break
+        entries = HSChewy::Stash::Journal.entries(since_time, only: @only).to_a.presence or break
         count += entries.size
         groups = reference_groups(entries)
         ActiveSupport::Notifications.instrument 'apply_journal.chewy', stage: stage, groups: groups
@@ -41,7 +41,7 @@ module HSChewy
     # @param until_time [Time, DateTime] time to clean up until it
     # @return [Hash] delete_by_query ES API call result
     def clean(until_time = nil)
-      Chewy::Stash::Journal.clean(until_time, only: @only)
+      HSChewy::Stash::Journal.clean(until_time, only: @only)
     end
 
   private

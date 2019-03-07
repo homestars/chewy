@@ -7,34 +7,34 @@ module HSChewy
     # parameter storages. It encapsulates some storage-collection-handling
     # logic.
     #
-    # @see Chewy::Search::Request#parameters
-    # @see Chewy::Search::Parameters::Storage
+    # @see HSChewy::Search::Request#parameters
+    # @see HSChewy::Search::Parameters::Storage
     class Parameters
       QUERY_STRING_STORAGES = %i[indices search_type request_cache allow_partial_search_results].freeze
 
       # Default storage classes warehouse. It is probably possible to
       # add your own classes here if necessary, but I'm not sure it will work.
       #
-      # @return [{Symbol => Chewy::Search::Parameters::Storage}]
+      # @return [{Symbol => HSChewy::Search::Parameters::Storage}]
       def self.storages
         @storages ||= Hash.new do |hash, name|
-          hash[name] = "Chewy::Search::Parameters::#{name.to_s.camelize}".constantize
+          hash[name] = "HSChewy::Search::Parameters::#{name.to_s.camelize}".constantize
         end
       end
 
-      # @return [{Symbol => Chewy::Search::Parameters::Storage}]
+      # @return [{Symbol => HSChewy::Search::Parameters::Storage}]
       attr_accessor :storages
       delegate :[], :[]=, to: :storages
 
       # Accepts an initial hash as basic values or parameter storages.
       #
       # @example
-      #   Chewy::Search::Parameters.new(limit: 10, offset 10)
-      #   Chewy::Search::Parameters.new(
-      #     limit: Chewy::Search::Parameters::Limit.new(10),
-      #     limit: Chewy::Search::Parameters::Offset.new(10)
+      #   HSChewy::Search::Parameters.new(limit: 10, offset 10)
+      #   HSChewy::Search::Parameters.new(
+      #     limit: HSChewy::Search::Parameters::Limit.new(10),
+      #     limit: HSChewy::Search::Parameters::Offset.new(10)
       #   )
-      # @param initial [{Symbol => Object, Chewy::Search::Parameters::Storage}]
+      # @param initial [{Symbol => Object, HSChewy::Search::Parameters::Storage}]
       def initialize(initial = {})
         @storages = Hash.new do |hash, name|
           hash[name] = self.class.storages[name].new
@@ -59,7 +59,7 @@ module HSChewy
       #
       # @param name [Symbol] parameter name
       # @yield the block is executed in the cloned storage instance binding
-      # @return [Chewy::Search::Parameters::Storage]
+      # @return [HSChewy::Search::Parameters::Storage]
       def modify!(name, &block)
         @storages[name] = @storages[name].clone.tap do |s|
           s.instance_exec(&block)
@@ -69,7 +69,7 @@ module HSChewy
       # Removes specified storages from the storages hash.
       #
       # @param names [Array<String, Symbol>]
-      # @return [{Symbol => Chewy::Search::Parameters::Storage}] removed storages hash
+      # @return [{Symbol => HSChewy::Search::Parameters::Storage}] removed storages hash
       def only!(names)
         @storages.slice!(*assert_storages(names))
       end
@@ -77,13 +77,13 @@ module HSChewy
       # Keeps only specified storages removing everything else.
       #
       # @param names [Array<String, Symbol>]
-      # @return [{Symbol => Chewy::Search::Parameters::Storage}] kept storages hash
+      # @return [{Symbol => HSChewy::Search::Parameters::Storage}] kept storages hash
       def except!(names)
         @storages.except!(*assert_storages(names))
       end
 
       # Takes all the storages and merges them one by one using
-      # {Chewy::Search::Parameters::Storage#merge!} method. Merging
+      # {HSChewy::Search::Parameters::Storage#merge!} method. Merging
       # is implemented in different ways for different storages: for
       # limit, offset and other single-value classes it is a simple
       # value replacement, for boolean storages (explain, none) it uses
@@ -91,8 +91,8 @@ module HSChewy
       # concatenation, for query, filter, post_filter - it is the
       # "and" operation.
       #
-      # @see Chewy::Search::Parameters::Storage#merge!
-      # @return [{Symbol => Chewy::Search::Parameters::Storage}] storages from other parameters
+      # @see HSChewy::Search::Parameters::Storage#merge!
+      # @return [{Symbol => HSChewy::Search::Parameters::Storage}] storages from other parameters
       def merge!(other)
         other.storages.each do |name, storage|
           modify!(name) { merge!(storage) }

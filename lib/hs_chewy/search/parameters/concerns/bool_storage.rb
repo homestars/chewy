@@ -6,7 +6,7 @@ module HSChewy
       module BoolStorage
         # Performs values disjunction on update.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [true, false, Object] any acceptable storage value
         # @return [true, false] updated value
         def update!(other_value)

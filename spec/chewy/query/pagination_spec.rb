@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Chewy::Query::Pagination do
-  if Chewy::Runtime.version < '5.0'
+describe HSChewy::Query::Pagination do
+  if HSChewy::Runtime.version < '5.0'
     before { Chewy.massacre }
 
     before do
@@ -13,7 +13,7 @@ describe Chewy::Query::Pagination do
       end
     end
 
-    let(:search) { Chewy::Query.new(ProductsIndex).order(:age) }
+    let(:search) { HSChewy::Query.new(ProductsIndex).order(:age) }
 
     specify { expect(search.total_count).to eq(0) }
 
@@ -34,6 +34,6 @@ describe Chewy::Query::Pagination do
       end
     end
   else
-    xspecify 'Skip Chewy::Query specs for 5.0'
+    xspecify 'Skip HSChewy::Query specs for 5.0'
   end
 end

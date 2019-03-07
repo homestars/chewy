@@ -31,4 +31,4 @@ module HSChewy
   end
 end
 
-Chewy::LogSubscriber.attach_to :chewy
+HSChewy::LogSubscriber.attach_to :chewy

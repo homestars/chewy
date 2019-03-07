@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Index::Settings do
+describe HSChewy::Index::Settings do
   describe '#to_hash' do
-    before { allow(Chewy).to receive_messages(config: Chewy::Config.send(:new)) }
-    before { allow(Chewy).to receive_messages(repository: Chewy::Repository.send(:new)) }
+    before { allow(Chewy).to receive_messages(config: HSChewy::Config.send(:new)) }
+    before { allow(Chewy).to receive_messages(repository: HSChewy::Repository.send(:new)) }
 
     specify { expect(described_class.new.to_hash).to eq({}) }
     specify { expect(described_class.new(number_of_nodes: 3).to_hash).to eq(settings: {number_of_nodes: 3}) }

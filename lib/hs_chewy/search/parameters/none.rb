@@ -5,8 +5,8 @@ module HSChewy
     class Parameters
       # Just a standard boolean storage, except the rendering logic.
       #
-      # @see Chewy::Search::Parameters::BoolStorage
-      # @see Chewy::Search::Request#none
+      # @see HSChewy::Search::Parameters::BoolStorage
+      # @see HSChewy::Search::Request#none
       # @see https://en.wikipedia.org/wiki/Null_Object_pattern
       class None < Storage
         include BoolStorage
@@ -16,8 +16,8 @@ module HSChewy
         # ES2, so we are simulating it with `match_all` negation.
         #
         # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html#query-dsl-match-none-query
-        # @see Chewy::Search::Request
-        # @see Chewy::Search::Request#response
+        # @see HSChewy::Search::Request
+        # @see HSChewy::Search::Request#response
         def render
           {query: {bool: {filter: {bool: {must_not: {match_all: {}}}}}}} if value.present?
         end

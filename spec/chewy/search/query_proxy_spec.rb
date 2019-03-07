@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Search::QueryProxy do
+describe HSChewy::Search::QueryProxy do
   before { stub_index(:products) }
-  let(:request) { Chewy::Search::Request.new(ProductsIndex).query(match: {foo: 'bar'}) }
-  let(:scope) { Chewy::Search::Request.new(ProductsIndex).query.must_not(match: {foo: 'bar'}) }
+  let(:request) { HSChewy::Search::Request.new(ProductsIndex).query(match: {foo: 'bar'}) }
+  let(:scope) { HSChewy::Search::Request.new(ProductsIndex).query.must_not(match: {foo: 'bar'}) }
   subject { described_class.new(:query, request) }
 
   describe '#must' do
@@ -50,7 +50,7 @@ describe Chewy::Search::QueryProxy do
 
     context do
       let(:request) do
-        Chewy::Search::Request.new(ProductsIndex)
+        HSChewy::Search::Request.new(ProductsIndex)
           .query.should(match: {foo: 'bar'})
       end
       specify { expect(subject.minimum_should_match('100%').render[:body]).to eq(query: {bool: {should: {match: {foo: 'bar'}}, minimum_should_match: '100%'}}) }
@@ -58,7 +58,7 @@ describe Chewy::Search::QueryProxy do
 
     context do
       let(:request) do
-        Chewy::Search::Request.new(ProductsIndex)
+        HSChewy::Search::Request.new(ProductsIndex)
           .query.should(match: {foo: 'bar'})
           .query.minimum_should_match(2)
       end

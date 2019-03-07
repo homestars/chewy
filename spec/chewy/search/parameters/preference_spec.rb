@@ -1,5 +1,5 @@
 require 'hs_chewy/search/parameters/string_storage_examples'
 
-describe Chewy::Search::Parameters::Preference do
+describe HSChewy::Search::Parameters::Preference do
   it_behaves_like :string_storage, :preference
 end

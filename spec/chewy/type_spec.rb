@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Chewy::Type do
+describe HSChewy::Type do
   describe '.derivable_name' do
-    specify { expect { Class.new(Chewy::Type).derivable_name }.to raise_error NotImplementedError }
+    specify { expect { Class.new(HSChewy::Type).derivable_name }.to raise_error NotImplementedError }
 
     specify do
-      index = Class.new(Chewy::Index) { define_type :city }
+      index = Class.new(HSChewy::Index) { define_type :city }
       expect(index::City.derivable_name).to be_nil
     end
 
@@ -21,7 +21,7 @@ describe Chewy::Type do
   end
 
   describe '.types' do
-    subject { Class.new(Chewy::Type) }
+    subject { Class.new(HSChewy::Type) }
     specify { expect(subject.types).to eq([subject]) }
   end
 

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Query::Nodes::Bool do
+describe HSChewy::Query::Nodes::Bool do
   describe '#__render__' do
     def render(&block)
-      Chewy::Query::Filters.new(&block).__render__
+      HSChewy::Query::Filters.new(&block).__render__
     end
 
     specify { expect(render { must(name == 'name', email == 'email') }).to eq(bool: {must: [{term: {'name' => 'name'}}, {term: {'email' => 'email'}}]}) }

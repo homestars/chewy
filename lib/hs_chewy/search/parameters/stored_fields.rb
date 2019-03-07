@@ -6,14 +6,14 @@ module HSChewy
       # This storage is basically an array storage, but with an
       # additional ability to pass `enabled` option.
       #
-      # @see Chewy::Search::Request#stored_fields
+      # @see HSChewy::Search::Request#stored_fields
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-stored-fields.html
       class StoredFields < Storage
         # If array or just a field name is passed - it gets concatenated
         # to the storage array. `true` or `false` values are modifying
         # `enabled` parameter.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [true, false, String, Symbol, Array<String, Symbol>] any acceptable storage value
         # @return [{Symbol => Array<String>, true, false}] updated value
         def update!(other_value)
@@ -24,8 +24,8 @@ module HSChewy
 
         # Requires an additional logic to merge `enabled` value.
         #
-        # @see Chewy::Search::Parameters::Storage#merge!
-        # @param other [Chewy::Search::Parameters::Storage] other storage
+        # @see HSChewy::Search::Parameters::Storage#merge!
+        # @param other [HSChewy::Search::Parameters::Storage] other storage
         # @return [{Symbol => Array<String>, true, false}] updated value
         def merge!(other)
           update!(other.value[:stored_fields])
@@ -35,7 +35,7 @@ module HSChewy
         # Renders `_none_` if `stored_fields` are disabled, otherwise renders the
         # array of stored field names.
         #
-        # @see Chewy::Search::Parameters::Storage#render
+        # @see HSChewy::Search::Parameters::Storage#render
         # @return [{Symbol => Object}, nil] rendered value with the parameter name
         def render
           if !value[:enabled]

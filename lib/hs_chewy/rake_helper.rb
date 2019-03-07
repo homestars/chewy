@@ -25,17 +25,17 @@ module HSChewy
       # Performs zero-downtime reindexing of all documents for the specified indexes
       #
       # @example
-      #   Chewy::RakeHelper.reset # resets everything
-      #   Chewy::RakeHelper.reset(only: 'cities') # resets only CitiesIndex
-      #   Chewy::RakeHelper.reset(only: ['cities', CountriesIndex]) # resets CitiesIndex and CountriesIndex
-      #   Chewy::RakeHelper.reset(except: CitiesIndex) # resets everything, but CitiesIndex
-      #   Chewy::RakeHelper.reset(only: ['cities', 'countries'], except: CitiesIndex) # resets only CountriesIndex
+      #   HSChewy::RakeHelper.reset # resets everything
+      #   HSChewy::RakeHelper.reset(only: 'cities') # resets only CitiesIndex
+      #   HSChewy::RakeHelper.reset(only: ['cities', CountriesIndex]) # resets CitiesIndex and CountriesIndex
+      #   HSChewy::RakeHelper.reset(except: CitiesIndex) # resets everything, but CitiesIndex
+      #   HSChewy::RakeHelper.reset(only: ['cities', 'countries'], except: CitiesIndex) # resets only CountriesIndex
       #
-      # @param only [Array<Chewy::Index, String>, Chewy::Index, String] index or indexes to reset; if nothing is passed - uses all the indexes defined in the app
-      # @param except [Array<Chewy::Index, String>, Chewy::Index, String] index or indexes to exclude from processing
+      # @param only [Array<HSChewy::Index, String>, HSChewy::Index, String] index or indexes to reset; if nothing is passed - uses all the indexes defined in the app
+      # @param except [Array<HSChewy::Index, String>, HSChewy::Index, String] index or indexes to exclude from processing
       # @param parallel [true, Integer, Hash] any acceptable parallel options for import
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Index>] indexes that were reset
+      # @return [Array<HSChewy::Index>] indexes that were reset
       def reset(only: nil, except: nil, parallel: nil, output: STDOUT)
         subscribed_task_stats(output) do
           indexes_from(only: only, except: except).each do |index|
@@ -48,17 +48,17 @@ module HSChewy
       # indexes only if a particular index specification was changed.
       #
       # @example
-      #   Chewy::RakeHelper.upgrade # resets everything
-      #   Chewy::RakeHelper.upgrade(only: 'cities') # resets only CitiesIndex
-      #   Chewy::RakeHelper.upgrade(only: ['cities', CountriesIndex]) # resets CitiesIndex and CountriesIndex
-      #   Chewy::RakeHelper.upgrade(except: CitiesIndex) # resets everything, but CitiesIndex
-      #   Chewy::RakeHelper.upgrade(only: ['cities', 'countries'], except: CitiesIndex) # resets only CountriesIndex
+      #   HSChewy::RakeHelper.upgrade # resets everything
+      #   HSChewy::RakeHelper.upgrade(only: 'cities') # resets only CitiesIndex
+      #   HSChewy::RakeHelper.upgrade(only: ['cities', CountriesIndex]) # resets CitiesIndex and CountriesIndex
+      #   HSChewy::RakeHelper.upgrade(except: CitiesIndex) # resets everything, but CitiesIndex
+      #   HSChewy::RakeHelper.upgrade(only: ['cities', 'countries'], except: CitiesIndex) # resets only CountriesIndex
       #
-      # @param only [Array<Chewy::Index, String>, Chewy::Index, String] index or indexes to reset; if nothing is passed - uses all the indexes defined in the app
-      # @param except [Array<Chewy::Index, String>, Chewy::Index, String] index or indexes to exclude from processing
+      # @param only [Array<HSChewy::Index, String>, HSChewy::Index, String] index or indexes to reset; if nothing is passed - uses all the indexes defined in the app
+      # @param except [Array<HSChewy::Index, String>, HSChewy::Index, String] index or indexes to exclude from processing
       # @param parallel [true, Integer, Hash] any acceptable parallel options for import
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Index>] indexes that were actually reset
+      # @return [Array<HSChewy::Index>] indexes that were actually reset
       def upgrade(only: nil, except: nil, parallel: nil, output: STDOUT)
         subscribed_task_stats(output) do
           indexes = indexes_from(only: only, except: except)
@@ -86,17 +86,17 @@ module HSChewy
       # Performs full update for each passed type if the corresponding index exists.
       #
       # @example
-      #   Chewy::RakeHelper.update # updates everything
-      #   Chewy::RakeHelper.update(only: 'places') # updates only PlacesIndex::City and PlacesIndex::Country
-      #   Chewy::RakeHelper.update(only: 'places#city') # updates PlacesIndex::City only
-      #   Chewy::RakeHelper.update(except: PlacesIndex::Country) # updates everything, but PlacesIndex::Country
-      #   Chewy::RakeHelper.update(only: 'places', except: 'places#country') # updates PlacesIndex::City only
+      #   HSChewy::RakeHelper.update # updates everything
+      #   HSChewy::RakeHelper.update(only: 'places') # updates only PlacesIndex::City and PlacesIndex::Country
+      #   HSChewy::RakeHelper.update(only: 'places#city') # updates PlacesIndex::City only
+      #   HSChewy::RakeHelper.update(except: PlacesIndex::Country) # updates everything, but PlacesIndex::Country
+      #   HSChewy::RakeHelper.update(only: 'places', except: 'places#country') # updates PlacesIndex::City only
       #
-      # @param only [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to update; if nothing is passed - uses all the types defined in the app
-      # @param except [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to exclude from processing
+      # @param only [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to update; if nothing is passed - uses all the types defined in the app
+      # @param except [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to exclude from processing
       # @param parallel [true, Integer, Hash] any acceptable parallel options for import
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Type>] types that were actually updated
+      # @return [Array<HSChewy::Type>] types that were actually updated
       def update(only: nil, except: nil, parallel: nil, output: STDOUT)
         subscribed_task_stats(output) do
           types_from(only: only, except: except).group_by(&:index).each_with_object([]) do |(index, types), update_types|
@@ -114,17 +114,17 @@ module HSChewy
       # Performs synchronization for each passed index if it exists.
       #
       # @example
-      #   Chewy::RakeHelper.sync # synchronizes everything
-      #   Chewy::RakeHelper.sync(only: 'places') # synchronizes only PlacesIndex::City and PlacesIndex::Country
-      #   Chewy::RakeHelper.sync(only: 'places#city') # synchronizes PlacesIndex::City only
-      #   Chewy::RakeHelper.sync(except: PlacesIndex::Country) # synchronizes everything, but PlacesIndex::Country
-      #   Chewy::RakeHelper.sync(only: 'places', except: 'places#country') # synchronizes PlacesIndex::City only
+      #   HSChewy::RakeHelper.sync # synchronizes everything
+      #   HSChewy::RakeHelper.sync(only: 'places') # synchronizes only PlacesIndex::City and PlacesIndex::Country
+      #   HSChewy::RakeHelper.sync(only: 'places#city') # synchronizes PlacesIndex::City only
+      #   HSChewy::RakeHelper.sync(except: PlacesIndex::Country) # synchronizes everything, but PlacesIndex::Country
+      #   HSChewy::RakeHelper.sync(only: 'places', except: 'places#country') # synchronizes PlacesIndex::City only
       #
-      # @param only [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
-      # @param except [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to exclude from processing
+      # @param only [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
+      # @param except [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to exclude from processing
       # @param parallel [true, Integer, Hash] any acceptable parallel options for sync
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Type>] types that were actually updated
+      # @return [Array<HSChewy::Type>] types that were actually updated
       def sync(only: nil, except: nil, parallel: nil, output: STDOUT)
         subscribed_task_stats(output) do
           types_from(only: only, except: except).each_with_object([]) do |type, synced_types|
@@ -150,22 +150,22 @@ module HSChewy
       # specified indexes/types or all of them.
       #
       # @example
-      #   Chewy::RakeHelper.journal_apply(time: 1.minute.ago) # applies entries created for the last minute
-      #   Chewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places') # applies only PlacesIndex::City and PlacesIndex::Country entries reated for the last minute
-      #   Chewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places#city') # applies PlacesIndex::City entries reated for the last minute only
-      #   Chewy::RakeHelper.journal_apply(time: 1.minute.ago, except: PlacesIndex::Country) # applies everything, but PlacesIndex::Country entries reated for the last minute
-      #   Chewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places', except: 'places#country') # applies PlacesIndex::City entries reated for the last minute only
+      #   HSChewy::RakeHelper.journal_apply(time: 1.minute.ago) # applies entries created for the last minute
+      #   HSChewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places') # applies only PlacesIndex::City and PlacesIndex::Country entries reated for the last minute
+      #   HSChewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places#city') # applies PlacesIndex::City entries reated for the last minute only
+      #   HSChewy::RakeHelper.journal_apply(time: 1.minute.ago, except: PlacesIndex::Country) # applies everything, but PlacesIndex::Country entries reated for the last minute
+      #   HSChewy::RakeHelper.journal_apply(time: 1.minute.ago, only: 'places', except: 'places#country') # applies PlacesIndex::City entries reated for the last minute only
       #
       # @param time [Time, DateTime] use only journal entries created after this time
-      # @param only [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
-      # @param except [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to exclude from processing
+      # @param only [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
+      # @param except [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to exclude from processing
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Type>] types that were actually updated
+      # @return [Array<HSChewy::Type>] types that were actually updated
       def journal_apply(time: nil, only: nil, except: nil, output: STDOUT)
         raise ArgumentError, 'Please specify the time to start with' unless time
         subscribed_task_stats(output) do
           output.puts "Applying journal entries created after #{time}"
-          count = Chewy::Journal.new(types_from(only: only, except: except)).apply(time)
+          count = HSChewy::Journal.new(types_from(only: only, except: except)).apply(time)
           output.puts 'No journal entries were created after the specified time' if count.zero?
         end
       end
@@ -174,34 +174,34 @@ module HSChewy
       # the specified indexes/types or all of them.
       #
       # @example
-      #   Chewy::RakeHelper.journal_clean # cleans everything
-      #   Chewy::RakeHelper.journal_clean(time: 1.minute.ago) # leaves only entries created for the last minute
-      #   Chewy::RakeHelper.journal_clean(only: 'places') # cleans only PlacesIndex::City and PlacesIndex::Country entries
-      #   Chewy::RakeHelper.journal_clean(only: 'places#city') # cleans PlacesIndex::City entries only
-      #   Chewy::RakeHelper.journal_clean(except: PlacesIndex::Country) # cleans everything, but PlacesIndex::Country entries
-      #   Chewy::RakeHelper.journal_clean(only: 'places', except: 'places#country') # cleans PlacesIndex::City entries only
+      #   HSChewy::RakeHelper.journal_clean # cleans everything
+      #   HSChewy::RakeHelper.journal_clean(time: 1.minute.ago) # leaves only entries created for the last minute
+      #   HSChewy::RakeHelper.journal_clean(only: 'places') # cleans only PlacesIndex::City and PlacesIndex::Country entries
+      #   HSChewy::RakeHelper.journal_clean(only: 'places#city') # cleans PlacesIndex::City entries only
+      #   HSChewy::RakeHelper.journal_clean(except: PlacesIndex::Country) # cleans everything, but PlacesIndex::Country entries
+      #   HSChewy::RakeHelper.journal_clean(only: 'places', except: 'places#country') # cleans PlacesIndex::City entries only
       #
       # @param time [Time, DateTime] clean all the journal entries created before this time
-      # @param only [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
-      # @param except [Array<Chewy::Index, Chewy::Type, String>, Chewy::Index, Chewy::Type, String] indexes or types to exclude from processing
+      # @param only [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to synchronize; if nothing is passed - uses all the types defined in the app
+      # @param except [Array<HSChewy::Index, HSChewy::Type, String>, HSChewy::Index, HSChewy::Type, String] indexes or types to exclude from processing
       # @param output [IO] output io for logging
-      # @return [Array<Chewy::Type>] types that were actually updated
+      # @return [Array<HSChewy::Type>] types that were actually updated
       def journal_clean(time: nil, only: nil, except: nil, output: STDOUT)
         subscribed_task_stats(output) do
           output.puts "Cleaning journal entries created before #{time}" if time
-          response = Chewy::Journal.new(types_from(only: only, except: except)).clean(time)
+          response = HSChewy::Journal.new(types_from(only: only, except: except)).clean(time)
           count = response['deleted'] || response['_indices']['_all']['deleted']
           output.puts "Cleaned up #{count} journal entries"
         end
       end
 
       # Eager loads and returns all the indexes defined in the application
-      # except Chewy::Stash::Specification and Chewy::Stash::Journal.
+      # except HSChewy::Stash::Specification and HSChewy::Stash::Journal.
       #
-      # @return [Array<Chewy::Index>] indexes found
+      # @return [Array<HSChewy::Index>] indexes found
       def all_indexes
         Chewy.eager_load!
-        Chewy::Index.descendants - [Chewy::Stash::Journal, Chewy::Stash::Specification]
+        HSChewy::Index.descendants - [HSChewy::Stash::Journal, HSChewy::Stash::Specification]
       end
 
       def normalize_indexes(*identifiers)
@@ -209,7 +209,7 @@ module HSChewy
       end
 
       def normalize_index(identifier)
-        return identifier if identifier.is_a?(Class) && identifier < Chewy::Index
+        return identifier if identifier.is_a?(Class) && identifier < HSChewy::Index
         "#{identifier.to_s.gsub(/identifier\z/i, '').camelize}Index".constantize
       end
 
@@ -224,22 +224,22 @@ module HSChewy
       end
 
       def reset_index(*indexes)
-        ActiveSupport::Deprecation.warn '`Chewy::RakeHelper.reset_index` is deprecated and will be removed soon, use `Chewy::RakeHelper.reset` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::RakeHelper.reset_index` is deprecated and will be removed soon, use `HSChewy::RakeHelper.reset` instead'
         reset(only: indexes)
       end
 
       def reset_all(*except)
-        ActiveSupport::Deprecation.warn '`Chewy::RakeHelper.reset_all` is deprecated and will be removed soon, use `Chewy::RakeHelper.reset` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::RakeHelper.reset_all` is deprecated and will be removed soon, use `HSChewy::RakeHelper.reset` instead'
         reset(except: except)
       end
 
       def update_index(*indexes)
-        ActiveSupport::Deprecation.warn '`Chewy::RakeHelper.update_index` is deprecated and will be removed soon, use `Chewy::RakeHelper.update` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::RakeHelper.update_index` is deprecated and will be removed soon, use `HSChewy::RakeHelper.update` instead'
         update(only: indexes)
       end
 
       def update_all(*except)
-        ActiveSupport::Deprecation.warn '`Chewy::RakeHelper.update_all` is deprecated and will be removed soon, use `Chewy::RakeHelper.update` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::RakeHelper.update_all` is deprecated and will be removed soon, use `HSChewy::RakeHelper.update` instead'
         update(except: except)
       end
 

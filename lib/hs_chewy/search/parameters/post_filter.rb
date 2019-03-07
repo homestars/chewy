@@ -10,7 +10,7 @@ module HSChewy
       #   PlacesIndex.post_filter(match: {name: 'Moscow'})
       #   # => <PlacesIndex::Query {..., :body=>{:post_filter=>{:match=>{:name=>"Moscow"}}}}>
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
-      # @see Chewy::Search::Parameters::QueryStorage
+      # @see HSChewy::Search::Parameters::QueryStorage
       class PostFilter < Storage
         include QueryStorage
       end

@@ -154,7 +154,7 @@ If you would like to use AWS's ElasticSearch using an IAM user policy, you will 
 1. Create `/app/chewy/users_index.rb`
 
   ```ruby
-  class UsersIndex < Chewy::Index
+  class UsersIndex < HSChewy::Index
 
   end
   ```
@@ -162,7 +162,7 @@ If you would like to use AWS's ElasticSearch using an IAM user policy, you will 
 2. Add one or more types mapping
 
   ```ruby
-  class UsersIndex < Chewy::Index
+  class UsersIndex < HSChewy::Index
     define_type User.active # or just model instead_of scope: define_type User
   end
   ```
@@ -172,7 +172,7 @@ If you would like to use AWS's ElasticSearch using an IAM user policy, you will 
 3. Add some type mappings
 
   ```ruby
-  class UsersIndex < Chewy::Index
+  class UsersIndex < HSChewy::Index
     define_type User.active.includes(:country, :badges, :projects) do
       field :first_name, :last_name # multiple fields without additional options
       field :email, analyzer: 'email' # Elasticsearch-related options
@@ -193,10 +193,10 @@ If you would like to use AWS's ElasticSearch using an IAM user policy, you will 
 
   [See here for mapping definitions](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html).
 
-4. Add some index- and type-related settings. Analyzer repositories might be used as well. See `Chewy::Index.settings` docs for details:
+4. Add some index- and type-related settings. Analyzer repositories might be used as well. See `HSChewy::Index.settings` docs for details:
 
   ```ruby
-  class UsersIndex < Chewy::Index
+  class UsersIndex < HSChewy::Index
     settings analysis: {
       analyzer: {
         email: {
@@ -307,7 +307,7 @@ If you would like to use AWS's ElasticSearch using an IAM user policy, you will 
 Every type has `default_import_options` configuration to specify, suddenly, default import options:
 
 ```ruby
-class ProductsIndex < Chewy::Index
+class ProductsIndex < HSChewy::Index
   define_type Post.includes(:tags) do
     default_import_options batch_size: 100, bulk_size: 10.megabytes, refresh: false
 
@@ -379,7 +379,7 @@ See the section on *Script fields* for details on calculating distance in a sear
 Assume you are defining your index like this (product has_many categories through product_categories):
 
 ```ruby
-class ProductsIndex < Chewy::Index
+class ProductsIndex < HSChewy::Index
   define_type Product.includes(:categories) do
     field :name
     field :category_names, value: ->(product) { product.categories.map(&:name) } # or shorter just -> { categories.map(&:name) }
@@ -404,7 +404,7 @@ But in Rails 4.1 and 4.2 you may face a problem with slow associations (take a l
 Then you can replace Rails associations with Chewy Crutches™ technology:
 
 ```ruby
-class ProductsIndex < Chewy::Index
+class ProductsIndex < HSChewy::Index
   define_type Product do
     crutch :categories do |collection| # collection here is a current batch of products
       # data is fetched with a lightweight query without objects initialization
@@ -576,7 +576,7 @@ end
 
 You may be wondering why do you need it? The answer is simple: not to lose the data.
 
-Imagine that you reset your index in a zero-downtime manner (to separate index), and at the meantime somebody keeps updating the data frequently (to old index). So all these actions will be written to the journal index and you'll be able to apply them after index reset using the `Chewy::Journal` interface.
+Imagine that you reset your index in a zero-downtime manner (to separate index), and at the meantime somebody keeps updating the data frequently (to old index). So all these actions will be written to the journal index and you'll be able to apply them after index reset using the `HSChewy::Journal` interface.
 
 ### Types access
 
@@ -635,7 +635,7 @@ class City < ActiveRecord::Base
   update_index 'cities#city', :self
 end
 
-class CitiesIndex < Chewy::Index
+class CitiesIndex < HSChewy::Index
   define_type City do
     field :name
   end
@@ -660,7 +660,7 @@ Using this strategy delays the index update request until the end of the block. 
 
 #### `:resque`
 
-This does the same thing as `:atomic`, but asynchronously using resque. The default queue name is `chewy`. Patch `Chewy::Strategy::Resque::Worker` for index updates improving.
+This does the same thing as `:atomic`, but asynchronously using resque. The default queue name is `chewy`. Patch `HSChewy::Strategy::Resque::Worker` for index updates improving.
 
 ```ruby
 Chewy.strategy(:resque) do
@@ -670,7 +670,7 @@ end
 
 #### `:sidekiq`
 
-This does the same thing as `:atomic`, but asynchronously using sidekiq. Patch `Chewy::Strategy::Sidekiq::Worker` for index updates improving.
+This does the same thing as `:atomic`, but asynchronously using sidekiq. Patch `HSChewy::Strategy::Sidekiq::Worker` for index updates improving.
 
 ```ruby
 Chewy.strategy(:sidekiq) do
@@ -680,7 +680,7 @@ end
 
 #### `:active_job`
 
-This does the same thing as `:atomic`, but using ActiveJob. This will inherit the ActiveJob configuration settings including the `active_job.queue_adapter` setting for the environment. Patch `Chewy::Strategy::ActiveJob::Worker` for index updates improving.
+This does the same thing as `:atomic`, but using ActiveJob. This will inherit the ActiveJob configuration settings including the `active_job.queue_adapter` setting for the environment. Patch `HSChewy::Strategy::ActiveJob::Worker` for index updates improving.
 
 ```ruby
 Chewy.strategy(:active_job) do
@@ -690,7 +690,7 @@ end
 
 #### `:shoryuken`
 
-This does the same thing as `:atomic`, but asynchronously using shoryuken. Patch `Chewy::Strategy::Shoryuken::Worker` for index updates improving.
+This does the same thing as `:atomic`, but asynchronously using shoryuken. Patch `HSChewy::Strategy::Shoryuken::Worker` for index updates improving.
 
 ```ruby
 Chewy.strategy(:shoryuken) do
@@ -886,13 +886,13 @@ ActiveSupport::Notifications.subscribe(/.chewy$/, ChewySubscriber.new)
 
 Long story short: there is a new DSL that supports ES2 and ES5, the previous DSL version (which supports ES1 and ES2) documentation was moved to [LEGACY_DSL.md](LEGACY_DSL.md).
 
-If you want to use the old DSL - simply do `Chewy.search_class = Chewy::Query` somewhere before indices are initialized.
+If you want to use the old DSL - simply do `Chewy.search_class = HSChewy::Query` somewhere before indices are initialized.
 
 The new DSL is enabled by default, here is a quick introduction.
 
 #### Composing requests
 
-The request DSL have the same chainable nature as AR or Mongoid ones. The main class is `Chewy::Search::Request`. It is possible to perform requests on behalf of indices or types:
+The request DSL have the same chainable nature as AR or Mongoid ones. The main class is `HSChewy::Search::Request`. It is possible to perform requests on behalf of indices or types:
 
 ```ruby
 PlaceIndex.query(match: {name: 'London'}) # returns documents of any type
@@ -910,9 +910,9 @@ PlaceIndex
 
 See https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html and https://github.com/elastic/elasticsearch-ruby/tree/master/elasticsearch-dsl for more details.
 
-An important part of requests manipulation is merging. There are 4 methods to perform it: `merge`, `and`, `or`, `not`. See [Chewy::Search::QueryProxy](lib/chewy/search/query_proxy.rb) for details. Also, `only` and `except` methods help to remove unneeded parts of the request.
+An important part of requests manipulation is merging. There are 4 methods to perform it: `merge`, `and`, `or`, `not`. See [HSChewy::Search::QueryProxy](lib/chewy/search/query_proxy.rb) for details. Also, `only` and `except` methods help to remove unneeded parts of the request.
 
-Every other request part is covered by a bunch of additional methods, see [Chewy::Search::Request](lib/chewy/search/request.rb) for details:
+Every other request part is covered by a bunch of additional methods, see [HSChewy::Search::Request](lib/chewy/search/request.rb) for details:
 
 ```ruby
 PlaceIndex.limit(10).offset(30).order(:name, {population: {order: :desc}})
@@ -922,30 +922,30 @@ Request DSL also provides additional scope actions, like `delete_all`, `exists?`
 
 #### Pagination
 
-The request DSL supports pagination with `Kaminari` and `WillPaginate`. An appropriate extension is enabled on initializtion if any of libraries is available. See [Chewy::Search](lib/chewy/search.rb) and [Chewy::Search::Pagination](lib/chewy/search/pagination/) namespace for details.
+The request DSL supports pagination with `Kaminari` and `WillPaginate`. An appropriate extension is enabled on initializtion if any of libraries is available. See [HSChewy::Search](lib/chewy/search.rb) and [HSChewy::Search::Pagination](lib/chewy/search/pagination/) namespace for details.
 
 #### Named scopes
 
 Chewy supports named scopes functionality. There is no specialized DSL for named scopes definition, it is simply about defining class methods.
 
-See [Chewy::Search::Scoping](lib/chewy/search/scoping.rb) for details.
+See [HSChewy::Search::Scoping](lib/chewy/search/scoping.rb) for details.
 
 #### Scroll API
 
 ElasticSearch scroll API is utilized by a bunch of methods: `scroll_batches`, `scroll_hits`, `scroll_wrappers` and `scroll_objects`.
 
-See [Chewy::Search::Scrolling](lib/chewy/search/scrolling.rb) for details.
+See [HSChewy::Search::Scrolling](lib/chewy/search/scrolling.rb) for details.
 
 #### Loading objects
 
 It is possible to load ORM/ODM source objects with the `objects` method. To provide additional loading options use `load` method:
 
 ```ruby
-PlacesIndex.load(scope: -> { active }).to_a # to_a returns `Chewy::Type` wrappers.
+PlacesIndex.load(scope: -> { active }).to_a # to_a returns `HSChewy::Type` wrappers.
 PlacesIndex.load(scope: -> { active }).objects # An array of AR source objects.
 ```
 
-See [Chewy::Search::Loader](lib/chewy/search/loader.rb) for more details.
+See [HSChewy::Search::Loader](lib/chewy/search/loader.rb) for more details.
 
 In case when it is necessary to iterate through both of the wrappers and objects simultaneously, `object_hash` method helps a lot:
 
@@ -959,13 +959,13 @@ end
 #### Legacy DSL incompatibilities
 
 * Filters advanced block DSL is not supported anymore, `elasticsearch-dsl` is used instead.
-* Things like `query_mode` and `filter_mode` are in past, use advanced DSL to achieve similar behavior. See [Chewy::Search::QueryProxy](lib/chewy/search/query_proxy.rb) for details.
-* `preload` method is no more, the collection returned by scope doesn't depend on loading options, scope always returns `Chewy::Type` wrappers. To get ORM/ODM objects, use `#objects` method.
+* Things like `query_mode` and `filter_mode` are in past, use advanced DSL to achieve similar behavior. See [HSChewy::Search::QueryProxy](lib/chewy/search/query_proxy.rb) for details.
+* `preload` method is no more, the collection returned by scope doesn't depend on loading options, scope always returns `HSChewy::Type` wrappers. To get ORM/ODM objects, use `#objects` method.
 * Some of the methods have changed their purpose: `only` was used to filter fields before, now it filters the scope. To filter fields use `source` or `stored_fields`.
 * `types!` method is no more, use `except(:types).types(...)`
 * Named aggregations are not supported, use named scopes instead.
 * A lot of query-level methods were not ported: everything that is related to boost and scoring. Use `query` manipulation to provide them.
-* `Chewy::Type#_object` returns nil always. Use `Chewy::Search::Response#object_hash` instead.
+* `HSChewy::Type#_object` returns nil always. Use `HSChewy::Search::Response#object_hash` instead.
 
 ### Rake tasks
 
@@ -973,7 +973,7 @@ For a Rails application, some index-maintaining rake tasks are defined.
 
 #### `chewy:reset`
 
-Performs zero-downtime reindexing as described [here](https://www.elastic.co/blog/changing-mapping-with-zero-downtime). So the rake task creates a new index with unique suffix and then simply aliases it to the common index name. The previous index is deleted afterwards (see `Chewy::Index.reset!` for more details).
+Performs zero-downtime reindexing as described [here](https://www.elastic.co/blog/changing-mapping-with-zero-downtime). So the rake task creates a new index with unique suffix and then simply aliases it to the common index name. The previous index is deleted afterwards (see `HSChewy::Index.reset!` for more details).
 
 ```bash
 rake chewy:reset # resets all the existing indices
@@ -986,9 +986,9 @@ rake chewy:reset[-users,places] # resets every index in the application except s
 
 Performs reset exactly the same way as `chewy:reset` does, but only when the index specification (setting or mapping) was changed.
 
-It works only when index specification is locked in `Chewy::Stash::Specification` index. The first run will reset all indexes and lock their specifications.
+It works only when index specification is locked in `HSChewy::Stash::Specification` index. The first run will reset all indexes and lock their specifications.
 
-See [Chewy::Stash::Specification](lib/chewy/stash.rb) and [Chewy::Index::Specification](lib/chewy/index/specification.rb) for more details.
+See [HSChewy::Stash::Specification](lib/chewy/stash.rb) and [HSChewy::Index::Specification](lib/chewy/index/specification.rb) for more details.
 
 
 ```bash
@@ -1017,7 +1017,7 @@ Provides a way to synchronize outdated indexes with the source quickly and witho
 
 Arguments are similar to the ones taken by `chewy:update` task. It is possible to specify a particular type or a whole index.
 
-See [Chewy::Type::Syncer](lib/chewy/type/syncer.rb) for more details.
+See [HSChewy::Type::Syncer](lib/chewy/type/syncer.rb) for more details.
 
 ```bash
 rake chewy:sync # synchronizes all the existing indices
@@ -1067,7 +1067,7 @@ Just add `require 'hs_chewy/rspec'` to your spec_helper.rb and you will get addi
 
 ### Minitest integration
 
-Add `require 'hs_chewy/minitest'` to your test_helper.rb, and then for tests which you'd like indexing test hooks, `include Chewy::Minitest::Helpers`.
+Add `require 'hs_chewy/minitest'` to your test_helper.rb, and then for tests which you'd like indexing test hooks, `include HSChewy::Minitest::Helpers`.
 
 Since you can set `:bypass` strategy for test suites and manually handle import for the index and manually flush test indices using `Chewy.massacre`. This will help reduce unnecessary ES requests
 

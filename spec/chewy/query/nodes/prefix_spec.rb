@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Query::Nodes::Prefix do
+describe HSChewy::Query::Nodes::Prefix do
   describe '#__render__' do
     def render(&block)
-      Chewy::Query::Filters.new(&block).__render__
+      HSChewy::Query::Filters.new(&block).__render__
     end
 
     specify { expect(render { name =~ 'nam' }).to eq(prefix: {'name' => 'nam'}) }

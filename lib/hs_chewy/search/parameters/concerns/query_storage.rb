@@ -12,9 +12,9 @@ module HSChewy
       # query component arrays separate update.
       #
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-      # @see Chewy::Search::Parameters::Query
-      # @see Chewy::Search::Parameters::Filter
-      # @see Chewy::Search::Parameters::PostFilter
+      # @see HSChewy::Search::Parameters::Query
+      # @see HSChewy::Search::Parameters::Filter
+      # @see HSChewy::Search::Parameters::PostFilter
       module QueryStorage
         # Bool storage value object, encapsulates update and query
         # rendering logic.
@@ -46,8 +46,8 @@ module HSChewy
 
           # Merges 2 values, returns new value object.
           #
-          # @param other [Chewy::Search::Parameters::QueryStorage::Bool]
-          # @return [Chewy::Search::Parameters::QueryStorage::Bool]
+          # @param other [HSChewy::Search::Parameters::QueryStorage::Bool]
+          # @return [HSChewy::Search::Parameters::QueryStorage::Bool]
           def update(other)
             self.class.new(
               must: must + other.must,
@@ -105,7 +105,7 @@ module HSChewy
         # Directly modifies `must` array of the root `bool` query.
         # Pushes the passed query to the end of the array.
         #
-        # @see Chewy::Search::QueryProxy#must
+        # @see HSChewy::Search::QueryProxy#must
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def must(other_value)
@@ -115,7 +115,7 @@ module HSChewy
         # Directly modifies `should` array of the root `bool` query.
         # Pushes the passed query to the end of the array.
         #
-        # @see Chewy::Search::QueryProxy#should
+        # @see HSChewy::Search::QueryProxy#should
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def should(other_value)
@@ -125,7 +125,7 @@ module HSChewy
         # Directly modifies `must_not` array of the root `bool` query.
         # Pushes the passed query to the end of the array.
         #
-        # @see Chewy::Search::QueryProxy#must_not
+        # @see HSChewy::Search::QueryProxy#must_not
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def must_not(other_value)
@@ -139,7 +139,7 @@ module HSChewy
         # be reduced to this query, so in some cases it will act exactly
         # the same way as {#must}.
         #
-        # @see Chewy::Search::QueryProxy#and
+        # @see HSChewy::Search::QueryProxy#and
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def and(other_value)
@@ -153,7 +153,7 @@ module HSChewy
         # be reduced to this query, so in some cases it will act exactly
         # the same way as {#should}.
         #
-        # @see Chewy::Search::QueryProxy#or
+        # @see HSChewy::Search::QueryProxy#or
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def or(other_value)
@@ -163,7 +163,7 @@ module HSChewy
         # Basically, an alias for {#must_not}.
         #
         # @see #must_not
-        # @see Chewy::Search::QueryProxy#not
+        # @see HSChewy::Search::QueryProxy#not
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def not(other_value)
@@ -182,8 +182,8 @@ module HSChewy
         # Uses `and` logic to merge storages.
         #
         # @see #and
-        # @see Chewy::Search::Parameters::Storage#merge!
-        # @param other [Chewy::Search::Parameters::Storage] other storage
+        # @see HSChewy::Search::Parameters::Storage#merge!
+        # @param other [HSChewy::Search::Parameters::Storage] other storage
         # @return [{Symbol => Array<Hash>}]
         def merge!(other)
           self.and(other.value)
@@ -192,7 +192,7 @@ module HSChewy
         # Every query value is a hash of arrays and each array is
         # glued with the corresponding array from the provided value.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [Hash, Array] any acceptable storage value
         # @return [{Symbol => Array<Hash>}]
         def update!(other_value)
@@ -202,7 +202,7 @@ module HSChewy
         # Almost standard rendering logic, some reduction logic is
         # applied to the value additionally.
         #
-        # @see Chewy::Search::Parameters::Storage#render
+        # @see HSChewy::Search::Parameters::Storage#render
         # @return [{Symbol => Hash}]
         def render
           rendered_bool = value.query

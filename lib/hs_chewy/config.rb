@@ -4,15 +4,15 @@ module HSChewy
 
     attr_accessor :settings, :logger,
       # Default query compilation mode. `:must` by default.
-      # See Chewy::Query#query_mode for details
+      # See HSChewy::Query#query_mode for details
       #
       :query_mode,
       # Default filters compilation mode. `:and` by default.
-      # See Chewy::Query#filter_mode for details
+      # See HSChewy::Query#filter_mode for details
       #
       :filter_mode,
       # Default post_filters compilation mode. `nil` by default.
-      # See Chewy::Query#post_filter_mode for details
+      # See HSChewy::Query#post_filter_mode for details
       #
       :post_filter_mode,
       # The first strategy in stack. `:base` by default.
@@ -21,7 +21,7 @@ module HSChewy
       #
       :root_strategy,
       # Default request strategy middleware, used in e.g
-      # Rails controllers. See Chewy::Railtie::RequestStrategy
+      # Rails controllers. See HSChewy::Railtie::RequestStrategy
       # for more info.
       #
       :request_strategy,
@@ -70,7 +70,7 @@ module HSChewy
       @indices_path = 'app/chewy'
       @default_root_options = {}
       @default_field_type = 'text'.freeze
-      self.search_class = Chewy::Search::Request
+      self.search_class = HSChewy::Search::Request
     end
 
     def transport_logger=(logger)
@@ -157,9 +157,9 @@ module HSChewy
     def build_search_class(base)
       Class.new(base).tap do |search_class|
         if defined?(::Kaminari)
-          search_class.send :include, Chewy::Search::Pagination::Kaminari
+          search_class.send :include, HSChewy::Search::Pagination::Kaminari
         elsif defined?(::WillPaginate)
-          search_class.send :include, Chewy::Search::Pagination::WillPaginate
+          search_class.send :include, HSChewy::Search::Pagination::WillPaginate
         end
       end
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Syncer, :orm do
+describe HSChewy::Type::Syncer, :orm do
   before { Chewy.massacre }
   before do
     stub_model(:city)

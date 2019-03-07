@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Index do
+describe HSChewy::Index do
   before do
     stub_index(:dummies) do
       define_type :dummy
@@ -56,15 +56,15 @@ describe Chewy::Index do
   end
 
   describe '.index_name' do
-    specify { expect { Class.new(Chewy::Index).index_name }.to raise_error Chewy::UndefinedIndex }
-    specify { expect(Class.new(Chewy::Index) { index_name :myindex }.index_name).to eq('myindex') }
-    specify { expect(stub_const('DeveloperIndex', Class.new(Chewy::Index)).index_name).to eq('developer') }
-    specify { expect(stub_const('DevelopersIndex', Class.new(Chewy::Index)).index_name).to eq('developers') }
+    specify { expect { Class.new(HSChewy::Index).index_name }.to raise_error HSChewy::UndefinedIndex }
+    specify { expect(Class.new(HSChewy::Index) { index_name :myindex }.index_name).to eq('myindex') }
+    specify { expect(stub_const('DeveloperIndex', Class.new(HSChewy::Index)).index_name).to eq('developer') }
+    specify { expect(stub_const('DevelopersIndex', Class.new(HSChewy::Index)).index_name).to eq('developers') }
 
-    specify { expect(stub_const('DevelopersIndex', Class.new(Chewy::Index)).index_name(suffix: '')).to eq('developers') }
-    specify { expect(stub_const('DevelopersIndex', Class.new(Chewy::Index)).index_name(suffix: '2013')).to eq('developers_2013') }
-    specify { expect(stub_const('DevelopersIndex', Class.new(Chewy::Index)).index_name(prefix: '')).to eq('developers') }
-    specify { expect(stub_const('DevelopersIndex', Class.new(Chewy::Index)).index_name(prefix: 'test')).to eq('test_developers') }
+    specify { expect(stub_const('DevelopersIndex', Class.new(HSChewy::Index)).index_name(suffix: '')).to eq('developers') }
+    specify { expect(stub_const('DevelopersIndex', Class.new(HSChewy::Index)).index_name(suffix: '2013')).to eq('developers_2013') }
+    specify { expect(stub_const('DevelopersIndex', Class.new(HSChewy::Index)).index_name(prefix: '')).to eq('developers') }
+    specify { expect(stub_const('DevelopersIndex', Class.new(HSChewy::Index)).index_name(prefix: 'test')).to eq('test_developers') }
 
     context do
       before { allow(Chewy).to receive_messages(configuration: {prefix: 'testing'}) }
@@ -75,14 +75,14 @@ describe Chewy::Index do
   end
 
   describe '.derivable_name' do
-    specify { expect(Class.new(Chewy::Index).derivable_name).to be_nil }
+    specify { expect(Class.new(HSChewy::Index).derivable_name).to be_nil }
     specify { expect(stub_index(:places).derivable_name).to eq('places') }
     specify { expect(stub_index('namespace/places').derivable_name).to eq('namespace/places') }
   end
 
   describe '.prefix' do
     before { allow(Chewy).to receive_messages(configuration: {prefix: 'testing'}) }
-    specify { expect(Class.new(Chewy::Index).prefix).to eq('testing') }
+    specify { expect(Class.new(HSChewy::Index).prefix).to eq('testing') }
   end
 
   describe '.define_type' do
@@ -106,7 +106,7 @@ describe Chewy::Index do
       specify do
         expect do
           Kernel.eval <<-DUMMY_CITY_INDEX
-            class DummyCityIndex < Chewy::Index
+            class DummyCityIndex < HSChewy::Index
               define_type City
               define_type City::District
             end
@@ -117,7 +117,7 @@ describe Chewy::Index do
       specify do
         expect do
           Kernel.eval <<-DUMMY_CITY_INDEX
-            class DummyCityIndex2 < Chewy::Index
+            class DummyCityIndex2 < HSChewy::Index
               define_type City
               define_type City::Nothing
             end
@@ -136,33 +136,33 @@ describe Chewy::Index do
       end
 
       specify { expect(PlacesIndex.city).to be_nil }
-      specify { expect(PlacesIndex::Country).to be < Chewy::Type }
+      specify { expect(PlacesIndex::Country).to be < HSChewy::Type }
     end
   end
 
   describe '.type_hash' do
     specify { expect(DummiesIndex.type_hash['dummy']).to eq(DummiesIndex::Dummy) }
     specify { expect(DummiesIndex.type_hash).to have_key 'dummy' }
-    specify { expect(DummiesIndex.type_hash['dummy']).to be < Chewy::Type }
+    specify { expect(DummiesIndex.type_hash['dummy']).to be < HSChewy::Type }
     specify { expect(DummiesIndex.type_hash['dummy'].type_name).to eq('dummy') }
   end
 
   describe '.type' do
     specify { expect(DummiesIndex.type('dummy')).to eq(DummiesIndex::Dummy) }
-    specify { expect { DummiesIndex.type('not-the-dummy') }.to raise_error(Chewy::UndefinedType) }
+    specify { expect { DummiesIndex.type('not-the-dummy') }.to raise_error(HSChewy::UndefinedType) }
   end
 
   specify { expect(DummiesIndex.type_names).to eq(DummiesIndex.type_hash.keys) }
 
   describe '.types' do
     specify { expect(DummiesIndex.types).to eq(DummiesIndex.type_hash.values) }
-    specify { expect(DummiesIndex.types(:dummy)).to be_a Chewy::Search::Request }
-    specify { expect(DummiesIndex.types(:user)).to be_a Chewy::Search::Request }
+    specify { expect(DummiesIndex.types(:dummy)).to be_a HSChewy::Search::Request }
+    specify { expect(DummiesIndex.types(:user)).to be_a HSChewy::Search::Request }
   end
 
   describe '.settings' do
     before do
-      allow(Chewy).to receive_messages(config: Chewy::Config.send(:new))
+      allow(Chewy).to receive_messages(config: HSChewy::Config.send(:new))
 
       Chewy.analyzer :name, filter: %w[lowercase icu_folding names_nysiis]
       Chewy.analyzer :phone, tokenizer: 'ngram', char_filter: ['phone']
@@ -232,7 +232,7 @@ describe Chewy::Index do
   end
 
   describe '.settings_hash' do
-    before { allow(Chewy).to receive_messages(config: Chewy::Config.send(:new)) }
+    before { allow(Chewy).to receive_messages(config: HSChewy::Config.send(:new)) }
 
     specify { expect(stub_index(:documents).settings_hash).to eq({}) }
     specify { expect(stub_index(:documents) { settings number_of_shards: 1 }.settings_hash).to eq(settings: {number_of_shards: 1}) }
@@ -261,7 +261,7 @@ describe Chewy::Index do
   end
 
   describe '.specification_hash' do
-    before { allow(Chewy).to receive_messages(config: Chewy::Config.send(:new)) }
+    before { allow(Chewy).to receive_messages(config: HSChewy::Config.send(:new)) }
 
     specify { expect(stub_index(:documents).specification_hash).to eq({}) }
     specify { expect(stub_index(:documents) { settings number_of_shards: 1 }.specification_hash.keys).to eq([:settings]) }
@@ -284,7 +284,7 @@ describe Chewy::Index do
 
   describe '.specification' do
     subject { stub_index(:documents) }
-    specify { expect(subject.specification).to be_a(Chewy::Index::Specification) }
+    specify { expect(subject.specification).to be_a(HSChewy::Index::Specification) }
     specify { expect(subject.specification).to equal(subject.specification) }
   end
 

@@ -59,14 +59,14 @@ require 'hs_chewy/journal'
 require 'hs_chewy/railtie' if defined?(::Rails::Railtie)
 
 ActiveSupport.on_load(:active_record) do
-  extend Chewy::Type::Observe::ActiveRecordMethods
+  extend HSChewy::Type::Observe::ActiveRecordMethods
 end
 
 ActiveSupport.on_load(:mongoid) do
   module Mongoid
     module Document
       module ClassMethods
-        include Chewy::Type::Observe::MongoidMethods
+        include HSChewy::Type::Observe::MongoidMethods
       end
     end
   end
@@ -74,10 +74,10 @@ end
 
 module HSChewy
   @adapters = [
-    Chewy::Type::Adapter::ActiveRecord,
-    Chewy::Type::Adapter::Mongoid,
-    Chewy::Type::Adapter::Sequel,
-    Chewy::Type::Adapter::Object
+    HSChewy::Type::Adapter::ActiveRecord,
+    HSChewy::Type::Adapter::Mongoid,
+    HSChewy::Type::Adapter::Sequel,
+    HSChewy::Type::Adapter::Object
   ]
 
   class << self
@@ -86,51 +86,51 @@ module HSChewy
     # Derives a single type for the passed string identifier if possible.
     #
     # @example
-    #   Chewy.derive_types(UsersIndex::User) # => UsersIndex::User
-    #   Chewy.derive_types('namespace/users') # => Namespace::UsersIndex::User
-    #   Chewy.derive_types('places') # => raises Chewy::UnderivableType
-    #   Chewy.derive_types('places#city') # => PlacesIndex::City
+    #   HSChewy.derive_types(UsersIndex::User) # => UsersIndex::User
+    #   HSChewy.derive_types('namespace/users') # => Namespace::UsersIndex::User
+    #   HSChewy.derive_types('places') # => raises HSChewy::UnderivableType
+    #   HSChewy.derive_types('places#city') # => PlacesIndex::City
     #
-    # @param name [String, Chewy::Type] string type identifier
-    # @raise [Chewy::UnderivableType] in cases when it is impossble to find index or type or more than one type found
-    # @return [Chewy::Type] an array of derived types
+    # @param name [String, HSChewy::Type] string type identifier
+    # @raise [HSChewy::UnderivableType] in cases when it is impossble to find index or type or more than one type found
+    # @return [HSChewy::Type] an array of derived types
     def derive_type(name)
-      return name if name.is_a?(Class) && name < Chewy::Type
+      return name if name.is_a?(Class) && name < HSChewy::Type
 
       types = derive_types(name)
-      raise Chewy::UnderivableType, "Index `#{types.first.index}` has more than one type, please specify type via `#{types.first.index.derivable_name}#type_name`" unless types.one?
+      raise HSChewy::UnderivableType, "Index `#{types.first.index}` has more than one type, please specify type via `#{types.first.index.derivable_name}#type_name`" unless types.one?
       types.first
     end
 
     # Derives all the types for the passed string identifier if possible.
     #
     # @example
-    #   Chewy.derive_types('namespace/users') # => [Namespace::UsersIndex::User]
-    #   Chewy.derive_types('places') # => [PlacesIndex::City, PlacesIndex::Country]
-    #   Chewy.derive_types('places#city') # => [PlacesIndex::City]
+    #   HSChewy.derive_types('namespace/users') # => [Namespace::UsersIndex::User]
+    #   HSChewy.derive_types('places') # => [PlacesIndex::City, PlacesIndex::Country]
+    #   HSChewy.derive_types('places#city') # => [PlacesIndex::City]
     #
     # @param from [String] string type identifier
-    # @raise [Chewy::UnderivableType] in cases when it is impossible to find index or type
-    # @return [Array<Chewy::Type>] an array of derived types
+    # @raise [HSChewy::UnderivableType] in cases when it is impossible to find index or type
+    # @return [Array<HSChewy::Type>] an array of derived types
     def derive_types(from)
-      return from.types if from.is_a?(Class) && (from < Chewy::Index || from < Chewy::Type)
+      return from.types if from.is_a?(Class) && (from < HSChewy::Index || from < HSChewy::Type)
 
       index_name, type_name = from.split('#', 2)
       class_name = "#{index_name.camelize.gsub(/Index\z/, '')}Index"
       index = class_name.safe_constantize
-      raise Chewy::UnderivableType, "Can not find index named `#{class_name}`" unless index && index < Chewy::Index
+      raise HSChewy::UnderivableType, "Can not find index named `#{class_name}`" unless index && index < HSChewy::Index
       if type_name.present?
-        type = index.type_hash[type_name] or raise Chewy::UnderivableType, "Index `#{class_name}` doesn`t have type named `#{type_name}`"
+        type = index.type_hash[type_name] or raise HSChewy::UnderivableType, "Index `#{class_name}` doesn`t have type named `#{type_name}`"
         [type]
       else
         index.types
       end
     end
 
-    # Creates Chewy::Type ancestor defining index and adapter methods.
+    # Creates HSChewy::Type ancestor defining index and adapter methods.
     #
     def create_type(index, target, options = {}, &block)
-      type = Class.new(Chewy::Type)
+      type = Class.new(HSChewy::Type)
 
       adapter = adapters.find { |klass| klass.accepts?(target) }.new(target, options)
 
@@ -159,24 +159,24 @@ module HSChewy
     # Does nothing in case of config `wait_for_status` is undefined.
     #
     def wait_for_status
-      client.cluster.health wait_for_status: Chewy.configuration[:wait_for_status] if Chewy.configuration[:wait_for_status].present?
+      client.cluster.health wait_for_status: HSChewy.configuration[:wait_for_status] if HSChewy.configuration[:wait_for_status].present?
     end
 
     # Deletes all corresponding indexes with current prefix from ElasticSearch.
     # Be careful, if current prefix is blank, this will destroy all the indexes.
     #
     def massacre
-      Chewy.client.indices.delete(index: [Chewy.configuration[:prefix], '*'].reject(&:blank?).join('_'))
-      Chewy.wait_for_status
+      HSChewy.client.indices.delete(index: [HSChewy.configuration[:prefix], '*'].reject(&:blank?).join('_'))
+      HSChewy.wait_for_status
     end
     alias_method :delete_all, :massacre
 
     # Strategies are designed to allow nesting, so it is possible
     # to redefine it for nested contexts.
     #
-    #   Chewy.strategy(:atomic) do
+    #   HSChewy.strategy(:atomic) do
     #     city1.do_update!
-    #     Chewy.strategy(:urgent) do
+    #     HSChewy.strategy(:urgent) do
     #       city2.do_update!
     #       city3.do_update!
     #       # there will be 2 update index requests for city2 and city3
@@ -187,15 +187,15 @@ module HSChewy
     #
     # It is possible to nest strategies without blocks:
     #
-    #   Chewy.strategy(:urgent)
+    #   HSChewy.strategy(:urgent)
     #   city1.do_update! # index updated
-    #   Chewy.strategy(:bypass)
+    #   HSChewy.strategy(:bypass)
     #   city2.do_update! # update bypassed
-    #   Chewy.strategy.pop
+    #   HSChewy.strategy.pop
     #   city3.do_update! # index updated again
     #
     def strategy(name = nil, &block)
-      Thread.current[:chewy_strategy] ||= Chewy::Strategy.new
+      Thread.current[:chewy_strategy] ||= HSChewy::Strategy.new
       if name
         if block
           Thread.current[:chewy_strategy].wrap name, &block
@@ -208,26 +208,26 @@ module HSChewy
     end
 
     def config
-      Chewy::Config.instance
+      HSChewy::Config.instance
     end
-    delegate(*Chewy::Config.delegated, to: :config)
+    delegate(*HSChewy::Config.delegated, to: :config)
 
     def repository
-      Chewy::Repository.instance
+      HSChewy::Repository.instance
     end
-    delegate(*Chewy::Repository.delegated, to: :repository)
+    delegate(*HSChewy::Repository.delegated, to: :repository)
 
     def create_indices
-      Chewy::Index.descendants.each(&:create)
+      HSChewy::Index.descendants.each(&:create)
     end
 
     def create_indices!
-      Chewy::Index.descendants.each(&:create!)
+      HSChewy::Index.descendants.each(&:create!)
     end
 
     def eager_load!
-      return unless defined?(Chewy::Railtie)
-      dirs = Chewy::Railtie.all_engines.map { |engine| engine.paths[Chewy.configuration[:indices_path]] }.compact.map(&:existent).flatten.uniq
+      return unless defined?(HSChewy::Railtie)
+      dirs = HSChewy::Railtie.all_engines.map { |engine| engine.paths[HSChewy.configuration[:indices_path]] }.compact.map(&:existent).flatten.uniq
 
       dirs.each do |dir|
         Dir.glob(File.join(dir, '**/*.rb')).each do |file|

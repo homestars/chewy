@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Chewy::Query::Filters do
+describe HSChewy::Query::Filters do
   def Bool(options) # rubocop:disable Naming/MethodName
-    Chewy::Query::Nodes::Bool.new.tap do |bool|
+    HSChewy::Query::Nodes::Bool.new.tap do |bool|
       bool.must(*options[:must]) if options[:must].present?
       bool.must_not(*options[:must_not]) if options[:must_not].present?
       bool.should(*options[:should]) if options[:should].present?
@@ -11,12 +11,12 @@ describe Chewy::Query::Filters do
 
   %w[field group and or not raw exists missing prefix regexp range equal query script].each do |method|
     define_method method.camelize do |*args|
-      "Chewy::Query::Nodes::#{method.camelize}".constantize.new(*args)
+      "HSChewy::Query::Nodes::#{method.camelize}".constantize.new(*args)
     end
   end
 
   def query(&block)
-    Chewy::Query::Filters.new(&block).__result__
+    HSChewy::Query::Filters.new(&block).__result__
   end
 
   context 'outer scope' do

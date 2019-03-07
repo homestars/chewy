@@ -4,9 +4,9 @@ module HSChewy
   # index.
   # Journal entries are stored in `chewy_journal`
   #
-  # @see Chewy::Index::Specification
+  # @see HSChewy::Index::Specification
   module Stash
-    class Specification < Chewy::Index
+    class Specification < HSChewy::Index
       index_name 'chewy_specifications'
 
       define_type :specification do
@@ -16,13 +16,13 @@ module HSChewy
       end
     end
 
-    class Journal < Chewy::Index
+    class Journal < HSChewy::Index
       index_name 'chewy_journal'
 
       # Loads all entries since the specified time.
       #
       # @param since_time [Time, DateTime] a timestamp from which we load a journal
-      # @param only [Chewy::Index, Array<Chewy::Index>] journal entries related to these indices will be loaded only
+      # @param only [HSChewy::Index, Array<HSChewy::Index>] journal entries related to these indices will be loaded only
       def self.entries(since_time, only: [])
         self.for(only).filter(range: {created_at: {gt: since_time}})
       end
@@ -31,7 +31,7 @@ module HSChewy
       # specified - cleans up everything.
       #
       # @param since_time [Time, DateTime] the time top boundary
-      # @param only [Chewy::Index, Array<Chewy::Index>] indexes to clean up journal entries for
+      # @param only [HSChewy::Index, Array<HSChewy::Index>] indexes to clean up journal entries for
       def self.clean(until_time = nil, only: [])
         scope = self.for(only)
         scope = scope.filter(range: {created_at: {lte: until_time}}) if until_time
@@ -40,7 +40,7 @@ module HSChewy
 
       # Selects all the journal entries for the specified indices.
       #
-      # @param indices [Chewy::Index, Array<Chewy::Index>]
+      # @param indices [HSChewy::Index, Array<HSChewy::Index>]
       def self.for(*something)
         something = something.flatten.compact
         types = something.flat_map { |s| Chewy.derive_types(s) }

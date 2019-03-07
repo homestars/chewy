@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::Load do
+describe HSChewy::Search::Parameters::Load do
   subject { described_class.new(only: :foo) }
 
   describe '#initialize' do

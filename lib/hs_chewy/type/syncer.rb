@@ -9,7 +9,7 @@ module HSChewy
     # should be reindexed.
     #
     # To fetch necessary data from the source it uses adapter method
-    # {Chewy::Type::Adapter::Base#import_fields}, in case when the Object
+    # {HSChewy::Type::Adapter::Base#import_fields}, in case when the Object
     # adapter is used it makes sense to read corresponding documentation.
     #
     # If `parallel` option is passed to the initializer - it will fetch surce and
@@ -24,7 +24,7 @@ module HSChewy
     #   ATTENTION: synchronization may be slow in case when synchronized tables
     #   are missing compound index on primary key and `outdated_sync_field`.
     #
-    # @see Chewy::Type::Actions::ClassMethods#sync
+    # @see HSChewy::Type::Actions::ClassMethods#sync
     class Syncer
       DEFAULT_SYNC_BATCH_SIZE = 20_000
       ISO_DATETIME = /\A(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)(\.\d+)?\z/
@@ -34,7 +34,7 @@ module HSChewy
           next unless source_data_hash[id]
 
           outdated = if outdated_sync_field_type == 'date'
-            !Chewy::Type::Syncer.dates_equal(typecast_date(source_data_hash[id]), Time.iso8601(index_sync_value))
+            !HSChewy::Type::Syncer.dates_equal(typecast_date(source_data_hash[id]), Time.iso8601(index_sync_value))
           else
             source_data_hash[id] != index_sync_value
           end
@@ -76,7 +76,7 @@ module HSChewy
         end
       end
 
-      # @param type [Chewy::Type] chewy type
+      # @param type [HSChewy::Type] chewy type
       # @param parallel [true, Integer, Hash] options for parallel execution or the number of processes
       def initialize(type, parallel: nil)
         @type = type
@@ -118,7 +118,7 @@ module HSChewy
       # and index and returns the ids of entities which which are having
       # different values there.
       #
-      # @see Chewy::Type::Mapping::ClassMethods#supports_outdated_sync?
+      # @see HSChewy::Type::Mapping::ClassMethods#supports_outdated_sync?
       # @return [Array<String>] an array of outdated ids
       def outdated_ids
         return [] if source_data.blank? || index_data.blank? || !@type.supports_outdated_sync?

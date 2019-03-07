@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Adapter::Sequel, :sequel do
+describe HSChewy::Type::Adapter::Sequel, :sequel do
   before do
     stub_model(:city)
     stub_model(:country)

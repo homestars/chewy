@@ -9,7 +9,7 @@ module HSChewy
       # If fields are passed - it creates partial update entries except for
       # the cases when the type has parent and parent_id has been changed.
       class BulkBuilder
-        # @param type [Chewy::Type] desired type
+        # @param type [HSChewy::Type] desired type
         # @param index [Array<Object>] objects to index
         # @param delete [Array<Object>] objects or ids to delete
         # @param fields [Array<Symbol, String>] and array of fields for documents update
@@ -40,7 +40,7 @@ module HSChewy
       private
 
         def crutches
-          @crutches ||= Chewy::Type::Crutch::Crutches.new @type, @index
+          @crutches ||= HSChewy::Type::Crutch::Crutches.new @type, @index
         end
 
         def parents

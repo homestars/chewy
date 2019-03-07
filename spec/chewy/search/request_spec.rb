@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Request do
+describe HSChewy::Search::Request do
   before { Chewy.massacre }
 
   before do
@@ -57,7 +57,7 @@ describe Chewy::Search::Request do
   describe '#inspect' do
     specify do
       expect(described_class.new(ProductsIndex).inspect)
-        .to eq('<Chewy::Search::Request {:index=>["products"], :type=>["city", "country", "product"], :body=>{}}>')
+        .to eq('<HSChewy::Search::Request {:index=>["products"], :type=>["city", "country", "product"], :body=>{}}>')
     end
     specify do
       expect(ProductsIndex.limit(10).inspect)
@@ -568,12 +568,12 @@ describe Chewy::Search::Request do
       specify { expect(subject.find { |w| w.id == 2 }).to be_a(ProductsIndex::Product).and have_attributes(id: 2) }
       specify { expect(subject.limit(2).find('1', '3', '7').map(&:id)).to contain_exactly(1, 3, 7) }
       specify { expect(subject.find(1, 3, 7).map(&:id)).to contain_exactly(1, 3, 7) }
-      specify { expect { subject.find('1', '3', '42') }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 42' }
-      specify { expect { subject.find(1, 3, 42) }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 42' }
-      specify { expect { subject.query(match: {name: 'name3'}).find('1', '3') }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 1' }
-      specify { expect { subject.query(match: {name: 'name2'}).find('1', '3') }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
-      specify { expect { subject.filter(match: {name: 'name2'}).find('1', '3') }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
-      specify { expect { subject.post_filter(match: {name: 'name2'}).find('1', '3') }.to raise_error Chewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
+      specify { expect { subject.find('1', '3', '42') }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 42' }
+      specify { expect { subject.find(1, 3, 42) }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 42' }
+      specify { expect { subject.query(match: {name: 'name3'}).find('1', '3') }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 1' }
+      specify { expect { subject.query(match: {name: 'name2'}).find('1', '3') }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
+      specify { expect { subject.filter(match: {name: 'name2'}).find('1', '3') }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
+      specify { expect { subject.post_filter(match: {name: 'name2'}).find('1', '3') }.to raise_error HSChewy::DocumentNotFound, 'Could not find documents for ids: 1 and 3' }
 
       context 'make sure it returns everything' do
         let(:countries) { Array.new(6) { |i| {id: (i.next + 6).to_i}.stringify_keys! } }
@@ -587,7 +587,7 @@ describe Chewy::Search::Request do
         before { expect(Chewy.client).to receive(:scroll).once.and_call_original }
 
         specify { expect(subject.find((1..9).to_a)).to have(9).items }
-        specify { expect(subject.find((1..9).to_a)).to all be_a(Chewy::Type) }
+        specify { expect(subject.find((1..9).to_a)).to all be_a(HSChewy::Type) }
       end
     end
 

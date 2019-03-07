@@ -5,14 +5,14 @@ module HSChewy
     #
     # @note The class tries to be as immutable as possible,
     #   so most of the methods return a new instance of the class.
-    # @see Chewy::Search
+    # @see HSChewy::Search
     # @example
-    #   scope = Chewy::Search::Request.new(PlacesIndex)
-    #   # => <Chewy::Search::Request {:index=>["places"], :type=>["city", "country"]}>
+    #   scope = HSChewy::Search::Request.new(PlacesIndex)
+    #   # => <HSChewy::Search::Request {:index=>["places"], :type=>["city", "country"]}>
     #   scope.limit(20)
-    #   # => <Chewy::Search::Request {:index=>["places"], :type=>["city", "country"], :body=>{:size=>20}}>
+    #   # => <HSChewy::Search::Request {:index=>["places"], :type=>["city", "country"], :body=>{:size=>20}}>
     #   scope.order(:name).offset(10)
-    #   # => <Chewy::Search::Request {:index=>["places"], :type=>["city", "country"], :body=>{:sort=>["name"], :from=>10}}>
+    #   # => <HSChewy::Search::Request {:index=>["places"], :type=>["city", "country"], :body=>{:sort=>["name"], :from=>10}}>
     class Request
       include Enumerable
       include Scoping
@@ -57,22 +57,22 @@ module HSChewy
       # Any symbol/string passed is treated as an index identifier.
       #
       # @example
-      #   Chewy::Search::Request.new(:places)
-      #   # => <Chewy::Search::Request {:index=>["places"]}>
-      #   Chewy::Search::Request.new(PlacesIndex)
-      #   # => <Chewy::Search::Request {:index=>["places"], :type=>["city", "country"]}>
-      #   Chewy::Search::Request.new(PlacesIndex::City)
-      #   # => <Chewy::Search::Request {:index=>["places"], :type=>["city"]}>
-      #   Chewy::Search::Request.new(UsersIndex, PlacesIndex::City)
-      #   # => <Chewy::Search::Request {:index=>["users", "places"], :type=>["city", "user"]}>
-      # @param indexes_or_types [Array<Chewy::Index, Chewy::Type, String, Symbol>] indices and types in any combinations
+      #   HSChewy::Search::Request.new(:places)
+      #   # => <HSChewy::Search::Request {:index=>["places"]}>
+      #   HSChewy::Search::Request.new(PlacesIndex)
+      #   # => <HSChewy::Search::Request {:index=>["places"], :type=>["city", "country"]}>
+      #   HSChewy::Search::Request.new(PlacesIndex::City)
+      #   # => <HSChewy::Search::Request {:index=>["places"], :type=>["city"]}>
+      #   HSChewy::Search::Request.new(UsersIndex, PlacesIndex::City)
+      #   # => <HSChewy::Search::Request {:index=>["users", "places"], :type=>["city", "user"]}>
+      # @param indexes_or_types [Array<HSChewy::Index, HSChewy::Type, String, Symbol>] indices and types in any combinations
       def initialize(*indices_or_types)
         indices = indices_or_types.reject do |klass|
-          klass.is_a?(Class) && klass < Chewy::Type
+          klass.is_a?(Class) && klass < HSChewy::Type
         end
 
         types = indices_or_types.select do |klass|
-          klass.is_a?(Class) && klass < Chewy::Type
+          klass.is_a?(Class) && klass < HSChewy::Type
         end
 
         parameters.modify!(:indices) do
@@ -82,7 +82,7 @@ module HSChewy
 
       # Underlying parameter storage collection.
       #
-      # @return [Chewy::Search::Parameters]
+      # @return [HSChewy::Search::Parameters]
       def parameters
         @parameters ||= Parameters.new
       end
@@ -103,14 +103,14 @@ module HSChewy
       # @param other [Object] any object
       # @return [true, false] the result of comparison
       def ==(other)
-        super || other.is_a?(Chewy::Search::Request) ? compare_internals(other) : to_a == other
+        super || other.is_a?(HSChewy::Search::Request) ? compare_internals(other) : to_a == other
       end
 
       # Access to ES response wrappers providing useful methods such as
-      # {Chewy::Search::Response#total} or {Chewy::Search::Response#max_score}.
+      # {HSChewy::Search::Response#total} or {HSChewy::Search::Response#max_score}.
       #
-      # @see Chewy::Search::Response
-      # @return [Chewy::Search::Response] a response object instance
+      # @see HSChewy::Search::Response
+      # @return [HSChewy::Search::Response] a response object instance
       def response
         @response ||= Response.new(perform, loader, collection_paginator)
       end
@@ -135,55 +135,55 @@ module HSChewy
       #   Adds `quer` parameter to the search request body.
       #
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-query.html
-      #   @see Chewy::Search::Parameters::Query
-      #   @return [Chewy::Search::Request, Chewy::Search::QueryProxy]
+      #   @see HSChewy::Search::Parameters::Query
+      #   @return [HSChewy::Search::Request, HSChewy::Search::QueryProxy]
       #
       #   @overload query(query_hash)
       #     If pure hash is passed it goes straight to the `quer` parameter storage.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must}.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must}.
       #
       #     @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
       #     @example
       #       PlacesIndex.query(match: {name: 'Moscow'})
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:match=>{:name=>"Moscow"}}}}>
       #     @param query_hash [Hash] pure query hash
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload query
       #     If block is passed instead of a pure hash, `elasticsearch-dsl"
       #     gem will be used to process it.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must} with a block.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must} with a block.
       #
       #     @see https://github.com/elastic/elasticsearch-ruby/tree/master/elasticsearch-dsl
       #     @example
       #       PlacesIndex.query { match name: 'Moscow' }
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:match=>{:name=>"Moscow"}}}}>
       #     @yield the block is processed by `elasticsearch-ds` gem
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload query
       #     If nothing is passed it returns a proxy for additional
       #     parameter manipulations.
       #
-      #     @see Chewy::Search::QueryProxy
+      #     @see HSChewy::Search::QueryProxy
       #     @example
       #       PlacesIndex.query.should(match: {name: 'Moscow'}).query.not(match: {name: 'London'})
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #       #      :should=>{:match=>{:name=>"Moscow"}},
       #       #      :must_not=>{:match=>{:name=>"London"}}}}}}>
-      #     @return [Chewy::Search::QueryProxy]
+      #     @return [HSChewy::Search::QueryProxy]
       #
       # @!method filter(query_hash=nil, &block)
       #   Adds `filte` context of the `quer` parameter at the
       #   search request body.
       #
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
-      #   @see Chewy::Search::Parameters::Filter
-      #   @return [Chewy::Search::Request, Chewy::Search::QueryProxy]
+      #   @see HSChewy::Search::Parameters::Filter
+      #   @return [HSChewy::Search::Request, HSChewy::Search::QueryProxy]
       #
       #   @overload filter(query_hash)
       #     If pure hash is passed it goes straight to the `filte` context of the `quer` parameter storage.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must}.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must}.
       #
       #     @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
       #     @example
@@ -191,12 +191,12 @@ module HSChewy
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #       #      :filter=>{:match=>{:name=>"Moscow"}}}}}}>
       #     @param query_hash [Hash] pure query hash
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload filter
       #     If block is passed instead of a pure hash, `elasticsearch-dsl"
       #     gem will be used to process it.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must} with a block.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must} with a block.
       #
       #     @see https://github.com/elastic/elasticsearch-ruby/tree/master/elasticsearch-dsl
       #     @example
@@ -204,67 +204,67 @@ module HSChewy
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #       #      :filter=>{:match=>{:name=>"Moscow"}}}}}}>
       #     @yield the block is processed by `elasticsearch-ds` gem
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload filter
       #     If nothing is passed it returns a proxy for additional
       #     parameter manipulations.
       #
-      #     @see Chewy::Search::QueryProxy
+      #     @see HSChewy::Search::QueryProxy
       #     @example
       #       PlacesIndex.filter.should(match: {name: 'Moscow'}).filter.not(match: {name: 'London'})
       #       # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #       #      :filter=>{:bool=>{:should=>{:match=>{:name=>"Moscow"}},
       #       #      :must_not=>{:match=>{:name=>"London"}}}}}}}}>
-      #     @return [Chewy::Search::QueryProxy]
+      #     @return [HSChewy::Search::QueryProxy]
       #
       # @!method post_filter(query_hash=nil, &block)
       #   Adds `post_filter` parameter to the search request body.
       #
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
-      #   @see Chewy::Search::Parameters::PostFilter
-      #   @return [Chewy::Search::Request, Chewy::Search::QueryProxy]
+      #   @see HSChewy::Search::Parameters::PostFilter
+      #   @return [HSChewy::Search::Request, HSChewy::Search::QueryProxy]
       #
       #   @overload post_filter(query_hash)
       #     If pure hash is passed it goes straight to the `post_filter` parameter storage.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must}.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must}.
       #
       #     @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
       #     @example
       #       PlacesIndex.post_filter(match: {name: 'Moscow'})
       #       # => <PlacesIndex::Query {..., :body=>{:post_filter=>{:match=>{:name=>"Moscow"}}}}>
       #     @param query_hash [Hash] pure query hash
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload post_filter
       #     If block is passed instead of a pure hash, `elasticsearch-dsl"
       #     gem will be used to process it.
-      #     Acts exactly the same way as {Chewy::Search::QueryProxy#must} with a block.
+      #     Acts exactly the same way as {HSChewy::Search::QueryProxy#must} with a block.
       #
       #     @see https://github.com/elastic/elasticsearch-ruby/tree/master/elasticsearch-dsl
       #     @example
       #       PlacesIndex.post_filter { match name: 'Moscow' }
       #       # => <PlacesIndex::Query {..., :body=>{:post_filter=>{:match=>{:name=>"Moscow"}}}}>
       #     @yield the block is processed by `elasticsearch-ds` gem
-      #     @return [Chewy::Search::Request]
+      #     @return [HSChewy::Search::Request]
       #
       #   @overload post_filter
       #     If nothing is passed it returns a proxy for additional
       #     parameter manipulations.
       #
-      #     @see Chewy::Search::QueryProxy
+      #     @see HSChewy::Search::QueryProxy
       #     @example
       #       PlacesIndex.post_filter.should(match: {name: 'Moscow'}).post_filter.not(match: {name: 'London'})
       #       # => <PlacesIndex::Query {..., :body=>{:post_filter=>{:bool=>{
       #       #      :should=>{:match=>{:name=>"Moscow"}},
       #       #      :must_not=>{:match=>{:name=>"London"}}}}}}>
-      #     @return [Chewy::Search::QueryProxy]
+      #     @return [HSChewy::Search::QueryProxy]
       %i[query filter post_filter].each do |name|
         define_method name do |query_hash = UNDEFINED, &block|
           if block || query_hash != UNDEFINED
             modify(name) { must(block || query_hash) }
           else
-            Chewy::Search::QueryProxy.new(name, self)
+            HSChewy::Search::QueryProxy.new(name, self)
           end
         end
       end
@@ -275,10 +275,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.order(:name, population: {order: :asc}).order(:coordinates)
       #     # => <PlacesIndex::Query {..., :body=>{:sort=>["name", {"population"=>{:order=>:asc}}, "coordinates"]}}>
-      #   @see Chewy::Search::Parameters::Order
+      #   @see HSChewy::Search::Parameters::Order
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-sort.html
       #   @param values [Array<Hash, String, Symbol>] sort fields and options
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method docvalue_fields(*values)
       #   Modifies `docvalue_fields` request parameter. Updates the storage on every call.
@@ -286,10 +286,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.docvalue_fields(:name).docvalue_fields(:population, :coordinates)
       #     # => <PlacesIndex::Query {..., :body=>{:docvalue_fields=>["name", "population", "coordinates"]}}>
-      #   @see Chewy::Search::Parameters::DocvalueFields
+      #   @see HSChewy::Search::Parameters::DocvalueFields
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-docvalue-fields.html
       #   @param values [Array<String, Symbol>] field names
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       %i[order docvalue_fields].each do |name|
         define_method name do |value, *values|
           modify(name) { update!([value, *values]) }
@@ -303,10 +303,10 @@ module HSChewy
       #   @example
       #     UsersIndex.indices(CitiesIndex).indices(:another)
       #     # => <UsersIndex::Query {:index=>["another", "cities", "users"], :type=>["city", "user"]}>
-      #   @see Chewy::Search::Parameters::Indices
+      #   @see HSChewy::Search::Parameters::Indices
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html
-      #   @param values [Array<Chewy::Index, String, Symbol>] index names
-      #   @return [Chewy::Search::Request]
+      #   @param values [Array<HSChewy::Index, String, Symbol>] index names
+      #   @return [HSChewy::Search::Request]
       #
       # @!method types(*values)
       #   Modifies `type` request parameter. Updates the storage on every call.
@@ -316,10 +316,10 @@ module HSChewy
       #   @example
       #     UsersIndex.types(CitiesIndex::City).types(:unexistent)
       #     # => <UsersIndex::Query {:index=>["cities", "users"], :type=>["city", "user"]}>
-      #   @see Chewy::Search::Parameters::Indices
+      #   @see HSChewy::Search::Parameters::Indices
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html
-      #   @param values [Array<Chewy::Type, String, Symbol>] type names
-      #   @return [Chewy::Search::Request]
+      #   @param values [Array<HSChewy::Type, String, Symbol>] type names
+      #   @return [HSChewy::Search::Request]
       %i[indices types].each do |name|
         define_method name do |value, *values|
           modify(:indices) { update!(name => [value, *values]) }
@@ -332,10 +332,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.order(:name, population: {order: :asc}).reorder(:coordinates)
       #     # => <PlacesIndex::Query {..., :body=>{:sort=>["coordinates"]}}>
-      #   @see Chewy::Search::Parameters::Order
+      #   @see HSChewy::Search::Parameters::Order
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-sort.html
       #   @param values [Array<Hash, String, Symbol>] sort fields and options
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       def reorder(value, *values)
         modify(:order) { replace!([value, *values]) }
       end
@@ -348,10 +348,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:track_scores=>true}}>
       #     PlacesIndex.track_scores.track_scores(false)
       #     # => <PlacesIndex::Query {:index=>["places"], :type=>["city", "country"]}>
-      #   @see Chewy::Search::Parameters::TrackScores
+      #   @see HSChewy::Search::Parameters::TrackScores
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-sort.html#_track_scores
       #   @param value [true, false]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method explain(value = true)
       #   Replaces the value of the `explain` parameter with the provided value.
@@ -361,10 +361,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:explain=>true}}>
       #     PlacesIndex.explain.explain(false)
       #     # => <PlacesIndex::Query {:index=>["places"], :type=>["city", "country"]}>
-      #   @see Chewy::Search::Parameters::Explain
+      #   @see HSChewy::Search::Parameters::Explain
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-explain.html
       #   @param value [true, false]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method version(value = true)
       #   Replaces the value of the `version` parameter with the provided value.
@@ -374,10 +374,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:version=>true}}>
       #     PlacesIndex.version.version(false)
       #     # => <PlacesIndex::Query {:index=>["places"], :type=>["city", "country"]}>
-      #   @see Chewy::Search::Parameters::Version
+      #   @see HSChewy::Search::Parameters::Version
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-version.html
       #   @param value [true, false]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method profile(value = true)
       #   Replaces the value of the `profile` parameter with the provided value.
@@ -387,10 +387,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:profile=>true}}>
       #     PlacesIndex.profile.profile(false)
       #     # => <PlacesIndex::Query {:index=>["places"], :type=>["city", "country"]}>
-      #   @see Chewy::Search::Parameters::Profile
+      #   @see HSChewy::Search::Parameters::Profile
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-profile.html
       #   @param value [true, false]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method none(value = true)
       #   Enables `NullObject` pattern for the request, doesn't perform the
@@ -401,10 +401,10 @@ module HSChewy
       #     # => []
       #     PlacesIndex.none.total
       #     # => 0
-      #   @see Chewy::Search::Parameters::None
+      #   @see HSChewy::Search::Parameters::None
       #   @see https://en.wikipedia.org/wiki/Null_Object_pattern
       #   @param value [true, false]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       %i[track_scores explain version profile none].each do |name|
         define_method name do |value = true|
           modify(name) { replace!(value) }
@@ -421,10 +421,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:request_cache=>true}}>
       #     PlacesIndex.request_cache(false)
       #     # => <PlacesIndex::Query {..., :body=>{:request_cache=>false}}>
-      #   @see Chewy::Search::Parameters::RequestCache
+      #   @see HSChewy::Search::Parameters::RequestCache
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/shard-request-cache.html#_enabling_and_disabling_caching_per_request
       #   @param value [true, false, nil]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method search_type(value)
       #   Replaces the value of the `search_type` request part.
@@ -432,10 +432,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.search_type(:dfs_query_then_fetch)
       #     # => <PlacesIndex::Query {..., :body=>{:search_type=>"dfs_query_then_fetch"}}>
-      #   @see Chewy::Search::Parameters::SearchType
+      #   @see HSChewy::Search::Parameters::SearchType
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-search-type.html
       #   @param value [String, Symbol]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method preference(value)
       #   Replaces the value of the `preference` request part.
@@ -443,10 +443,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.preference(:_primary_first)
       #     # => <PlacesIndex::Query {..., :body=>{:preference=>"_primary_first"}}>
-      #   @see Chewy::Search::Parameters::Preference
+      #   @see HSChewy::Search::Parameters::Preference
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-preference.html
       #   @param value [String, Symbol]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method timeout(value)
       #   Replaces the value of the `timeout` request part.
@@ -454,10 +454,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.timeout('1m')
       #     <PlacesIndex::Query {..., :body=>{:timeout=>"1m"}}>
-      #   @see Chewy::Search::Parameters::Timeout
+      #   @see HSChewy::Search::Parameters::Timeout
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/common-options.html#time-units
       #   @param value [String, Symbol]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method limit(value)
       #   Replaces the value of the `size` request part.
@@ -465,10 +465,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.limit(10)
       #     <PlacesIndex::Query {..., :body=>{:size=>10}}>
-      #   @see Chewy::Search::Parameters::Limit
+      #   @see HSChewy::Search::Parameters::Limit
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-from-size.html
       #   @param value [String, Integer]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method offset(value)
       #   Replaces the value of the `from` request part.
@@ -476,10 +476,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.offset(10)
       #     <PlacesIndex::Query {..., :body=>{:from=>10}}>
-      #   @see Chewy::Search::Parameters::Offset
+      #   @see HSChewy::Search::Parameters::Offset
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-from-size.html
       #   @param value [String, Integer]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method terminate_after(value)
       #   Replaces the value of the `terminate_after` request part.
@@ -487,10 +487,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.terminate_after(10)
       #     <PlacesIndex::Query {..., :body=>{:terminate_after=>10}}>
-      #   @see Chewy::Search::Parameters::Offset
+      #   @see HSChewy::Search::Parameters::Offset
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-body.html
       #   @param value [String, Integer]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method min_score(value)
       #   Replaces the value of the `min_score` request part.
@@ -498,10 +498,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.min_score(2)
       #     <PlacesIndex::Query {..., :body=>{:min_score=>2.0}}>
-      #   @see Chewy::Search::Parameters::Offset
+      #   @see HSChewy::Search::Parameters::Offset
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-min-score.html
       #   @param value [String, Integer, Float]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       %i[request_cache search_type preference timeout limit offset terminate_after min_score].each do |name|
         define_method name do |value|
           modify(name) { replace!(value) }
@@ -518,10 +518,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:_source=>{:includes=>["name", "popularity"], :excludes=>["description"]}}}>
       #     PlacesIndex.source(false)
       #     # => <PlacesIndex::Query {..., :body=>{:_source=>false}}>
-      #   @see Chewy::Search::Parameters::Source
+      #   @see HSChewy::Search::Parameters::Source
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-source-filtering.html
       #   @param values [true, false, {Symbol => Array<String, Symbol>, String, Symbol}, Array<String, Symbol>, String, Symbol]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method stored_fields(*values)
       #   Updates `stored_fields` request part. Accepts an array of field
@@ -532,10 +532,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:stored_fields=>["name", "description"]}}>
       #     PlacesIndex.stored_fields(false)
       #     # => <PlacesIndex::Query {..., :body=>{:stored_fields=>"_none_"}}>
-      #   @see Chewy::Search::Parameters::StoredFields
+      #   @see HSChewy::Search::Parameters::StoredFields
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-stored-fields.html
       #   @param values [true, false, String, Symbol, Array<String, Symbol>]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       %i[source stored_fields].each do |name|
         define_method name do |value, *values|
           modify(name) { update!(values.empty? ? value : [value, *values]) }
@@ -548,10 +548,10 @@ module HSChewy
       # @example
       #   PlacesIndex.search_after(42, 'Moscow').search_after('London')
       #   # => <PlacesIndex::Query {..., :body=>{:search_after=>["London"]}}>
-      # @see Chewy::Search::Parameters::SearchAfter
+      # @see HSChewy::Search::Parameters::SearchAfter
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-search-after.html
       # @param value [Array, Object]
-      # @return [Chewy::Search::Request]
+      # @return [HSChewy::Search::Request]
       def search_after(value, *values)
         modify(:search_after) { replace!(values.empty? ? value : [value, *values]) }
       end
@@ -564,9 +564,9 @@ module HSChewy
       #
       # @example
       #   PlaceIndex.load(only: 'city').load(scope: -> { active })
-      # @see Chewy::Search::Loader
-      # @see Chewy::Search::Response#objects
-      # @see Chewy::Search::Scrolling#scroll_objects
+      # @see HSChewy::Search::Loader
+      # @see HSChewy::Search::Response#objects
+      # @see HSChewy::Search::Scrolling#scroll_objects
       # @param options [Hash] adapter-specific loading options
       def load(options = nil)
         modify(:load) { update!(options) }
@@ -583,10 +583,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:script_fields=>{
       #     #      "field1"=>{:script=>{:lang=>"painless", :inline=>"some script here"}},
       #     #      "field2"=>{:script=>{:lang=>"painless", :inline=>"some script here"}}}}}>
-      #   @see Chewy::Search::Parameters::ScriptFields
+      #   @see HSChewy::Search::Parameters::ScriptFields
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-script-fields.html
       #   @param value [Hash]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method indices_boost(value)
       #   Add an `indices_boost` part to the request. Further
@@ -595,10 +595,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.indices_boost(index1: 1.2, index2: 1.3).indices_boost(index1: 1.5)
       #     # => <PlacesIndex::Query {..., :body=>{:indices_boost=>[{"index2"=>1.3}, {"index1"=>1.5}]}}>
-      #   @see Chewy::Search::Parameters::IndicesBoost
+      #   @see HSChewy::Search::Parameters::IndicesBoost
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-index-boost.html
       #   @param value [{String, Symbol => String, Integer, Float}]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method rescore(value)
       #   Add a `rescore` part to the request. Further
@@ -607,10 +607,10 @@ module HSChewy
       #   @example
       #     PlacesIndex.rescore(window_size: 100, query: {}).rescore(window_size: 200, query: {})
       #     # => <PlacesIndex::Query {..., :body=>{:rescore=>[{:window_size=>100, :query=>{}}, {:window_size=>200, :query=>{}}]}}>
-      #   @see Chewy::Search::Parameters::Rescore
+      #   @see HSChewy::Search::Parameters::Rescore
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-rescore.html
       #   @param value [Hash, Array<Hash>]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @!method highlight(value)
       #   Add a `highlight` configuration to the request. Further
@@ -623,10 +623,10 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:highlight=>{
       #     #      "fields"=>{:description=>{:type=>"plain"}},
       #     #      "pre_tags"=>["<em>"], "post_tags"=>["</em>"]}}}>
-      #   @see Chewy::Search::Parameters::Highlight
+      #   @see HSChewy::Search::Parameters::Highlight
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-highlighting.html
       #   @param value [Hash]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       %i[script_fields indices_boost rescore highlight].each do |name|
         define_method name do |value|
           modify(name) { update!(value) }
@@ -646,18 +646,18 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:suggest=>{
       #     #      "names"=>{:text=>"tring out Elasticsearch"},
       #     #      "descriptions"=>{:text=>"some other text"}}}}>
-      #   @see Chewy::Search::Parameters::Suggest
+      #   @see HSChewy::Search::Parameters::Suggest
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-suggesters.html
       #   @param value [Hash]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @overload suggest
       #   Without value provided, it performs the request and
-      #   returns {Chewy::Search::Response#suggest} contents.
+      #   returns {HSChewy::Search::Response#suggest} contents.
       #
       #   @example
       #     PlacesIndex.suggest(names: {text: 'tring out Elasticsearch'}).suggest
-      #   @see Chewy::Search::Response#suggest
+      #   @see HSChewy::Search::Response#suggest
       #   @return [Hash]
       def suggest(value = UNDEFINED)
         if value == UNDEFINED
@@ -680,18 +680,18 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:aggs=>{
       #     #      "avg_population"=>{:avg=>{:field=>:population}},
       #     #      "avg_age"=>{:avg=>{:field=>:age}}}}}>
-      #   @see Chewy::Search::Parameters::Aggs
+      #   @see HSChewy::Search::Parameters::Aggs
       #   @see https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html
       #   @param value [Hash]
-      #   @return [Chewy::Search::Request]
+      #   @return [HSChewy::Search::Request]
       #
       # @overload aggs
       #   Without value provided, it performs the request and
-      #   returns {Chewy::Search::Response#aggs} contents.
+      #   returns {HSChewy::Search::Response#aggs} contents.
       #
       #   @example
       #     PlacesIndex.aggs(avg_population: {avg: {field: :population}}).aggs
-      #   @see Chewy::Search::Response#aggs
+      #   @see HSChewy::Search::Response#aggs
       #   @return [Hash]
       def aggs(value = UNDEFINED)
         if value == UNDEFINED
@@ -713,20 +713,20 @@ module HSChewy
       #   # => <PlacesIndex::Query {..., :body=>{:size=>20, :from=>10}}>
       #   scope2.merge(scope1)
       #   # => <PlacesIndex::Query {..., :body=>{:size=>10, :from=>10}}>
-      # @see Chewy::Search::Parameters#merge
-      # @param other [Chewy::Search::Request] scope to merge
-      # @return [Chewy::Search::Request] new scope
+      # @see HSChewy::Search::Parameters#merge
+      # @param other [HSChewy::Search::Request] scope to merge
+      # @return [HSChewy::Search::Request] new scope
       def merge(other)
         chain { parameters.merge!(other.parameters) }
       end
 
       # @!method and(other)
       #   Takes `query`, `filter`, `post_filter` from the passed scope
-      #   and performs {Chewy::Search::QueryProxy#and} operation for each
+      #   and performs {HSChewy::Search::QueryProxy#and} operation for each
       #   of them. Unlike merge, every other parameter is kept unmerged
       #   (values from the first scope are used in the result scope).
       #
-      #   @see Chewy::Search::QueryProxy#and
+      #   @see HSChewy::Search::QueryProxy#and
       #   @example
       #     scope1 = PlacesIndex.filter(term: {name: 'Moscow'}).query(match: {name: 'London'})
       #     scope2 = PlacesIndex.filter.not(term: {name: 'Berlin'}).query(match: {name: 'Washington'})
@@ -734,16 +734,16 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #     #      :must=>[{:match=>{:name=>"London"}}, {:match=>{:name=>"Washington"}}],
       #     #      :filter=>{:bool=>{:must=>[{:term=>{:name=>"Moscow"}}, {:bool=>{:must_not=>{:term=>{:name=>"Berlin"}}}}]}}}}}}>
-      #   @param other [Chewy::Search::Request] scope to merge
-      #   @return [Chewy::Search::Request] new scope
+      #   @param other [HSChewy::Search::Request] scope to merge
+      #   @return [HSChewy::Search::Request] new scope
       #
       # @!method or(other)
       #   Takes `query`, `filter`, `post_filter` from the passed scope
-      #   and performs {Chewy::Search::QueryProxy#or} operation for each
+      #   and performs {HSChewy::Search::QueryProxy#or} operation for each
       #   of them. Unlike merge, every other parameter is kept unmerged
       #   (values from the first scope are used in the result scope).
       #
-      #   @see Chewy::Search::QueryProxy#or
+      #   @see HSChewy::Search::QueryProxy#or
       #   @example
       #     scope1 = PlacesIndex.filter(term: {name: 'Moscow'}).query(match: {name: 'London'})
       #     scope2 = PlacesIndex.filter.not(term: {name: 'Berlin'}).query(match: {name: 'Washington'})
@@ -751,16 +751,16 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #     #      :should=>[{:match=>{:name=>"London"}}, {:match=>{:name=>"Washington"}}],
       #     #      :filter=>{:bool=>{:should=>[{:term=>{:name=>"Moscow"}}, {:bool=>{:must_not=>{:term=>{:name=>"Berlin"}}}}]}}}}}}>
-      #   @param other [Chewy::Search::Request] scope to merge
-      #   @return [Chewy::Search::Request] new scope
+      #   @param other [HSChewy::Search::Request] scope to merge
+      #   @return [HSChewy::Search::Request] new scope
       #
       # @!method not(other)
       #   Takes `query`, `filter`, `post_filter` from the passed scope
-      #   and performs {Chewy::Search::QueryProxy#not} operation for each
+      #   and performs {HSChewy::Search::QueryProxy#not} operation for each
       #   of them. Unlike merge, every other parameter is kept unmerged
       #   (values from the first scope are used in the result scope).
       #
-      #   @see Chewy::Search::QueryProxy#not
+      #   @see HSChewy::Search::QueryProxy#not
       #   @example
       #     scope1 = PlacesIndex.filter(term: {name: 'Moscow'}).query(match: {name: 'London'})
       #     scope2 = PlacesIndex.filter.not(term: {name: 'Berlin'}).query(match: {name: 'Washington'})
@@ -768,8 +768,8 @@ module HSChewy
       #     # => <PlacesIndex::Query {..., :body=>{:query=>{:bool=>{
       #     #      :must=>{:match=>{:name=>"London"}}, :must_not=>{:match=>{:name=>"Washington"}},
       #     #      :filter=>{:bool=>{:must=>{:term=>{:name=>"Moscow"}}, :must_not=>{:bool=>{:must_not=>{:term=>{:name=>"Berlin"}}}}}}}}}}>
-      #   @param other [Chewy::Search::Request] scope to merge
-      #   @return [Chewy::Search::Request] new scope
+      #   @param other [HSChewy::Search::Request] scope to merge
+      #   @return [HSChewy::Search::Request] new scope
       %i[and or not].each do |name|
         define_method name do |other|
           %i[query filter post_filter].inject(self) do |scope, parameter_name|
@@ -784,7 +784,7 @@ module HSChewy
       #   PlacesIndex.limit(10).offset(10).order(:name).except(:offset, :order)
       #   # => <PlacesIndex::Query {..., :body=>{:size=>10}}>
       # @param values [Array<String, Symbol>]
-      # @return [Chewy::Search::Request] new scope
+      # @return [HSChewy::Search::Request] new scope
       def only(*values)
         chain { parameters.only!(values.flatten(1) + [:indices]) }
       end
@@ -795,7 +795,7 @@ module HSChewy
       #   PlacesIndex.limit(10).offset(10).order(:name).only(:offset, :order)
       #   # => <PlacesIndex::Query {..., :body=>{:from=>10, :sort=>["name"]}}>
       # @param values [Array<String, Symbol>]
-      # @return [Chewy::Search::Request] new scope
+      # @return [HSChewy::Search::Request] new scope
       def except(*values)
         chain { parameters.except!(values.flatten(1)) }
       end
@@ -839,14 +839,14 @@ module HSChewy
       # @overload first
       #   If nothing is passed - it returns a single object.
       #
-      #   @return [Chewy::Type] result document
+      #   @return [HSChewy::Type] result document
       #
       # @overload first(limit)
       #   If limit is provided - it returns the limit amount or less
       #   of wrapper objects.
       #
       #   @param limit [Integer] amount of requested results
-      #   @return [Array<Chewy::Type>] result document collection
+      #   @return [Array<HSChewy::Type>] result document collection
       def first(limit = UNDEFINED)
         request_limit = limit == UNDEFINED ? 1 : limit
 
@@ -860,12 +860,12 @@ module HSChewy
 
       # Finds documents with specified ids for the current request scope.
       #
-      # @raise [Chewy::DocumentNotFound] in case of any document is missing
+      # @raise [HSChewy::DocumentNotFound] in case of any document is missing
       # @overload find(id)
       #   If single id is passed - it returns a single object.
       #
       #   @param id [Integer, String] id of the desired document
-      #   @return [Chewy::Type] result document
+      #   @return [HSChewy::Type] result document
       #
       # @overload find(*ids)
       #   If several field are passed - it returns an array of wrappers.
@@ -873,7 +873,7 @@ module HSChewy
       #   batch size - uses scroll API to retrieve everything.
       #
       #   @param ids [Array<Integer, String>] ids of the desired documents
-      #   @return [Array<Chewy::Type>] result documents
+      #   @return [Array<HSChewy::Type>] result documents
       def find(*ids)
         return super if block_given?
 
@@ -888,7 +888,7 @@ module HSChewy
 
         if ids.size != results.size
           missing_ids = ids - results.map(&:id).map(&:to_s)
-          raise Chewy::DocumentNotFound, "Could not find documents for ids: #{missing_ids.to_sentence}"
+          raise HSChewy::DocumentNotFound, "Could not find documents for ids: #{missing_ids.to_sentence}"
         end
         results.one? ? results.first : results
       end

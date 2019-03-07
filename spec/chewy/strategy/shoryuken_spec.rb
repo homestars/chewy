@@ -3,7 +3,7 @@ require 'spec_helper'
 if defined?(::Shoryuken)
   require 'aws-sdk-sqs'
 
-  describe Chewy::Strategy::Shoryuken do
+  describe HSChewy::Strategy::Shoryuken do
     around { |example| Chewy.strategy(:bypass) { example.run } }
     before { ::Shoryuken.groups.clear }
     before do
@@ -32,7 +32,7 @@ if defined?(::Shoryuken)
 
     specify do
       Chewy.settings[:shoryuken] = {queue: 'low'}
-      expect(Chewy::Strategy::Shoryuken::Worker).to receive(:perform_async)
+      expect(HSChewy::Strategy::Shoryuken::Worker).to receive(:perform_async)
         .with(hash_including(type: 'CitiesIndex::City', ids: [city.id, other_city.id]), hash_including(queue: 'low'))
       Chewy.strategy(:shoryuken) do
         [city, other_city].map(&:save!)
@@ -54,13 +54,13 @@ if defined?(::Shoryuken)
 
     specify do
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601')
-      Chewy::Strategy::Shoryuken::Worker.new.perform(sqs_msg, body)
+      HSChewy::Strategy::Shoryuken::Worker.new.perform(sqs_msg, body)
     end
 
     specify do
       allow(Chewy).to receive(:disable_refresh_async).and_return(true)
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601', refresh: false)
-      Chewy::Strategy::Shoryuken::Worker.new.perform(sqs_msg, body)
+      HSChewy::Strategy::Shoryuken::Worker.new.perform(sqs_msg, body)
     end
   end
 end

@@ -1,6 +1,6 @@
 module HSChewy
   module Fields
-    class Root < Chewy::Fields::Base
+    class Root < HSChewy::Fields::Base
       attr_reader :dynamic_templates
       attr_reader :id
       attr_reader :parent
@@ -93,7 +93,7 @@ module HSChewy
 
       # Children indexed by name as a hash.
       #
-      # @return [Hash{Symbol => Chewy::Fields::Base}]
+      # @return [Hash{Symbol => HSChewy::Fields::Base}]
       def child_hash
         @child_hash ||= children.index_by(&:name)
       end

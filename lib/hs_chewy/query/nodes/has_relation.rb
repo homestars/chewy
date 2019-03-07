@@ -33,7 +33,7 @@ module HSChewy
 
         def filter(params = nil, &block)
           if block
-            @filters.push(Chewy::Query::Filters.new(@outer, &block).__render__)
+            @filters.push(HSChewy::Query::Filters.new(@outer, &block).__render__)
           else
             @filters.push(params)
           end

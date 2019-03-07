@@ -15,7 +15,7 @@ shared_examples :kaminari do |request_base_class|
   let(:except_fields) { %w[_score _explanation] }
   let(:request_class) do
     Class.new(request_base_class).tap do |k|
-      k.include Chewy::Search::Pagination::Kaminari
+      k.include HSChewy::Search::Pagination::Kaminari
     end
   end
   let(:search) { request_class.new(ProductsIndex).order(:age) }

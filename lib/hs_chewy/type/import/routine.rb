@@ -20,7 +20,7 @@ module HSChewy
       # when the document doesn't exist only if `update_failover` option is true. In order to
       # restore, it indexes such an objects completely on the next iteration.
       #
-      # @see Chewy::Type::Import::ClassMethods#import
+      # @see HSChewy::Type::Import::ClassMethods#import
       class Routine
         BULK_OPTIONS = %i[
           suffix bulk_size
@@ -33,14 +33,14 @@ module HSChewy
           refresh: true,
           update_fields: [],
           update_failover: true,
-          batch_size: Chewy::Type::Adapter::Base::BATCH_SIZE
+          batch_size: HSChewy::Type::Adapter::Base::BATCH_SIZE
         }.freeze
 
         attr_reader :options, :parallel_options, :errors, :stats, :leftovers
 
         # Basically, processes passed options, extracting bulk request specific options.
-        # @param type [Chewy::Type] chewy type
-        # @param options [Hash] import options, see {Chewy::Type::Import::ClassMethods#import}
+        # @param type [HSChewy::Type] chewy type
+        # @param options [Hash] import options, see {HSChewy::Type::Import::ClassMethods#import}
         def initialize(type, **options)
           @type = type
           @options = options
@@ -64,7 +64,7 @@ module HSChewy
         # Creates the journal index and the type corresponding index if necessary.
         # @return [Object] whatever
         def create_indexes!
-          Chewy::Stash::Journal.create if @options[:journal]
+          HSChewy::Stash::Journal.create if @options[:journal]
           return if Chewy.configuration[:skip_index_creation_on_import]
           @type.index.create!(@bulk_options.slice(:suffix)) unless @type.index.exists?
         end

@@ -1,7 +1,7 @@
 module HSChewy
   module Search
     module Pagination
-      # This module provides `Kaminari` support for {Chewy::Search::Request}
+      # This module provides `Kaminari` support for {HSChewy::Search::Request}
       # It is included automatically if `Kaminari` is available.
       #
       # @example

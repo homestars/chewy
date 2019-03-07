@@ -11,33 +11,33 @@ require 'hs_chewy/search/pagination/will_paginate'
 
 module HSChewy
   # This module being included to any provides an interface to the
-  # request DSL. By default it is included to {Chewy::Index} and
-  # {Chewy::Type}.
+  # request DSL. By default it is included to {HSChewy::Index} and
+  # {HSChewy::Type}.
   #
   # The class used as a request DSL provider is
-  # inherited from {Chewy::Search::Request} by default, but if you
-  # need ES < 2.0 DSL support - you can switch it to {Chewy::Query}
-  # using {Chewy::Config#search_class}
+  # inherited from {HSChewy::Search::Request} by default, but if you
+  # need ES < 2.0 DSL support - you can switch it to {HSChewy::Query}
+  # using {HSChewy::Config#search_class}
   #
   # Also, the search class is refined with one of the pagination-
-  # providing modules: {Chewy::Search::Pagination::Kaminari} or
-  # {Chewy::Search::Pagination::WillPaginate}.
+  # providing modules: {HSChewy::Search::Pagination::Kaminari} or
+  # {HSChewy::Search::Pagination::WillPaginate}.
   #
   # @example
   #   PlacesIndex.query(match: {name: 'Moscow'})
   #   PlacesIndex::City.query(match: {name: 'Moscow'})
-  # @see Chewy::Index
-  # @see Chewy::Type
-  # @see Chewy::Search::Request
-  # @see Chewy::Search::ClassMethods
-  # @see Chewy::Search::Pagination::Kaminari
-  # @see Chewy::Search::Pagination::WillPaginate
+  # @see HSChewy::Index
+  # @see HSChewy::Type
+  # @see HSChewy::Search::Request
+  # @see HSChewy::Search::ClassMethods
+  # @see HSChewy::Search::Pagination::Kaminari
+  # @see HSChewy::Search::Pagination::WillPaginate
   module Search
     extend ActiveSupport::Concern
 
     module ClassMethods
       # This is the entry point for the request composition, however,
-      # most of the {Chewy::Search::Request} methods are delegated
+      # most of the {HSChewy::Search::Request} methods are delegated
       # directly as well.
       #
       # This method also provides an ability to use names scopes.
@@ -46,9 +46,9 @@ module HSChewy
       #   PlacesIndex.all.limit(10)
       #   # is basically the same as:
       #   PlacesIndex.limit(10)
-      # @see Chewy::Search::Request
-      # @see Chewy::Search::Scoping
-      # @return [Chewy::Search::Request] request instance
+      # @see HSChewy::Search::Request
+      # @see HSChewy::Search::Scoping
+      # @return [HSChewy::Search::Request] request instance
       def all
         search_class.scopes.last || search_class.new(self)
       end
@@ -88,7 +88,7 @@ module HSChewy
       def build_search_class(base)
         search_class = Class.new(base)
 
-        if self < Chewy::Type
+        if self < HSChewy::Type
           index_scopes = index.scopes - scopes
           delegate_scoped index, search_class, index_scopes
         end

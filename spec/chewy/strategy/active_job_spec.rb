@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 if defined?(::ActiveJob)
-  describe Chewy::Strategy::ActiveJob do
+  describe HSChewy::Strategy::ActiveJob do
     around { |example| Chewy.strategy(:bypass) { example.run } }
     before(:all) do
       ::ActiveJob::Base.logger = Chewy.logger
@@ -35,7 +35,7 @@ if defined?(::ActiveJob)
         [city, other_city].map(&:save!)
       end
       enqueued_job = ::ActiveJob::Base.queue_adapter.enqueued_jobs.first
-      expect(enqueued_job[:job]).to eq(Chewy::Strategy::ActiveJob::Worker)
+      expect(enqueued_job[:job]).to eq(HSChewy::Strategy::ActiveJob::Worker)
       expect(enqueued_job[:queue]).to eq('chewy')
     end
 
@@ -48,13 +48,13 @@ if defined?(::ActiveJob)
 
     specify do
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601')
-      Chewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
 
     specify do
       allow(Chewy).to receive(:disable_refresh_async).and_return(true)
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601', refresh: false)
-      Chewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::ActiveJob::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
   end
 end

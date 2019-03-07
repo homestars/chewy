@@ -1,5 +1,5 @@
 require 'hs_chewy/search/pagination/kaminari_examples'
 
-describe Chewy::Search::Pagination::Kaminari do
-  it_behaves_like :kaminari, Chewy::Query
+describe HSChewy::Search::Pagination::Kaminari do
+  it_behaves_like :kaminari, HSChewy::Query
 end

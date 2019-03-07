@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Adapter::Object do
+describe HSChewy::Type::Adapter::Object do
   before { stub_class(:product) }
   subject { described_class.new(:product) }
 

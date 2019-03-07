@@ -6,7 +6,7 @@ module HSChewy
       extend ActiveSupport::Concern
 
       # Assert that an index *changes* during a block.
-      # @param index [Chewy::Type] the index / type to watch, eg EntitiesIndex::Entity.
+      # @param index [HSChewy::Type] the index / type to watch, eg EntitiesIndex::Entity.
       # @param strategy [Symbol] the Chewy strategy to use around the block. See Chewy docs.
       # @param bypass_actual_index [true, false]
       #   True to preempt the http call to Elastic, false otherwise.

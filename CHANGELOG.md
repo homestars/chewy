@@ -8,7 +8,7 @@
 
   * `Chewy.default_field_type` is `text` now.
 
-  * `Chewy::Stash` was split onto two indexes - `Chewy::Stash::Specification` and `Chewy::Stash::Journal`
+  * `HSChewy::Stash` was split onto two indexes - `HSChewy::Stash::Specification` and `HSChewy::Stash::Journal`
 
   * Data for journal and specification is stored in binary fields base64-encoded to bypass the limits of other fields.
 
@@ -24,7 +24,7 @@
 
   * Avoid index update calls for empty data (@robertasg, #620)
 
-  * Do not underscore suggested index name on `Chewy::Index.index_name` call.
+  * Do not underscore suggested index name on `HSChewy::Index.index_name` call.
 
   * It is possible now to call `root` method several times inside a single type definition, the options will be merged. Also, the block isn't required anymore.
 
@@ -56,7 +56,7 @@
 
 ## Breaking changes
 
-  * Changed behavior of `Chewy::Index.index_name`, it doesn't cache the values anymore.
+  * Changed behavior of `HSChewy::Index.index_name`, it doesn't cache the values anymore.
 
   * Journal interfaces, related code and rake tasks were completely refactored and are not compatible with the previous version.
 
@@ -68,14 +68,14 @@
 
   * `:shoryuken` async strategy (@josephchoe, #532)
 
-  * Deprecate `Chewy::Index.build_index_name`.
+  * Deprecate `HSChewy::Index.build_index_name`.
 
-  * Rename `Chewy::Index.default_prefix` to `Chewy::Index.prefix`. The old one is deprecated.
+  * Rename `HSChewy::Index.default_prefix` to `HSChewy::Index.prefix`. The old one is deprecated.
 
-  * Add `Chewy::Type.derivable_name` for consistency.
+  * Add `HSChewy::Type.derivable_name` for consistency.
 
-  * Rename `Chewy::Index.derivable_index_name` to `Chewy::Index.derivable_name`.
-    `Chewy::Index.derivable_index_name` and `Chewy::Type.derivable_index_name` are deprecated.
+  * Rename `HSChewy::Index.derivable_index_name` to `HSChewy::Index.derivable_name`.
+    `HSChewy::Index.derivable_index_name` and `HSChewy::Type.derivable_index_name` are deprecated.
 
   * Use normal YAML loading, for the config, we don't need the safe one.
 
@@ -115,9 +115,9 @@
 
   * Minitest helpers (@robacarp, #396)
 
-  * `Chewy::Query#unlimited` to fetch all the documents (@sergey-kintsel, #393)
+  * `HSChewy::Query#unlimited` to fetch all the documents (@sergey-kintsel, #393)
 
-  * `Chewy::Query#exists?` (@sergey-kintsel, #386)
+  * `HSChewy::Query#exists?` (@sergey-kintsel, #386)
 
   * Import otimizations (#381, #376)
 
@@ -377,7 +377,7 @@
 
   * Chewy indexes eaged loading fixes (@leemhenson)
 
-  * `Chewy::Index.import nil` imports nothing instead of initial data
+  * `HSChewy::Index.import nil` imports nothing instead of initial data
 
 # Version 0.6.2
 
@@ -397,7 +397,7 @@
 
   * `min_score` query option support (@jshirley)
 
-  * `Chewy::Query#find` method for finding documents by id
+  * `HSChewy::Query#find` method for finding documents by id
 
 # Version 0.6.0
 
@@ -419,7 +419,7 @@
 
 ## Breaking changes:
 
-  * `Chewy::Type::Base` removed in favour of using `Chewy::Type` as a base class for all types
+  * `HSChewy::Type::Base` removed in favour of using `HSChewy::Type` as a base class for all types
 
 ## Changes
 
@@ -439,11 +439,11 @@
 
   * Parent-child mappings feature support (@inbeom)
 
-  * `Chewy::Index.total_count` and `Chewy::Type::Base.total_count`
+  * `HSChewy::Index.total_count` and `HSChewy::Type::Base.total_count`
 
-  * `Chewy::Type::Base.reset` method. Deletes all the type documents and performs import (@jondavidford)
+  * `HSChewy::Type::Base.reset` method. Deletes all the type documents and performs import (@jondavidford)
 
-  * Added `Chewy::Query#delete_all` scope method using delete by query ES feature (@jondavidford)
+  * Added `HSChewy::Query#delete_all` scope method using delete by query ES feature (@jondavidford)
 
   * Rspec 3 `update_index` matcher support (@jimmybaker)
 
@@ -507,7 +507,7 @@
 
   * Search aggregations API support (@arion).
 
-  * Chewy::Query#facets called without params performs the request and returns facets.
+  * HSChewy::Query#facets called without params performs the request and returns facets.
 
   * Added `Type.template` DSL method for root objects dynamic templates definition. See [mapping.rb](lib/chewy/type/mapping.rb) for more details.
 
@@ -545,7 +545,7 @@
       Chewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
 
       # Using analyzers from repository in index classes
-      class ProductsIndex < Chewy::Index
+      class ProductsIndex < HSChewy::Index
         settings analysis: {analyzer: ['title_analyzer', {one_more_analyzer: {type: 'custom', tokenizer: 'lowercase'}}]}
       end
     ```
@@ -556,7 +556,7 @@
 
   * Reworked import error handling. Now all the import errors from ElasticSearch are handled properly, also import method returns true of false depending on the import process success.
 
-  * `Chewy::Index.import` now takes types hash as argument within options hash:
+  * `HSChewy::Index.import` now takes types hash as argument within options hash:
 
     `PlacesIndex.import city: City.enabled, country: Country.enabled, refresh: false`
 

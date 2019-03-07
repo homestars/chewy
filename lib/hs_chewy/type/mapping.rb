@@ -18,14 +18,14 @@ module HSChewy
         # object mapping, such as `date_detection` or `dynamic_date_formats`
         #
         # @example
-        #   class UsersIndex < Chewy::Index
+        #   class UsersIndex < HSChewy::Index
         #     define_type User do
         #       # root object defined implicitly and optionless for current type
         #       field :full_name, type: 'keyword'
         #     end
         #   end
         #
-        #   class CarsIndex < Chewy::Index
+        #   class CarsIndex < HSChewy::Index
         #     define_type Car do
         #       # explicit root definition with additional options
         #       root dynamic_date_formats: ['yyyy-MM-dd'] do
@@ -35,7 +35,7 @@ module HSChewy
         #   end
         #
         def root(**options)
-          self.root_object ||= Chewy::Fields::Root.new(type_name, Chewy.default_root_options.merge(options))
+          self.root_object ||= HSChewy::Fields::Root.new(type_name, Chewy.default_root_options.merge(options))
           root_object.update_options!(options)
           yield if block_given?
           root_object
@@ -44,7 +44,7 @@ module HSChewy
         # Defines mapping field for current type
         #
         # @example
-        #   class UsersIndex < Chewy::Index
+        #   class UsersIndex < HSChewy::Index
         #     define_type User do
         #       # passing all the options to field definition:
         #       field :full_name, analyzer: 'special'
@@ -128,7 +128,7 @@ module HSChewy
           if args.size > 1
             args.map { |name| field(name, options) }
           else
-            expand_nested(Chewy::Fields::Base.new(args.first, options), &block)
+            expand_nested(HSChewy::Fields::Base.new(args.first, options), &block)
           end
         end
 
@@ -137,7 +137,7 @@ module HSChewy
         # @example
         #   # Suppose that a user has posts and each post has ratings
         #   # avg_post_rating is the mean of all ratings
-        #   class UsersIndex < Chewy::Index
+        #   class UsersIndex < HSChewy::Index
         #     define_type User do
         #       field :posts do
         #         field :rating
@@ -156,7 +156,7 @@ module HSChewy
         # Defines dynamic template in mapping root objects
         #
         # @example
-        #   class CarsIndex < Chewy::Index
+        #   class CarsIndex < HSChewy::Index
         #     define_type Car do
         #       template 'model.*', type: 'text', analyzer: 'special'
         #       field 'model', type: 'object' # here we can put { de: 'Der Mercedes', en: 'Mercedes' }

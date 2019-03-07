@@ -3,7 +3,7 @@ require 'spec_helper'
 if defined?(::Resque)
   require 'resque_spec'
 
-  describe Chewy::Strategy::Resque, :orm do
+  describe HSChewy::Strategy::Resque, :orm do
     around { |example| Chewy.strategy(:bypass) { example.run } }
     before { ResqueSpec.reset! }
     before do
@@ -34,13 +34,13 @@ if defined?(::Resque)
 
     specify do
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601')
-      Chewy::Strategy::Resque::Worker.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::Resque::Worker.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
 
     specify do
       allow(Chewy).to receive(:disable_refresh_async).and_return(true)
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601', refresh: false)
-      Chewy::Strategy::Resque::Worker.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::Resque::Worker.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
   end
 end

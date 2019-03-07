@@ -5,7 +5,7 @@ module HSChewy
       module StringArrayStorage
         # Unions two arrays.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [String, Symbol, Array<String, Symbol>] any acceptable storage value
         # @return [Array<String, Symbol>] updated value
         def update!(other_value)

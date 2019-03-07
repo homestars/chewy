@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Import do
+describe HSChewy::Type::Import do
   before { Chewy.massacre }
 
   before do
@@ -49,7 +49,7 @@ describe Chewy::Type::Import do
     context 'skip' do
       before do
         # To avoid flaky issues when previous specs were run
-        expect(Chewy::Index).to receive(:descendants).and_return([CitiesIndex])
+        expect(HSChewy::Index).to receive(:descendants).and_return([CitiesIndex])
         Chewy.create_indices
         Chewy.config.settings[:skip_index_creation_on_import] = true
       end
@@ -491,7 +491,7 @@ describe Chewy::Type::Import do
         end
       end
 
-      specify { expect { CitiesIndex::City.import!(dummy_cities) }.to raise_error Chewy::ImportFailed }
+      specify { expect { CitiesIndex::City.import!(dummy_cities) }.to raise_error HSChewy::ImportFailed }
     end
   end
 

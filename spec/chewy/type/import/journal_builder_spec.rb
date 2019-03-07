@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Import::JournalBuilder, :orm do
+describe HSChewy::Type::Import::JournalBuilder, :orm do
   before do
     stub_model(:country)
     stub_index 'namespace/places' do

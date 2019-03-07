@@ -21,8 +21,8 @@ module HSChewy
         # Two index storages are equal if they produce the
         # same output on render.
         #
-        # @see Chewy::Search::Parameters::Storage#==
-        # @param other [Chewy::Search::Parameters::Storage] any storage instance
+        # @see HSChewy::Search::Parameters::Storage#==
+        # @param other [HSChewy::Search::Parameters::Storage] any storage instance
         # @return [true, false] the result of comparision
         def ==(other)
           super || other.class == self.class && other.render == render
@@ -30,9 +30,9 @@ module HSChewy
 
         # Just adds types to types and indices to indices.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
-        # @param other_value [{Symbol => Array<Chewy::Index, Chewy::Type, String, Symbol>}] any acceptable storage value
-        # @return [{Symbol => Array<Chewy::Index, Chewy::Type, String, Symbol>}] updated value
+        # @see HSChewy::Search::Parameters::Storage#update!
+        # @param other_value [{Symbol => Array<HSChewy::Index, HSChewy::Type, String, Symbol>}] any acceptable storage value
+        # @return [{Symbol => Array<HSChewy::Index, HSChewy::Type, String, Symbol>}] updated value
         def update!(other_value)
           new_value = normalize(other_value)
 
@@ -44,7 +44,7 @@ module HSChewy
 
         # Returns desired index and type names.
         #
-        # @see Chewy::Search::Parameters::Storage#render
+        # @see HSChewy::Search::Parameters::Storage#render
         # @return [{Symbol => Array<String>}] rendered value with the parameter name
         def render
           {
@@ -56,7 +56,7 @@ module HSChewy
         # Returns index classes used for the request.
         # No strings/symbos included.
         #
-        # @return [Array<Chewy::Index>] a list of index classes
+        # @return [Array<HSChewy::Index>] a list of index classes
         def indices
           index_classes | type_classes.map(&:index)
         end
@@ -64,7 +64,7 @@ module HSChewy
         # Returns type classes used for the request.
         # No strings/symbos included.
         #
-        # @return [Array<Chewy::Type>] a list of types classes
+        # @return [Array<HSChewy::Type>] a list of types classes
         def types
           type_classes | (index_classes - type_classes.map(&:index)).flat_map(&:types)
         end
@@ -86,7 +86,7 @@ module HSChewy
 
         def index_classes
           value[:indices].select do |klass|
-            klass.is_a?(Class) && klass < Chewy::Index
+            klass.is_a?(Class) && klass < HSChewy::Index
           end
         end
 
@@ -100,7 +100,7 @@ module HSChewy
 
         def type_classes
           value[:types].select do |klass|
-            klass.is_a?(Class) && klass < Chewy::Type
+            klass.is_a?(Class) && klass < HSChewy::Type
           end
         end
 

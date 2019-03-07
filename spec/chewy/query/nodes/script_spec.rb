@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Query::Nodes::Script do
+describe HSChewy::Query::Nodes::Script do
   describe '#__render__' do
     def render(&block)
-      Chewy::Query::Filters.new(&block).__render__
+      HSChewy::Query::Filters.new(&block).__render__
     end
 
     specify { expect(render { s('var = val') }).to eq(script: {script: 'var = val'}) }

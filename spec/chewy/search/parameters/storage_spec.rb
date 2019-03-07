@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::Storage do
+describe HSChewy::Search::Parameters::Storage do
   subject { described_class.new }
 
   describe '.param_name' do

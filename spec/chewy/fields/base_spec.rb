@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Fields::Base do
+describe HSChewy::Fields::Base do
   specify { expect(described_class.new('name').name).to eq(:name) }
   specify { expect(described_class.new('name', type: 'integer').options[:type]).to eq('integer') }
 

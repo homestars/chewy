@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Journal do
+describe HSChewy::Journal do
   context 'journaling', :orm do
     ['', 'namespace/'].each do |namespace|
       context namespace.present? ? 'with namespace' : 'without namespace' do
@@ -51,7 +51,7 @@ describe Chewy::Journal do
 
             places_index.import
 
-            expect(Chewy::Stash::Journal.exists?).to eq true
+            expect(HSChewy::Stash::Journal.exists?).to eq true
 
             Timecop.freeze(update_time)
             cities.first.update_attributes!(name: 'Supername')
@@ -59,7 +59,7 @@ describe Chewy::Journal do
             Timecop.freeze(destroy_time)
             countries.last.destroy
 
-            journal_entries = Chewy::Stash::Journal.order(:created_at).hits.map { |r| r['_source'] }
+            journal_entries = HSChewy::Stash::Journal.order(:created_at).hits.map { |r| r['_source'] }
             expected_journal = [
               {
                 'index_name' => "#{namespace}places",
@@ -126,10 +126,10 @@ describe Chewy::Journal do
               }
             ]
 
-            expect(Chewy::Stash::Journal.count).to eq 9
+            expect(HSChewy::Stash::Journal.count).to eq 9
             expect(journal_entries).to eq expected_journal
 
-            journal_entries = Chewy::Stash::Journal.entries(import_time - 1)
+            journal_entries = HSChewy::Stash::Journal.entries(import_time - 1)
             expect(journal_entries.size).to eq 4
 
             # simulate lost data
@@ -142,7 +142,7 @@ describe Chewy::Journal do
             clean_response = described_class.new.clean(import_time)
             expect(clean_response['deleted'] || clean_response['_indices']['_all']['deleted']).to eq 7
             Chewy.client.indices.refresh
-            expect(Chewy::Stash::Journal.count).to eq 2
+            expect(HSChewy::Stash::Journal.count).to eq 2
 
             Timecop.return
           end
@@ -222,16 +222,16 @@ describe Chewy::Journal do
         end
 
         specify 'journal was cleaned after the first call' do
-          expect(Chewy::Stash::Journal).to receive(:entries).exactly(2).and_call_original
+          expect(HSChewy::Stash::Journal).to receive(:entries).exactly(2).and_call_original
           expect(described_class.new.apply(time)).to eq(1)
         end
 
         context 'endless journal' do
           let(:count_of_checks) { 10 } # default
           let!(:journal_entries) do
-            record = Chewy::Stash::Journal.entries(time).first
+            record = HSChewy::Stash::Journal.entries(time).first
             Array.new(count_of_checks) do |i|
-              Chewy::Stash::Journal::Journal.new(
+              HSChewy::Stash::Journal::Journal.new(
                 record.attributes.merge(
                   'created_at' => time.to_i + i,
                   'references' => [i.to_s]
@@ -241,13 +241,13 @@ describe Chewy::Journal do
           end
 
           specify '10 retries by default' do
-            expect(Chewy::Stash::Journal)
+            expect(HSChewy::Stash::Journal)
               .to receive(:entries).exactly(count_of_checks) { [journal_entries.shift].compact }
             expect(described_class.new.apply(time)).to eq(10)
           end
 
           specify 'with :once parameter set' do
-            expect(Chewy::Stash::Journal)
+            expect(HSChewy::Stash::Journal)
               .to receive(:entries).exactly(1) { [journal_entries.shift].compact }
             expect(described_class.new.apply(time, retries: 1)).to eq(1)
           end
@@ -256,7 +256,7 @@ describe Chewy::Journal do
             let(:retries) { 5 }
 
             specify do
-              expect(Chewy::Stash::Journal)
+              expect(HSChewy::Stash::Journal)
                 .to receive(:entries).exactly(retries) { [journal_entries.shift].compact }
               expect(described_class.new.apply(time, retries: retries)).to eq(5)
             end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Fields::Root do
+describe HSChewy::Fields::Root do
   subject(:field) { described_class.new('product') }
 
   describe '#dynamic_template' do
@@ -142,8 +142,8 @@ describe Chewy::Fields::Root do
 
     specify do
       expect(PlacesIndex::City.root.child_hash).to match(
-        name: an_instance_of(Chewy::Fields::Base).and(have_attributes(name: :name)),
-        rating: an_instance_of(Chewy::Fields::Base).and(have_attributes(name: :rating))
+        name: an_instance_of(HSChewy::Fields::Base).and(have_attributes(name: :name)),
+        rating: an_instance_of(HSChewy::Fields::Base).and(have_attributes(name: :rating))
       )
     end
   end

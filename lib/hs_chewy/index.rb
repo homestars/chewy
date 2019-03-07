@@ -16,7 +16,7 @@ module HSChewy
     self.type_hash = {}
 
     class_attribute :_settings
-    self._settings = Chewy::Index::Settings.new
+    self._settings = HSChewy::Index::Settings.new
 
     class << self
       # @overload index_name(suggest)
@@ -24,7 +24,7 @@ module HSChewy
       #   the index. Used for the index base name redefinition.
       #
       #   @example
-      #     class UsersIndex < Chewy::Index
+      #     class UsersIndex < HSChewy::Index
       #       index_name :legacy_users
       #     end
       #     UsersIndex.index_name # => 'legacy_users'
@@ -37,7 +37,7 @@ module HSChewy
       #   with the prefix (if any) and suffix (if passed).
       #
       #   @example
-      #     class UsersIndex < Chewy::Index
+      #     class UsersIndex < HSChewy::Index
       #     end
       #
       #     Chewy.settings = {prefix: 'test'}
@@ -66,11 +66,11 @@ module HSChewy
       # class name unless redefined.
       #
       # @example
-      #   class Namespace::UsersIndex < Chewy::Index
+      #   class Namespace::UsersIndex < HSChewy::Index
       #   end
       #   UsersIndex.index_name # => 'users'
       #
-      #   Class.new(Chewy::Index).base_name # => raises UndefinedIndex
+      #   Class.new(HSChewy::Index).base_name # => raises UndefinedIndex
       #
       # @raise [UndefinedIndex] when the base name is blank
       # @return [String] current base name
@@ -84,11 +84,11 @@ module HSChewy
       # can't be redefined. Used to reference index with the string identifier
       #
       # @example
-      #   class Namespace::UsersIndex < Chewy::Index
+      #   class Namespace::UsersIndex < HSChewy::Index
       #   end
       #   UsersIndex.derivable_name # => 'namespace/users'
       #
-      #   Class.new(Chewy::Index).derivable_name # => nil
+      #   Class.new(HSChewy::Index).derivable_name # => nil
       #
       # @return [String, nil] derivable name or nil when it is impossible to calculate
       def derivable_name
@@ -99,7 +99,7 @@ module HSChewy
       # but can be redefined per-index to be more dynamic.
       #
       # @example
-      #   class UsersIndex < Chewy::Index
+      #   class UsersIndex < HSChewy::Index
       #     def self.prefix
       #       'foobar'
       #     end
@@ -114,7 +114,7 @@ module HSChewy
       # Defines type for the index. Arguments depends on adapter used. For
       # ActiveRecord you can pass model or scope and options
       #
-      #   class CarsIndex < Chewy::Index
+      #   class CarsIndex < HSChewy::Index
       #     define_type Car do
       #       ...
       #     end # defines VehiclesIndex::Car type
@@ -122,7 +122,7 @@ module HSChewy
       #
       # Type name might be passed in complicated cases:
       #
-      #   class VehiclesIndex < Chewy::Index
+      #   class VehiclesIndex < HSChewy::Index
       #     define_type Vehicle.cars.includes(:manufacturer), name: 'cars' do
       #        ...
       #     end # defines VehiclesIndex::Cars type
@@ -134,7 +134,7 @@ module HSChewy
       #
       # For plain objects:
       #
-      #   class PlanesIndex < Chewy::Index
+      #   class PlanesIndex < HSChewy::Index
       #     define_type :plane do
       #       ...
       #     end # defines PlanesIndex::Plane type
@@ -187,7 +187,7 @@ module HSChewy
 
       # Used as a part of index definition DSL. Defines settings:
       #
-      #   class UsersIndex < Chewy::Index
+      #   class UsersIndex < HSChewy::Index
       #     settings analysis: {
       #       analyzer: {
       #         name: {
@@ -202,16 +202,16 @@ module HSChewy
       # for more details
       #
       # It is possible to store analyzers settings in Chewy repositories
-      # and link them form index class. See `Chewy::Index::Settings` for details.
+      # and link them form index class. See `HSChewy::Index::Settings` for details.
       #
       def settings(params = {}, &block)
-        self._settings = Chewy::Index::Settings.new(params, &block)
+        self._settings = HSChewy::Index::Settings.new(params, &block)
       end
 
       # Returns list of public class methods defined in current index
       #
       def scopes
-        public_methods - Chewy::Index.public_methods
+        public_methods - HSChewy::Index.public_methods
       end
 
       def settings_hash
@@ -226,32 +226,32 @@ module HSChewy
       # Returns a hash containing the index settings and mappings
       # Used for the ES index creation as body.
       #
-      # @see Chewy::Index::Specification
+      # @see HSChewy::Index::Specification
       # @return [Hash] specification as a hash
       def specification_hash
         [settings_hash, mappings_hash].inject(:merge)
       end
 
       def index_params
-        ActiveSupport::Deprecation.warn '`Chewy::Index.index_params` is deprecated and will be removed soon, use `Chewy::Index.specification_hash`'
+        ActiveSupport::Deprecation.warn '`HSChewy::Index.index_params` is deprecated and will be removed soon, use `HSChewy::Index.specification_hash`'
         specification_hash
       end
 
-      # @see Chewy::Index::Specification
-      # @return [Chewy::Index::Specification] a specification object instance for this particular index
+      # @see HSChewy::Index::Specification
+      # @return [HSChewy::Index::Specification] a specification object instance for this particular index
       def specification
         @specification ||= Specification.new(self)
       end
 
       def derivable_index_name
-        ActiveSupport::Deprecation.warn '`Chewy::Index.derivable_index_name` is deprecated and will be removed soon, use `Chewy::Index.derivable_name` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::Index.derivable_index_name` is deprecated and will be removed soon, use `HSChewy::Index.derivable_name` instead'
         derivable_name
       end
 
       # Handling old default_prefix if it is not defined.
       def method_missing(name, *args, &block) # rubocop:disable Style/MethodMissing
         if name == :default_prefix
-          ActiveSupport::Deprecation.warn '`Chewy::Index.default_prefix` is deprecated and will be removed soon, use `Chewy::Index.prefix` instead'
+          ActiveSupport::Deprecation.warn '`HSChewy::Index.default_prefix` is deprecated and will be removed soon, use `HSChewy::Index.prefix` instead'
           prefix
         else
           super
@@ -260,7 +260,7 @@ module HSChewy
 
       def prefix_with_deprecation
         if respond_to?(:default_prefix)
-          ActiveSupport::Deprecation.warn '`Chewy::Index.default_prefix` is deprecated and will be removed soon, define `Chewy::Index.prefix` method instead'
+          ActiveSupport::Deprecation.warn '`HSChewy::Index.default_prefix` is deprecated and will be removed soon, define `HSChewy::Index.prefix` method instead'
           default_prefix
         else
           prefix
@@ -268,7 +268,7 @@ module HSChewy
       end
 
       def build_index_name(*args)
-        ActiveSupport::Deprecation.warn '`Chewy::Index.build_index_name` is deprecated and will be removed soon, use `Chewy::Index.index_name` instead'
+        ActiveSupport::Deprecation.warn '`HSChewy::Index.build_index_name` is deprecated and will be removed soon, use `HSChewy::Index.index_name` instead'
         index_name(args.extract_options!)
       end
     end

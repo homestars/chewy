@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Query::Nodes::HasChild do
+describe HSChewy::Query::Nodes::HasChild do
   describe '#__render__' do
     def render(&block)
-      Chewy::Query::Filters.new(&block).__render__
+      HSChewy::Query::Filters.new(&block).__render__
     end
 
     specify { expect(render { has_child('child') }).to eq(has_child: {type: 'child'}) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Index::Aliases do
+describe HSChewy::Index::Aliases do
   before { Chewy.massacre }
 
   before { stub_index :dummies }

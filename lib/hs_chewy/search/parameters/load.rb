@@ -6,12 +6,12 @@ module HSChewy
       # Acts like standard hash storage, with one exception:
       # all the keys are deeply symbolized for convenience.
       #
-      # @see Chewy::Search::Request#load
-      # @see Chewy::Search::Loader
+      # @see HSChewy::Search::Request#load
+      # @see HSChewy::Search::Loader
       class Load < Storage
         # Simply merges two value hashes on update
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [{String, Symbol => Object}] any acceptable storage value
         # @return [{Symbol => Object}] updated value
         def update!(other_value)

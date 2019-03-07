@@ -54,7 +54,7 @@ module HSChewy
           Array.wrap(collection)
         end
 
-        # This method is used internally by `Chewy::Type.import`.
+        # This method is used internally by `HSChewy::Type.import`.
         #
         # The idea is that any object can be imported to ES if
         # it responds to `#to_json` method.
@@ -113,7 +113,7 @@ module HSChewy
         #     end
         #   end
         #
-        # @see Chewy::Type::Adapter::Base#import_fields
+        # @see HSChewy::Type::Adapter::Base#import_fields
         def import_fields(*args)
           return enum_for(:import_fields, *args) unless block_given?
           options = args.extract_options!
@@ -140,7 +140,7 @@ module HSChewy
 
         # For the Object adapter returns the objects themselves in batches.
         #
-        # @see Chewy::Type::Adapter::Base#import_references
+        # @see HSChewy::Type::Adapter::Base#import_references
         def import_references(*args)
           return enum_for(:import_references, *args) unless block_given?
 
@@ -157,7 +157,7 @@ module HSChewy
         #
         # If none of the `load_all_method` or `load_one_method` is implemented
         # for the target - the method will return nil. This means that the
-        # loader will return an array `Chewy::Type` objects that actually was passed.
+        # loader will return an array `HSChewy::Type` objects that actually was passed.
         #
         # To use loading for objects it is obviously required to provide
         # some meaningful ids for ES documents.

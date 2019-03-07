@@ -9,16 +9,16 @@ module HSChewy
         end
 
         def bulk_body
-          Chewy::Type::Import::BulkBuilder.new(
-            Chewy::Stash::Journal::Journal,
+          HSChewy::Type::Import::BulkBuilder.new(
+            HSChewy::Stash::Journal::Journal,
             index: [
               entries(:index, @index),
               entries(:delete, @delete)
             ].compact
           ).bulk_body.each do |item|
             item.values.first.merge!(
-              _index: Chewy::Stash::Journal.index_name,
-              _type: Chewy::Stash::Journal::Journal.type_name
+              _index: HSChewy::Stash::Journal.index_name,
+              _type: HSChewy::Stash::Journal::Journal.type_name
             )
           end
         end

@@ -28,7 +28,7 @@ module HSChewy
       def ==(other)
         return true if super
 
-        if other.is_a?(Chewy::Type)
+        if other.is_a?(HSChewy::Type)
           self.class == other.class && (respond_to?(:id) ? id == other.id : attributes == other.attributes)
         elsif other.respond_to?(:id)
           self.class.adapter.target.is_a?(Class) &&

@@ -1,6 +1,6 @@
 # Previous DSL readme.
 
-See `Chewy::Query` for details.
+See `HSChewy::Query` for details.
 
 * [Index querying](#index-querying)
 * [Additional query action.](#additional-query-action)
@@ -370,7 +370,7 @@ You interact with aggregations using the composable #aggregations method (or its
 Let's look at an example.
 
 ```ruby
-class UsersIndex < Chewy::Index
+class UsersIndex < HSChewy::Index
   define_type User do
     field :name
     field :rating
@@ -389,7 +389,7 @@ which is also available under the .agg alias method.
 Here's the same example from before
 
 ```ruby
-class UsersIndex < Chewy::Index
+class UsersIndex < HSChewy::Index
   define_type User do
     field :name
     field :rating, type: "long"
@@ -412,7 +412,7 @@ It is possible to run into collisions between named aggregations. This occurs wh
 Consider this example where there are two separate aggregations named `avg_rating`
 
 ```ruby
-class UsersIndex < Chewy::Index
+class UsersIndex < HSChewy::Index
   define_type User do
     field :name
     field :rating, type: "long"

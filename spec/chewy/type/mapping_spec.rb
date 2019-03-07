@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Mapping do
+describe HSChewy::Type::Mapping do
   let(:product) { ProductsIndex::Product }
   let(:review)  { ProductsIndex::Review }
 

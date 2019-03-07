@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Index::Actions do
+describe HSChewy::Index::Actions do
   before { Chewy.massacre }
 
   before { stub_index :dummies }
@@ -314,7 +314,7 @@ describe Chewy::Index::Actions do
         end
       end
 
-      specify { expect { CitiesIndex.import!(city: dummy_cities) }.to raise_error Chewy::ImportFailed }
+      specify { expect { CitiesIndex.import!(city: dummy_cities) }.to raise_error HSChewy::ImportFailed }
     end
   end
 
@@ -551,12 +551,12 @@ describe Chewy::Index::Actions do
 
       specify do
         CitiesIndex.reset!
-        expect(Chewy::Stash::Journal.count).to eq(0)
+        expect(HSChewy::Stash::Journal.count).to eq(0)
       end
 
       specify do
         CitiesIndex.reset! journal: true
-        expect(Chewy::Stash::Journal.count).to be > 0
+        expect(HSChewy::Stash::Journal.count).to be > 0
       end
     end
 
@@ -574,6 +574,6 @@ describe Chewy::Index::Actions do
   end
 
   describe '.journal' do
-    specify { expect(DummiesIndex.journal).to be_a(Chewy::Journal) }
+    specify { expect(DummiesIndex.journal).to be_a(HSChewy::Journal) }
   end
 end

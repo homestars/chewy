@@ -10,7 +10,7 @@ module HSChewy
       #
       # @see https://github.com/elastic/elasticsearch-ruby/blob/master/elasticsearch-api/lib/elasticsearch/api/actions/bulk.rb
       class BulkRequest
-        # @param type [Chewy::Type] a type for the request
+        # @param type [HSChewy::Type] a type for the request
         # @param suffix [String] an index name optional suffix
         # @param bulk_size [Integer] bulk size in bytes
         # @param bulk_options [Hash] options passed to the elasticsearch-api bulk method

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Scrolling, :orm do
+describe HSChewy::Search::Scrolling, :orm do
   before { Chewy.massacre }
 
   before do
@@ -20,7 +20,7 @@ describe Chewy::Search::Scrolling, :orm do
     end
   end
 
-  let(:request) { Chewy::Search::Request.new(PlacesIndex).order(:rating) }
+  let(:request) { HSChewy::Search::Request.new(PlacesIndex).order(:rating) }
 
   specify { expect(request.scroll_batches.to_a).to eq([]) }
 

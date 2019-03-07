@@ -16,7 +16,7 @@ module HSChewy
     include Enumerable
     include Loading
     include Pagination
-    include Chewy::Search::Scoping
+    include HSChewy::Search::Scoping
 
     DELEGATED_METHODS = %i[
       explain query_mode filter_mode post_filter_mode
@@ -34,8 +34,8 @@ module HSChewy
 
     def initialize(*indexes_or_types_and_options)
       @options = indexes_or_types_and_options.extract_options!
-      @_types = indexes_or_types_and_options.select { |klass| klass < Chewy::Type }
-      @_indexes = indexes_or_types_and_options.select { |klass| klass < Chewy::Index }
+      @_types = indexes_or_types_and_options.select { |klass| klass < HSChewy::Type }
+      @_indexes = indexes_or_types_and_options.select { |klass| klass < HSChewy::Index }
       @_indexes |= @_types.map(&:index)
       @criteria = Criteria.new
     end
@@ -703,7 +703,7 @@ module HSChewy
     # See `#filter_mode` chainable method for more info.
     #
     # Also this method supports block DSL.
-    # See `Chewy::Query::Filters` for more info.
+    # See `HSChewy::Query::Filters` for more info.
     #
     # @example
     #   UsersIndex.filter(term: {name: 'Johny'}).filter(range: {age: {lte: 42}})
@@ -738,7 +738,7 @@ module HSChewy
     # See `#post_filter_mode` chainable method for more info.
     #
     # Also this method supports block DSL.
-    # See `Chewy::Query::Filters` for more info.
+    # See `HSChewy::Query::Filters` for more info.
     #
     # @example
     #   UsersIndex.post_filter(term: {name: 'Johny'}).post_filter(range: {age: {lte: 42}})
@@ -1021,7 +1021,7 @@ module HSChewy
     def find(*ids)
       results = chain { criteria.update_options simple: true }.filter { _id == ids.flatten }.to_a
 
-      raise Chewy::DocumentNotFound, "Could not find documents for ids #{ids.flatten}" if results.empty?
+      raise HSChewy::DocumentNotFound, "Could not find documents for ids #{ids.flatten}" if results.empty?
       ids.one? && !ids.first.is_a?(Array) ? results.first : results
     end
 

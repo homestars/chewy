@@ -10,7 +10,7 @@ describe :minitest_helper do
     expect(haystack).to include(needle)
   end
 
-  include ::Chewy::Minitest::Helpers
+  include ::HSChewy::Minitest::Helpers
 
   before do
     Chewy.massacre

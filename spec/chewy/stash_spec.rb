@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Stash::Journal, :orm do
+describe HSChewy::Stash::Journal, :orm do
   def fetch_deleted_number(response)
     response['deleted'] || response['_indices']['_all']['deleted']
   end
@@ -85,7 +85,7 @@ describe Chewy::Stash::Journal, :orm do
     let(:type_name) { 'city' }
     subject { described_class::Journal.new('index_name' => index_name, 'type_name' => type_name).type }
 
-    specify { expect { subject }.to raise_error(Chewy::UnderivableType) }
+    specify { expect { subject }.to raise_error(HSChewy::UnderivableType) }
 
     context do
       let(:index_name) { 'places' }

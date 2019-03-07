@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters do
+describe HSChewy::Search::Parameters do
   subject { described_class.new }
 
   describe '.storages' do
-    specify { expect(described_class.storages[:limit]).to eq(Chewy::Search::Parameters::Limit) }
+    specify { expect(described_class.storages[:limit]).to eq(HSChewy::Search::Parameters::Limit) }
   end
 
   describe '#initialize' do
@@ -20,7 +20,7 @@ describe Chewy::Search::Parameters do
 
   describe '#storages' do
     specify { expect(subject.storages).to eq({}) }
-    specify { expect(subject.storages[:limit]).to be_a(Chewy::Search::Parameters::Limit) }
+    specify { expect(subject.storages[:limit]).to be_a(HSChewy::Search::Parameters::Limit) }
   end
 
   describe '#==' do

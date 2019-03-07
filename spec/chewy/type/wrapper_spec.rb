@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Wrapper do
+describe HSChewy::Type::Wrapper do
   before do
     stub_class(:city)
     stub_index(:cities) do

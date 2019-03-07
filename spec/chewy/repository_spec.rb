@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Repository do
+describe HSChewy::Repository do
   subject { described_class.send(:new) }
 
   its(:analyzers) { should == {} }

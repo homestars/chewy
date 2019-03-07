@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::StoredFields do
+describe HSChewy::Search::Parameters::StoredFields do
   subject { described_class.new(%i[foo bar]) }
 
   describe '#initialize' do

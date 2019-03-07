@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Witchcraft do
+describe HSChewy::Type::Witchcraft do
   def self.mapping(&block)
     before do
       stub_index(:products) do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::MinScore do
+describe HSChewy::Search::Parameters::MinScore do
   subject { described_class.new(0.5) }
 
   describe '#initialize' do

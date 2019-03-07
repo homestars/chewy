@@ -1,10 +1,10 @@
 module HSChewy
   module Search
-    # This module along with {Chewy::Search} provides an ability to
+    # This module along with {HSChewy::Search} provides an ability to
     # use names scopes.
     #
     # @example
-    #   class UsersIndex < Chewy::Index
+    #   class UsersIndex < HSChewy::Index
     #     def self.by_name(name)
     #       query(match: {name: name})
     #     end
@@ -28,7 +28,7 @@ module HSChewy
       module ClassMethods
         # The scopes stack.
         #
-        # @return [Array<Chewy::Search::Reques>] array of scopes
+        # @return [Array<HSChewy::Search::Reques>] array of scopes
         def scopes
           Thread.current[:chewy_scopes] ||= []
         end
@@ -37,7 +37,7 @@ module HSChewy
       # Wraps any method to make it contents be executed inside the
       # current request scope.
       #
-      # @see Chewy::Search::ClassMethods#all
+      # @see HSChewy::Search::ClassMethods#all
       # @yield executes the block after the current context is put at the top of the scope stack
       def scoping
         self.class.scopes.push(self)

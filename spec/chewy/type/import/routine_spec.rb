@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 # TODO: add more specs here later
-describe Chewy::Type::Import::Routine do
+describe HSChewy::Type::Import::Routine do
   before { Chewy.massacre }
   before do
     stub_index(:cities) do

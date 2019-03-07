@@ -15,7 +15,7 @@ shared_examples :will_paginate do |request_base_class|
   let(:except_fields) { %w[_score _explanation] }
   let(:request_class) do
     Class.new(request_base_class).tap do |k|
-      k.include Chewy::Search::Pagination::WillPaginate
+      k.include HSChewy::Search::Pagination::WillPaginate
     end
   end
   let(:search) { request_class.new(ProductsIndex).order(:age) }

@@ -82,10 +82,10 @@ module HSChewy
         # The only difference from {#import} is that it raises an exception
         # in case of any import errors.
         #
-        # @raise [Chewy::ImportFailed] in case of errors
+        # @raise [HSChewy::ImportFailed] in case of errors
         def import!(*args)
           errors = import_routine(*args)
-          raise Chewy::ImportFailed.new(self, errors) if errors.present?
+          raise HSChewy::ImportFailed.new(self, errors) if errors.present?
           true
         end
 
@@ -93,7 +93,7 @@ module HSChewy
         # `bulk_size` and `suffix`.
         #
         # @see https://github.com/elastic/elasticsearch-ruby/blob/master/elasticsearch-api/lib/elasticsearch/api/actions/bulk.rb
-        # @see Chewy::Type::Import::Bulk
+        # @see HSChewy::Type::Import::Bulk
         # @param options [Hash{Symbol => Object}] besides specific import options, it accepts all the options suitable for the bulk API call like `refresh` or `timeout`
         # @option options [String] suffix bulk API chunk size in bytes; if passed, the request is performed several times for each chunk, empty by default
         # @option options [Integer] bulk_size bulk API chunk size in bytes; if passed, the request is performed several times for each chunk, empty by default
@@ -114,7 +114,7 @@ module HSChewy
         # @param fields [Array<Symbol>] and array of fields to restrict the generated document
         # @return [Hash] a JSON-ready hash
         def compose(object, crutches = nil, fields: [])
-          crutches ||= Chewy::Type::Crutch::Crutches.new self, [object]
+          crutches ||= HSChewy::Type::Crutch::Crutches.new self, [object]
 
           if witchcraft? && root.children.present?
             cauldron(fields: fields).brew(object, crutches)

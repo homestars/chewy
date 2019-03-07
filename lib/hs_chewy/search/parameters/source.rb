@@ -7,7 +7,7 @@ module HSChewy
       # or a hash with `includes` and `excludes` keys and
       # arrays of strings/symbols as values. Any other key is ignored.
       #
-      # @see Chewy::Search::Request#source
+      # @see HSChewy::Search::Request#source
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/5.4/search-request-source-filtering.html
       class Source < Storage
         self.param_name = :_source
@@ -16,7 +16,7 @@ module HSChewy
         # as a part of `includes` array and gets concatenated with it.
         # In case of hash, respective values are concatenated as well.
         #
-        # @see Chewy::Search::Parameters::Storage#update!
+        # @see HSChewy::Search::Parameters::Storage#update!
         # @param other_value [true, false, {Symbol => Array<String, Symbol>, String, Symbol}, Array<String, Symbol>, String, Symbol] any acceptable storage value
         # @return [{Symbol => Array<String>, true, false}] updated value
         def update!(other_value)
@@ -28,8 +28,8 @@ module HSChewy
 
         # Requires an additional logic to merge `enabled` value.
         #
-        # @see Chewy::Search::Parameters::Storage#merge!
-        # @param other [Chewy::Search::Parameters::Storage] other storage
+        # @see HSChewy::Search::Parameters::Storage#merge!
+        # @param other [HSChewy::Search::Parameters::Storage] other storage
         # @return [{Symbol => Array<String>, true, false}] updated value
         def merge!(other)
           super
@@ -40,7 +40,7 @@ module HSChewy
         # contents of `includes` value or even the entire hash if `excludes`
         # also specified.
         #
-        # @see Chewy::Search::Parameters::Storage#render
+        # @see HSChewy::Search::Parameters::Storage#render
         # @return [{Symbol => Object}, nil] rendered value with the parameter name
         def render
           if !value[:enabled]

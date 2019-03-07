@@ -38,7 +38,7 @@ module HSChewy
       end
 
       # Current type adapter. Defined inside `Chewy.create_type`, derived from
-      # `Chewy::Index.define_type` arguments.
+      # `HSChewy::Index.define_type` arguments.
       #
       def adapter
         raise NotImplementedError
@@ -50,23 +50,23 @@ module HSChewy
         adapter.type_name
       end
 
-      # Appends type name to {Chewy::Index.derivable_name}
+      # Appends type name to {HSChewy::Index.derivable_name}
       #
       # @example
-      #   class Namespace::UsersIndex < Chewy::Index
+      #   class Namespace::UsersIndex < HSChewy::Index
       #     define_type User
       #   end
       #   UsersIndex::User.derivable_name # => 'namespace/users#user'
       #
-      # @see Chewy::Index.derivable_name
+      # @see HSChewy::Index.derivable_name
       # @return [String, nil] derivable name or nil when it is impossible to calculate
       def derivable_name
         @derivable_name ||= [index.derivable_name, type_name].join('#') if index && index.derivable_name
       end
 
-      # This method is an API shared with {Chewy::Index}, added for convenience.
+      # This method is an API shared with {HSChewy::Index}, added for convenience.
       #
-      # @return [Chewy::Type] array containing itself
+      # @return [HSChewy::Type] array containing itself
       def types
         [self]
       end
@@ -74,7 +74,7 @@ module HSChewy
       # Returns list of public class methods defined in current type
       #
       def scopes
-        public_methods - Chewy::Type.public_methods
+        public_methods - HSChewy::Type.public_methods
       end
 
       def default_import_options(params)

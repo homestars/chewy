@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe Chewy::Strategy do
+describe HSChewy::Strategy do
   before { Chewy.massacre }
-  subject(:strategy) { Chewy::Strategy.new }
+  subject(:strategy) { HSChewy::Strategy.new }
 
   describe '#current' do
-    specify { expect(strategy.current).to be_a(Chewy::Strategy::Base) }
+    specify { expect(strategy.current).to be_a(HSChewy::Strategy::Base) }
 
     context do
       before { allow(Chewy).to receive_messages(root_strategy: :bypass) }
-      specify { expect(strategy.current).to be_a(Chewy::Strategy::Bypass) }
+      specify { expect(strategy.current).to be_a(HSChewy::Strategy::Bypass) }
     end
   end
 
@@ -19,7 +19,7 @@ describe Chewy::Strategy do
     specify do
       expect { strategy.push(:atomic) }
         .to change { strategy.current }
-        .to(an_instance_of(Chewy::Strategy::Atomic))
+        .to(an_instance_of(HSChewy::Strategy::Atomic))
     end
   end
 
@@ -30,7 +30,7 @@ describe Chewy::Strategy do
       strategy.push(:urgent)
       expect { strategy.pop }
         .to change { strategy.current }
-        .to(an_instance_of(Chewy::Strategy::Base))
+        .to(an_instance_of(HSChewy::Strategy::Base))
     end
   end
 
@@ -40,7 +40,7 @@ describe Chewy::Strategy do
     specify do
       expect do
         strategy.wrap(:urgent) do
-          expect(strategy.current).to be_a(Chewy::Strategy::Urgent)
+          expect(strategy.current).to be_a(HSChewy::Strategy::Urgent)
         end
       end.not_to change { strategy.current }
     end

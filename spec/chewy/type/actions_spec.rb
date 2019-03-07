@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Actions, :orm do
+describe HSChewy::Type::Actions, :orm do
   before { Chewy.massacre }
 
   before do
@@ -45,6 +45,6 @@ describe Chewy::Type::Actions, :orm do
   end
 
   describe '.journal' do
-    specify { expect(CitiesIndex::City.journal).to be_a(Chewy::Journal) }
+    specify { expect(CitiesIndex::City.journal).to be_a(HSChewy::Journal) }
   end
 end

@@ -5,7 +5,7 @@ module HSChewy
     # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/_the_search_api.html
     class Response
       # @param body [Hash] response body hash
-      # @param loader [Chewy::Search::Loader] loader instance
+      # @param loader [HSChewy::Search::Loader] loader instance
       def initialize(body, loader, paginator = nil)
         @body = body
         @loader = loader
@@ -64,9 +64,9 @@ module HSChewy
       end
       alias_method :aggregations, :aggs
 
-      # {Chewy::Type} wrappers collection instantiated on top of hits.
+      # {HSChewy::Type} wrappers collection instantiated on top of hits.
       #
-      # @return [Array<Chewy::Type>]
+      # @return [Array<HSChewy::Type>]
       def wrappers
         @wrappers ||= hits.map do |hit|
           @loader.derive_type(hit['_index'], hit['_type']).build(hit)
@@ -75,10 +75,10 @@ module HSChewy
 
       # ORM/ODM objects that had been a source for Chewy import
       # and now loaded from the DB using hits ids. Uses
-      # {Chewy::Search::Request#load} passed options for loading.
+      # {HSChewy::Search::Request#load} passed options for loading.
       #
-      # @see Chewy::Search::Request#load
-      # @see Chewy::Search::Loader
+      # @see HSChewy::Search::Request#load
+      # @see HSChewy::Search::Loader
       # @return [Array<Object>]
       def objects
         @objects ||= begin
@@ -102,7 +102,7 @@ module HSChewy
       #   end
       # @see #wrappers
       # @see #objects
-      # @return [{Chewy::Type => Object}] a hash with wrappers as keys and ORM/ODM objects as values
+      # @return [{HSChewy::Type => Object}] a hash with wrappers as keys and ORM/ODM objects as values
       def object_hash
         @object_hash ||= wrappers.zip(objects).to_h
       end

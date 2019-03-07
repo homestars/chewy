@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Parameters::Rescore do
+describe HSChewy::Search::Parameters::Rescore do
   subject { described_class.new([{foo: 42}, {bar: 43}]) }
 
   describe '#initialize' do

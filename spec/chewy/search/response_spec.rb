@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Response, :orm do
+describe HSChewy::Search::Response, :orm do
   before { Chewy.massacre }
 
   before do
@@ -25,10 +25,10 @@ describe Chewy::Search::Response, :orm do
   let(:cities) { Array.new(2) { |i| City.create!(rating: i, name: "city #{i}") } }
   let(:countries) { Array.new(2) { |i| Country.create!(rating: i + 2, name: "country #{i}") } }
 
-  let(:request) { Chewy::Search::Request.new(PlacesIndex).order(:rating) }
+  let(:request) { HSChewy::Search::Request.new(PlacesIndex).order(:rating) }
   let(:raw_response) { request.send(:perform) }
   let(:load_options) { {} }
-  let(:loader) { Chewy::Search::Loader.new(indexes: [PlacesIndex], **load_options) }
+  let(:loader) { HSChewy::Search::Loader.new(indexes: [PlacesIndex], **load_options) }
   subject { described_class.new(raw_response, loader) }
 
   describe '#hits' do
@@ -59,7 +59,7 @@ describe Chewy::Search::Response, :orm do
     specify { expect(subject.max_score).to be_nil }
 
     context do
-      let(:request) { Chewy::Search::Request.new(PlacesIndex).query(range: {rating: {lte: 42}}) }
+      let(:request) { HSChewy::Search::Request.new(PlacesIndex).query(range: {rating: {lte: 42}}) }
       specify { expect(subject.max_score).to eq(1.0) }
     end
   end
@@ -69,7 +69,7 @@ describe Chewy::Search::Response, :orm do
 
     context do
       let(:request) do
-        Chewy::Search::Request.new(PlacesIndex)
+        HSChewy::Search::Request.new(PlacesIndex)
           .query(script: {script: {inline: 'sleep(100); true', lang: 'groovy'}})
       end
       specify { expect(subject.took).to be > 100 }
@@ -81,7 +81,7 @@ describe Chewy::Search::Response, :orm do
 
     context do
       let(:request) do
-        Chewy::Search::Request.new(PlacesIndex)
+        HSChewy::Search::Request.new(PlacesIndex)
           .query(script: {script: {inline: 'sleep(100); true', lang: 'groovy'}}).timeout('10ms')
       end
       specify { expect(subject.timed_out?).to eq(true) }
@@ -93,7 +93,7 @@ describe Chewy::Search::Response, :orm do
 
     context do
       let(:request) do
-        Chewy::Search::Request.new(PlacesIndex).suggest(
+        HSChewy::Search::Request.new(PlacesIndex).suggest(
           my_suggestion: {
             text: 'city country',
             term: {
@@ -117,7 +117,7 @@ describe Chewy::Search::Response, :orm do
     specify { expect(subject.aggs).to eq({}) }
 
     context do
-      let(:request) { Chewy::Search::Request.new(PlacesIndex).aggs(avg_rating: {avg: {field: :rating}}) }
+      let(:request) { HSChewy::Search::Request.new(PlacesIndex).aggs(avg_rating: {avg: {field: :rating}}) }
       specify { expect(subject.aggs).to eq('avg_rating' => {'value' => 1.5}) }
     end
   end

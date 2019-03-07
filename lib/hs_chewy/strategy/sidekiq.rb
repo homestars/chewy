@@ -24,7 +24,7 @@ module HSChewy
           next if ids.empty?
           ::Sidekiq::Client.push(
             'queue' => sidekiq_queue,
-            'class' => Chewy::Strategy::Sidekiq::Worker,
+            'class' => HSChewy::Strategy::Sidekiq::Worker,
             'args'  => [type.name, ids]
           )
         end

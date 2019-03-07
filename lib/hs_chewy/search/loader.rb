@@ -3,16 +3,16 @@ module HSChewy
     # This class is used for two different purposes: load ORM/ODM
     # source objects.
     #
-    # @see Chewy::Type::Import
-    # @see Chewy::Search::Request#load
-    # @see Chewy::Search::Response#objects
-    # @see Chewy::Search::Scrolling#scroll_objects
+    # @see HSChewy::Type::Import
+    # @see HSChewy::Search::Request#load
+    # @see HSChewy::Search::Response#objects
+    # @see HSChewy::Search::Scrolling#scroll_objects
     class Loader
-      # @param indexes [Array<Chewy::Index>] list of indexes to lookup types
+      # @param indexes [Array<HSChewy::Index>] list of indexes to lookup types
       # @param only [Array<String, Symbol>] list of selected type names to load
       # @param except [Array<String, Symbol>] list of type names which will not be loaded
       # @param options [Hash] adapter-specific load options
-      # @see Chewy::Type::Adapter::Base#load
+      # @see HSChewy::Type::Adapter::Base#load
       def initialize(indexes: [], only: [], except: [], **options)
         @indexes = indexes
         @only = Array.wrap(only).map(&:to_s)
@@ -20,18 +20,18 @@ module HSChewy
         @options = options
       end
 
-      # Returns a {Chewy::Type} object for index name and type name passed. Caches
+      # Returns a {HSChewy::Type} object for index name and type name passed. Caches
       # the result for each pair to make lookup faster.
       #
       # @param index [String] index name
       # @param type [String] type name
-      # @return [Chewy::Type]
-      # @raise [Chewy::UnderivableType] when index or hash were not found
+      # @return [HSChewy::Type]
+      # @raise [HSChewy::UnderivableType] when index or hash were not found
       def derive_type(index, type)
         (@derive_type ||= {})[[index, type]] ||= begin
           index_class = derive_index(index)
-          raise Chewy::UnderivableType, "Can not find index named `#{index}`" unless index_class
-          index_class.type_hash[type] or raise Chewy::UnderivableType, "Index `#{index}` doesn`t have type named `#{type}`"
+          raise HSChewy::UnderivableType, "Can not find index named `#{index}`" unless index_class
+          index_class.type_hash[type] or raise HSChewy::UnderivableType, "Index `#{index}` doesn`t have type named `#{type}`"
         end
       end
 

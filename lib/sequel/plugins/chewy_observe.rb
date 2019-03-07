@@ -20,7 +20,7 @@ module Sequel
     #   end
     #
     module HSChewyObserve
-      extend ::Chewy::Type::Observe::Helpers
+      extend ::HSChewy::Type::Observe::Helpers
 
       def self.apply(model)
         model.instance_eval do

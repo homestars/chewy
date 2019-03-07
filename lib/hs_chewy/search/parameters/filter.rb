@@ -17,14 +17,14 @@ module HSChewy
       #   #      :must=>{:match=>{:name=>"London"}},
       #   #      :filter=>{:term=>{:name=>"Moscow"}}}}}}>
       # @see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
-      # @see Chewy::Search::Parameters::QueryStorage
+      # @see HSChewy::Search::Parameters::QueryStorage
       class Filter < Storage
         include QueryStorage
 
         # Even more reduction added here, we don't need to wrap with
         # `bool` query consists on `must` only.
         #
-        # @see Chewy::Search::Parameters::Storage#render
+        # @see HSChewy::Search::Parameters::Storage#render
         # @return [{Symbol => Hash}]
         def render
           rendered_bool = filter_query(value.query)

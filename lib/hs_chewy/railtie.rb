@@ -72,7 +72,7 @@ module HSChewy
     end
 
     initializer 'chewy.add_indices_path' do |_app|
-      Chewy::Railtie.all_engines.each do |engine|
+      HSChewy::Railtie.all_engines.each do |engine|
         engine.paths.add Chewy.configuration[:indices_path]
       end
     end

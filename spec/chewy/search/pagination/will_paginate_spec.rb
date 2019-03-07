@@ -1,7 +1,7 @@
 require 'hs_chewy/search/pagination/will_paginate_examples'
 
-describe Chewy::Search::Pagination::WillPaginate do
-  it_behaves_like :will_paginate, Chewy::Search::Request do
+describe HSChewy::Search::Pagination::WillPaginate do
+  it_behaves_like :will_paginate, HSChewy::Search::Request do
     describe '#objects' do
       let(:data) { Array.new(12) { |i| {id: i.next.to_s, name: "Name#{i.next}", age: 10 * i.next}.stringify_keys! } }
 

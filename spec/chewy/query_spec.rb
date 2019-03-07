@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Chewy::Query do
-  if Chewy::Runtime.version < '5.0'
+describe HSChewy::Query do
+  if HSChewy::Runtime.version < '5.0'
     before { Chewy.massacre }
 
     before do
@@ -411,9 +411,9 @@ describe Chewy::Query do
       specify { expect(subject.find(1, 3).map(&:id)).to match_array(%w[1 3]) }
       specify { expect(subject.find(1, 10).map(&:id)).to match_array(%w[1]) }
 
-      specify { expect { subject.find(10) }.to raise_error Chewy::DocumentNotFound }
-      specify { expect { subject.find([10]) }.to raise_error Chewy::DocumentNotFound }
-      specify { expect { subject.find([10, 20]) }.to raise_error Chewy::DocumentNotFound }
+      specify { expect { subject.find(10) }.to raise_error HSChewy::DocumentNotFound }
+      specify { expect { subject.find([10]) }.to raise_error HSChewy::DocumentNotFound }
+      specify { expect { subject.find([10, 20]) }.to raise_error HSChewy::DocumentNotFound }
     end
 
     describe '#exists?' do
@@ -632,6 +632,6 @@ describe Chewy::Query do
       end
     end
   else
-    xspecify 'Skip Chewy::Query specs for 5.0'
+    xspecify 'Skip HSChewy::Query specs for 5.0'
   end
 end

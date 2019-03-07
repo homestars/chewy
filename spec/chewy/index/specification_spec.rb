@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Index::Specification do
+describe HSChewy::Index::Specification do
   before { Chewy.massacre }
 
   let(:index1) do
@@ -54,7 +54,7 @@ describe Chewy::Index::Specification do
 
   describe '#lock!' do
     specify do
-      expect { specification1.lock! }.to change { Chewy::Stash::Specification.all.hits }.from([]).to([{
+      expect { specification1.lock! }.to change { HSChewy::Stash::Specification.all.hits }.from([]).to([{
         '_index' => 'chewy_specifications',
         '_type' => 'specification',
         '_id' => 'places',
@@ -70,7 +70,7 @@ describe Chewy::Index::Specification do
       before { specification1.lock! }
 
       specify do
-        expect { specification5.lock! }.to change { Chewy::Stash::Specification.all.hits }.to([{
+        expect { specification5.lock! }.to change { HSChewy::Stash::Specification.all.hits }.to([{
           '_index' => 'chewy_specifications',
           '_type' => 'specification',
           '_id' => 'places',

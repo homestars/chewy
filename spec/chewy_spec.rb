@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Chewy do
   it 'should have a version number' do
-    expect(Chewy::VERSION).not_to be nil
+    expect(HSChewy::VERSION).not_to be nil
   end
 
   describe '.derive_type' do
@@ -19,10 +19,10 @@ describe Chewy do
       end
     end
 
-    specify { expect { described_class.derive_type('some#developers') }.to raise_error(Chewy::UnderivableType, /SomeIndex/) }
-    specify { expect { described_class.derive_type('borogoves#developers') }.to raise_error(Chewy::UnderivableType, /Borogoves/) }
-    specify { expect { described_class.derive_type('developers#borogoves') }.to raise_error(Chewy::UnderivableType, /DevelopersIndex.*borogoves/) }
-    specify { expect { described_class.derive_type('namespace/autocomplete') }.to raise_error(Chewy::UnderivableType, %r{AutocompleteIndex.*namespace/autocomplete#type_name}) }
+    specify { expect { described_class.derive_type('some#developers') }.to raise_error(HSChewy::UnderivableType, /SomeIndex/) }
+    specify { expect { described_class.derive_type('borogoves#developers') }.to raise_error(HSChewy::UnderivableType, /Borogoves/) }
+    specify { expect { described_class.derive_type('developers#borogoves') }.to raise_error(HSChewy::UnderivableType, /DevelopersIndex.*borogoves/) }
+    specify { expect { described_class.derive_type('namespace/autocomplete') }.to raise_error(HSChewy::UnderivableType, %r{AutocompleteIndex.*namespace/autocomplete#type_name}) }
 
     specify { expect(described_class.derive_type(DevelopersIndex::Developer)).to eq(DevelopersIndex::Developer) }
     specify { expect(described_class.derive_type('developers_index')).to eq(DevelopersIndex::Developer) }
@@ -46,9 +46,9 @@ describe Chewy do
       end
     end
 
-    specify { expect { described_class.derive_types('some#developers') }.to raise_error(Chewy::UnderivableType, /SomeIndex/) }
-    specify { expect { described_class.derive_types('borogoves#developers') }.to raise_error(Chewy::UnderivableType, /Borogoves/) }
-    specify { expect { described_class.derive_types('developers#borogoves') }.to raise_error(Chewy::UnderivableType, /DevelopersIndex.*borogoves/) }
+    specify { expect { described_class.derive_types('some#developers') }.to raise_error(HSChewy::UnderivableType, /SomeIndex/) }
+    specify { expect { described_class.derive_types('borogoves#developers') }.to raise_error(HSChewy::UnderivableType, /Borogoves/) }
+    specify { expect { described_class.derive_types('developers#borogoves') }.to raise_error(HSChewy::UnderivableType, /DevelopersIndex.*borogoves/) }
 
     specify { expect(described_class.derive_types(Namespace::AutocompleteIndex)).to match_array(Namespace::AutocompleteIndex.types) }
     specify { expect(described_class.derive_types(DevelopersIndex::Developer)).to eq([DevelopersIndex::Developer]) }
@@ -68,7 +68,7 @@ describe Chewy do
       subject { described_class.create_type(CitiesIndex, :city) }
 
       it { is_expected.to be_a Class }
-      it { is_expected.to be < Chewy::Type }
+      it { is_expected.to be < HSChewy::Type }
       its(:name) { should == 'CitiesIndex::City' }
       its(:index) { should == CitiesIndex }
       its(:type_name) { should == 'city' }
@@ -79,7 +79,7 @@ describe Chewy do
       subject { described_class.create_type(CitiesIndex, City) }
 
       it { is_expected.to be_a Class }
-      it { is_expected.to be < Chewy::Type }
+      it { is_expected.to be < HSChewy::Type }
       its(:name) { should == 'CitiesIndex::City' }
       its(:index) { should == CitiesIndex }
       its(:type_name) { should == 'city' }
@@ -90,7 +90,7 @@ describe Chewy do
       subject { described_class.create_type(CitiesIndex, City.where(rating: 1)) }
 
       it { is_expected.to be_a Class }
-      it { is_expected.to be < Chewy::Type }
+      it { is_expected.to be < HSChewy::Type }
       its(:name) { should == 'CitiesIndex::City' }
       its(:index) { should == CitiesIndex }
       its(:type_name) { should == 'city' }
@@ -103,7 +103,7 @@ describe Chewy do
       subject { described_class.create_type(Namespace::CitiesIndex, City) }
 
       it { is_expected.to be_a Class }
-      it { is_expected.to be < Chewy::Type }
+      it { is_expected.to be < HSChewy::Type }
       its(:name) { should == 'Namespace::CitiesIndex::City' }
       its(:index) { should == Namespace::CitiesIndex }
       its(:type_name) { should == 'city' }
@@ -115,7 +115,7 @@ describe Chewy do
       subject { described_class.create_type(CitiesIndex, Namespace::City) }
 
       it { is_expected.to be_a Class }
-      it { is_expected.to be < Chewy::Type }
+      it { is_expected.to be < HSChewy::Type }
       its(:name) { should == 'CitiesIndex::City' }
       its(:index) { should == CitiesIndex }
       its(:type_name) { should == 'city' }
@@ -172,7 +172,7 @@ describe Chewy do
       stub_index(:places)
 
       # To avoid flaky issues when previous specs were run
-      allow(Chewy::Index).to receive(:descendants).and_return([CitiesIndex, PlacesIndex])
+      allow(HSChewy::Index).to receive(:descendants).and_return([CitiesIndex, PlacesIndex])
 
       Chewy.massacre
     end

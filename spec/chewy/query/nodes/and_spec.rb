@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Chewy::Query::Nodes::And do
+describe HSChewy::Query::Nodes::And do
   describe '#__render__' do
     def render(&block)
-      Chewy::Query::Filters.new(&block).__render__
+      HSChewy::Query::Filters.new(&block).__render__
     end
 
     specify { expect(render { name? & (email == 'email') }).to eq(and: [{exists: {field: 'name'}}, {term: {'email' => 'email'}}]) }

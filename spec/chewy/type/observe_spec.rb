@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Observe do
+describe HSChewy::Type::Observe do
   describe '.update_index' do
     before do
       stub_index(:dummies) do
@@ -12,7 +12,7 @@ describe Chewy::Type::Observe do
 
     specify do
       expect { DummiesIndex::Dummy.update_index(backreferenced) }
-        .to raise_error Chewy::UndefinedUpdateStrategy
+        .to raise_error HSChewy::UndefinedUpdateStrategy
     end
     specify do
       expect { DummiesIndex::Dummy.update_index([]) }

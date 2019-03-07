@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Adapter::Mongoid, :mongoid do
+describe HSChewy::Type::Adapter::Mongoid, :mongoid do
   before do
     stub_model(:city)
     stub_model(:country)

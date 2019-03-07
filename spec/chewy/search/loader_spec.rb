@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search::Loader do
+describe HSChewy::Search::Loader do
   before { Chewy.massacre }
 
   before do
@@ -37,9 +37,9 @@ describe Chewy::Search::Loader do
     specify { expect(subject.derive_type('cities', 'city')).to eq(CitiesIndex::City) }
     specify { expect(subject.derive_type('cities_suffix', 'city')).to eq(CitiesIndex::City) }
 
-    specify { expect { subject.derive_type('cities', 'place') }.to raise_error(Chewy::UnderivableType) }
-    specify { expect { subject.derive_type('whatever', 'city') }.to raise_error(Chewy::UnderivableType) }
-    specify { expect { subject.derive_type('citiessuffix', 'city') }.to raise_error(Chewy::UnderivableType) }
+    specify { expect { subject.derive_type('cities', 'place') }.to raise_error(HSChewy::UnderivableType) }
+    specify { expect { subject.derive_type('whatever', 'city') }.to raise_error(HSChewy::UnderivableType) }
+    specify { expect { subject.derive_type('citiessuffix', 'city') }.to raise_error(HSChewy::UnderivableType) }
 
     context do
       before { CitiesIndex.index_name :boro_goves }
@@ -50,7 +50,7 @@ describe Chewy::Search::Loader do
   end
 
   describe '#load' do
-    let(:hits) { Chewy::Search::Request.new(CitiesIndex, CountriesIndex).order(:rating).hits }
+    let(:hits) { HSChewy::Search::Request.new(CitiesIndex, CountriesIndex).order(:rating).hits }
 
     specify { expect(subject.load(hits)).to eq([*cities, *countries]) }
 

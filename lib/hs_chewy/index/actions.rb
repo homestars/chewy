@@ -202,11 +202,11 @@ module HSChewy
           result
         end
 
-        # A {Chewy::Journal} instance for the particular index
+        # A {HSChewy::Journal} instance for the particular index
         #
-        # @return [Chewy::Journal] journal instance
+        # @return [HSChewy::Journal] journal instance
         def journal
-          @journal ||= Chewy::Journal.new(self)
+          @journal ||= HSChewy::Journal.new(self)
         end
 
       private

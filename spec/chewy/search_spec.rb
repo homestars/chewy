@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Search do
+describe HSChewy::Search do
   before { Chewy.massacre }
 
   before do
@@ -13,14 +13,14 @@ describe Chewy::Search do
   let(:product) { ProductsIndex::Product }
 
   describe '.all' do
-    specify { expect(ProductsIndex.all).to be_a(Chewy::Search::Request) }
-    specify { expect(product.all).to be_a(Chewy::Search::Request) }
+    specify { expect(ProductsIndex.all).to be_a(HSChewy::Search::Request) }
+    specify { expect(product.all).to be_a(HSChewy::Search::Request) }
 
     context do
-      before { allow(Chewy).to receive_messages(search_class: Chewy::Search::Request) }
+      before { allow(Chewy).to receive_messages(search_class: HSChewy::Search::Request) }
 
-      specify { expect(ProductsIndex.all).to be_a(Chewy::Search::Request) }
-      specify { expect(product.all).to be_a(Chewy::Search::Request) }
+      specify { expect(ProductsIndex.all).to be_a(HSChewy::Search::Request) }
+      specify { expect(product.all).to be_a(HSChewy::Search::Request) }
     end
   end
 

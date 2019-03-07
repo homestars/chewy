@@ -3,7 +3,7 @@ require 'spec_helper'
 if defined?(::Sidekiq)
   require 'sidekiq/testing'
 
-  describe Chewy::Strategy::Sidekiq do
+  describe HSChewy::Strategy::Sidekiq do
     around { |example| Chewy.strategy(:bypass) { example.run } }
     before { ::Sidekiq::Worker.clear_all }
     before do
@@ -36,13 +36,13 @@ if defined?(::Sidekiq)
 
     specify do
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601')
-      Chewy::Strategy::Sidekiq::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::Sidekiq::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
 
     specify do
       allow(Chewy).to receive(:disable_refresh_async).and_return(true)
       expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id], suffix: '201601', refresh: false)
-      Chewy::Strategy::Sidekiq::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
+      HSChewy::Strategy::Sidekiq::Worker.new.perform('CitiesIndex::City', [city.id, other_city.id], suffix: '201601')
     end
   end
 end

@@ -12,7 +12,7 @@ module HSChewy
     # `title_analyzer` analyser will be used in index settings:
     #
     # @example
-    #   class ProductsIndex < Chewy::Index
+    #   class ProductsIndex < HSChewy::Index
     #     settings analysis: {
     #       analyzer: [
     #         'title_analyzer',

@@ -1,7 +1,7 @@
 module HSChewy
   module Search
     module Pagination
-      # This module provides `WillPaginate` support for {Chewy::Search::Request}
+      # This module provides `WillPaginate` support for {HSChewy::Search::Request}
       # It is included automatically if `WillPaginate` is available.
       #
       # @example
@@ -20,7 +20,7 @@ module HSChewy
           @page_multiplier = @current_page - 1
           @per_page = (options[:per_page] || @per_page || ::WillPaginate.per_page).to_i
 
-          # call Chewy::Query methods to limit results
+          # call HSChewy::Query methods to limit results
           limit(@per_page).offset(@page_multiplier * @per_page)
         end
 

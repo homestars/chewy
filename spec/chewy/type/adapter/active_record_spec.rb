@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Type::Adapter::ActiveRecord, :active_record do
+describe HSChewy::Type::Adapter::ActiveRecord, :active_record do
   before do
     stub_model(:city)
     stub_model(:country)

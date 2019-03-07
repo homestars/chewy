@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Chewy::Query::Loading, :orm do
+describe HSChewy::Query::Loading, :orm do
   before { Chewy.massacre }
 
   before do
@@ -24,7 +24,7 @@ describe Chewy::Query::Loading, :orm do
       end
     end
 
-    let(:subject) { Chewy::Query.new(PlacesIndex) }
+    let(:subject) { HSChewy::Query.new(PlacesIndex) }
 
     before { PlacesIndex.import!(cities: cities, countries: countries) }
 

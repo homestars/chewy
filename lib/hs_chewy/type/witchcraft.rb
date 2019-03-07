@@ -43,7 +43,7 @@ module HSChewy
       class Cauldron
         attr_reader :locals
 
-        # @param type [Chewy::Type] type for composition
+        # @param type [HSChewy::Type] type for composition
         # @param fields [Array<Symbol>] restricts the fields for composition
         def initialize(type, fields: [])
           @type = type
