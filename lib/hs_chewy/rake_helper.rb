@@ -200,7 +200,7 @@ module HSChewy
       #
       # @return [Array<HSChewy::Index>] indexes found
       def all_indexes
-        Chewy.eager_load!
+        HSChewy.eager_load!
         HSChewy::Index.descendants - [HSChewy::Stash::Journal, HSChewy::Stash::Specification]
       end
 
@@ -282,7 +282,7 @@ module HSChewy
       end
 
       def normalize_type(identifier)
-        Chewy.derive_types(identifier)
+        HSChewy.derive_types(identifier)
       end
 
       def human_duration(seconds)

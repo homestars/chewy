@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Strategy do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
   subject(:strategy) { HSChewy::Strategy.new }
 
   describe '#current' do
@@ -61,7 +61,7 @@ describe HSChewy::Strategy do
     let(:other_city) { City.create!(name: 'world') }
 
     context do
-      around { |example| Chewy.strategy(:bypass) { example.run } }
+      around { |example| HSChewy.strategy(:bypass) { example.run } }
 
       specify do
         expect(CitiesIndex::City).not_to receive(:import!)
@@ -70,12 +70,12 @@ describe HSChewy::Strategy do
 
       specify do
         expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id]).once
-        Chewy.strategy(:atomic) { [city, other_city].map(&:save!) }
+        HSChewy.strategy(:atomic) { [city, other_city].map(&:save!) }
       end
     end
 
     context do
-      around { |example| Chewy.strategy(:urgent) { example.run } }
+      around { |example| HSChewy.strategy(:urgent) { example.run } }
 
       specify do
         expect(CitiesIndex::City).to receive(:import!).at_least(2).times
@@ -84,7 +84,7 @@ describe HSChewy::Strategy do
 
       specify do
         expect(CitiesIndex::City).to receive(:import!).with([city.id, other_city.id]).once
-        Chewy.strategy(:atomic) { [city, other_city].map(&:save!) }
+        HSChewy.strategy(:atomic) { [city, other_city].map(&:save!) }
       end
 
       context 'hash passed to urgent' do

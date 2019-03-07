@@ -15,7 +15,7 @@ module HSChewy
     def initialize(_type)
       super <<-MESSAGE
   Index update strategy is undefined for current context.
-  Please wrap your code with `Chewy.strategy(:strategy_name) block.`
+  Please wrap your code with `HSChewy.strategy(:strategy_name) block.`
       MESSAGE
     end
   end

@@ -1,4 +1,4 @@
-# config/chewy.yml
+# config/hs_chewy.yml
 # separate environment configs
 test:
   host: 'localhost:9250'

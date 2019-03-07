@@ -164,11 +164,11 @@ describe HSChewy::Index do
     before do
       allow(Chewy).to receive_messages(config: HSChewy::Config.send(:new))
 
-      Chewy.analyzer :name, filter: %w[lowercase icu_folding names_nysiis]
-      Chewy.analyzer :phone, tokenizer: 'ngram', char_filter: ['phone']
-      Chewy.tokenizer :ngram, type: 'nGram', min_gram: 3, max_gram: 3
-      Chewy.char_filter :phone, type: 'pattern_replace', pattern: '[^\d]', replacement: ''
-      Chewy.filter :names_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
+      HSChewy.analyzer :name, filter: %w[lowercase icu_folding names_nysiis]
+      HSChewy.analyzer :phone, tokenizer: 'ngram', char_filter: ['phone']
+      HSChewy.tokenizer :ngram, type: 'nGram', min_gram: 3, max_gram: 3
+      HSChewy.char_filter :phone, type: 'pattern_replace', pattern: '[^\d]', replacement: ''
+      HSChewy.filter :names_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
     end
 
     let(:documents) { stub_index(:documents) { settings analysis: {analyzer: [:name, :phone, {sorted: {option: :baz}}]} } }
@@ -207,7 +207,7 @@ describe HSChewy::Index do
 
     context do
       before do
-        Chewy.massacre
+        HSChewy.massacre
         PlacesIndex::City.import!(
           double(colors: ['red']),
           double(colors: %w[red green]),

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe HSChewy::Query::Pagination do
   if HSChewy::Runtime.version < '5.0'
-    before { Chewy.massacre }
+    before { HSChewy.massacre }
 
     before do
       stub_index(:products) do

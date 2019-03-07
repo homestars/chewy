@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Strategy::Atomic, :orm do
-  around { |example| Chewy.strategy(:bypass) { example.run } }
+  around { |example| HSChewy.strategy(:bypass) { example.run } }
 
   before do
     stub_model(:country) do

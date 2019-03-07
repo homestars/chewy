@@ -1,7 +1,7 @@
-[![Gem Version](https://badge.fury.io/rb/chewy.svg)](http://badge.fury.io/rb/chewy)
-[![Build Status](https://travis-ci.org/toptal/chewy.svg)](https://travis-ci.org/toptal/chewy)
-[![Code Climate](https://codeclimate.com/github/toptal/chewy.svg)](https://codeclimate.com/github/toptal/chewy)
-[![Inline docs](http://inch-ci.org/github/toptal/chewy.svg?branch=master)](http://inch-ci.org/github/toptal/chewy)
+[![Gem Version](https://badge.fury.io/rb/HSChewy.svg)](http://badge.fury.io/rb/chewy)
+[![Build Status](https://travis-ci.org/toptal/HSChewy.svg)](https://travis-ci.org/toptal/chewy)
+[![Code Climate](https://codeclimate.com/github/toptal/HSChewy.svg)](https://codeclimate.com/github/toptal/chewy)
+[![Inline docs](http://inch-ci.org/github/toptal/HSChewy.svg?branch=master)](http://inch-ci.org/github/toptal/chewy)
 
 <p align="right">Sponsored by</p>
 <p align="right"><a href="https://www.toptal.com/"><img src="https://www.toptal.com/assets/public/blocks/logo/big.png" alt="Toptal" width="105" height="34"></a></p>
@@ -68,7 +68,7 @@ Chewy is an ODM and wrapper for [the official Elasticsearch client](https://gith
 
 * Bulk import everywhere.
 
-  Chewy utilizes the bulk ES API for full reindexing or index updates. It also uses atomic updates. All the changed objects are collected inside the atomic block and the index is updated once at the end with all the collected objects. See `Chewy.strategy(:atomic)` for more details.
+  Chewy utilizes the bulk ES API for full reindexing or index updates. It also uses atomic updates. All the changed objects are collected inside the atomic block and the index is updated once at the end with all the collected objects. See `HSChewy.strategy(:atomic)` for more details.
 
 * Powerful querying DSL.
 
@@ -95,17 +95,17 @@ Or install it yourself as:
 
 ### Client settings
 
-There are two ways to configure the Chewy client: the `Chewy.settings` hash and `chewy.yml`
+There are two ways to configure the Chewy client: the `HSChewy.settings` hash and `HSChewy.yml`
 
 You can create this file manually or run `rails g chewy:install`.
 
 ```ruby
-# config/initializers/chewy.rb
-Chewy.settings = {host: 'localhost:9250'} # do not use environments
+# config/initializers/HSChewy.rb
+HSChewy.settings = {host: 'localhost:9250'} # do not use environments
 ```
 
 ```yaml
-# config/chewy.yml
+# config/HSChewy.yml
 # separate environment configs
 test:
   host: 'localhost:9250'
@@ -117,14 +117,14 @@ development:
 The resulting config merges both hashes. Client options are passed as is to `Elasticsearch::Transport::Client` except for the `:prefix`, which is used internally by Chewy to create prefixed index names:
 
 ```ruby
-  Chewy.settings = {prefix: 'test'}
+  HSChewy.settings = {prefix: 'test'}
   UsersIndex.index_name # => 'test_users'
 ```
 
 The logger may be set explicitly:
 
 ```ruby
-Chewy.logger = Logger.new(STDOUT)
+HSChewy.logger = Logger.new(STDOUT)
 ```
 
 See [config.rb](lib/chewy/config.rb) for more details.
@@ -133,7 +133,7 @@ See [config.rb](lib/chewy/config.rb) for more details.
 If you would like to use AWS's ElasticSearch using an IAM user policy, you will need to sign your requests for the `es:*` action by injecting the appropriate headers passing a proc to `transport_options`.
 
 ```ruby
- Chewy.settings = {
+ HSChewy.settings = {
     host: 'http://my-es-instance-on-aws.us-east-1.es.amazonaws.com:80',
     transport_options: {
       headers: { content_type: 'application/json' },
@@ -395,7 +395,7 @@ Product.includes(:categories).find_in_batches(1000) do |batch|
     {name: object.name, category_names: object.categories.map(&:name)}.to_json
   end
   # here we are sending every batch of data to ES
-  Chewy.client.bulk bulk_body
+  HSChewy.client.bulk bulk_body
 end
 ```
 
@@ -432,7 +432,7 @@ Product.includes(:categories).find_in_batches(1000) do |batch|
   bulk_body = batch.map do |object|
     {name: object.name, category_names: crutches[:categories][object.id]}.to_json
   end
-  Chewy.client.bulk bulk_body
+  HSChewy.client.bulk bulk_body
 end
 ```
 
@@ -527,7 +527,7 @@ Also, you can pass `:raw_import` option to the `import` method explicitly.
 
 By default, when you perform import Chewy checks whether an index exists and creates it if it's absent.
 You can turn off this feature to decrease Elasticsearch hits count.
-To do so you need to set `skip_index_creation_on_import` parameter to `false` in your `config/chewy.yml`
+To do so you need to set `skip_index_creation_on_import` parameter to `false` in your `config/HSChewy.yml`
 
 
 ### Journaling
@@ -548,11 +548,11 @@ Common journal record looks like this:
 ```
 
 This feature is turned off by default.
-But you can turn it on by setting `journal` setting to `true` in `config/chewy.yml`.
+But you can turn it on by setting `journal` setting to `true` in `config/HSChewy.yml`.
 Also, you can specify journal index name. For example:
 
 ```yaml
-# config/chewy.yml
+# config/HSChewy.yml
 production:
   journal: true
   journal_name: my_super_journal
@@ -644,14 +644,14 @@ end
 
 If you do something like `City.first.save!` you'll get an UndefinedUpdateStrategy exception instead of the object saving and index updating. This exception forces you to choose an appropriate update strategy for the current context.
 
-If you want to return to the pre-0.7.0 behavior - just set `Chewy.root_strategy = :bypass`.
+If you want to return to the pre-0.7.0 behavior - just set `HSChewy.root_strategy = :bypass`.
 
 #### `:atomic`
 
 The main strategy here is `:atomic`. Assume you have to update a lot of records in the db.
 
 ```ruby
-Chewy.strategy(:atomic) do
+HSChewy.strategy(:atomic) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -663,7 +663,7 @@ Using this strategy delays the index update request until the end of the block. 
 This does the same thing as `:atomic`, but asynchronously using resque. The default queue name is `chewy`. Patch `HSChewy::Strategy::Resque::Worker` for index updates improving.
 
 ```ruby
-Chewy.strategy(:resque) do
+HSChewy.strategy(:resque) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -673,7 +673,7 @@ end
 This does the same thing as `:atomic`, but asynchronously using sidekiq. Patch `HSChewy::Strategy::Sidekiq::Worker` for index updates improving.
 
 ```ruby
-Chewy.strategy(:sidekiq) do
+HSChewy.strategy(:sidekiq) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -683,7 +683,7 @@ end
 This does the same thing as `:atomic`, but using ActiveJob. This will inherit the ActiveJob configuration settings including the `active_job.queue_adapter` setting for the environment. Patch `HSChewy::Strategy::ActiveJob::Worker` for index updates improving.
 
 ```ruby
-Chewy.strategy(:active_job) do
+HSChewy.strategy(:active_job) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -693,7 +693,7 @@ end
 This does the same thing as `:atomic`, but asynchronously using shoryuken. Patch `HSChewy::Strategy::Shoryuken::Worker` for index updates improving.
 
 ```ruby
-Chewy.strategy(:shoryuken) do
+HSChewy.strategy(:shoryuken) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -703,7 +703,7 @@ end
 The following strategy is convenient if you are going to update documents in your index one by one.
 
 ```ruby
-Chewy.strategy(:urgent) do
+HSChewy.strategy(:urgent) do
   City.popular.map(&:do_some_update_action!)
 end
 ```
@@ -713,7 +713,7 @@ This code will perform `City.popular.count` requests for ES documents update.
 It is convenient for use in e.g. the Rails console with non-block notation:
 
 ```ruby
-> Chewy.strategy(:urgent)
+> HSChewy.strategy(:urgent)
 > City.popular.map(&:do_some_update_action!)
 ```
 
@@ -726,9 +726,9 @@ The bypass strategy simply silences index updates.
 Strategies are designed to allow nesting, so it is possible to redefine it for nested contexts.
 
 ```ruby
-Chewy.strategy(:atomic) do
+HSChewy.strategy(:atomic) do
   city1.do_update!
-  Chewy.strategy(:urgent) do
+  HSChewy.strategy(:urgent) do
     city2.do_update!
     city3.do_update!
     # there will be 2 update index requests for city2 and city3
@@ -743,11 +743,11 @@ end
 It is possible to nest strategies without blocks:
 
 ```ruby
-Chewy.strategy(:urgent)
+HSChewy.strategy(:urgent)
 city1.do_update! # index updated
-Chewy.strategy(:bypass)
+HSChewy.strategy(:bypass)
 city2.do_update! # update bypassed
-Chewy.strategy.pop
+HSChewy.strategy.pop
 city3.do_update! # index updated again
 ```
 
@@ -761,14 +761,14 @@ There are a couple of predefined strategies for your Rails application. Initiall
 
 Migrations are wrapped with the `:bypass` strategy. Because the main behavior implies that indices are reset after migration, there is no need for extra index updates. Also indexing might be broken during migrations because of the outdated schema.
 
-Controller actions are wrapped with the configurable value of `Chewy.request_strategy` and defaults to `:atomic`. This is done at the middleware level to reduce the number of index update requests inside actions.
+Controller actions are wrapped with the configurable value of `HSChewy.request_strategy` and defaults to `:atomic`. This is done at the middleware level to reduce the number of index update requests inside actions.
 
-It is also a good idea to set up the `:bypass` strategy inside your test suite and import objects manually only when needed, and use `Chewy.massacre` when needed to flush test ES indices before every example. This will allow you to minimize unnecessary ES requests and reduce overhead.
+It is also a good idea to set up the `:bypass` strategy inside your test suite and import objects manually only when needed, and use `HSChewy.massacre` when needed to flush test ES indices before every example. This will allow you to minimize unnecessary ES requests and reduce overhead.
 
 ```ruby
 RSpec.configure do |config|
   config.before(:suite) do
-    Chewy.strategy(:bypass)
+    HSChewy.strategy(:bypass)
   end
 end
 ```
@@ -804,7 +804,7 @@ Chewy has notifying the following events:
 
 ### NewRelic integration
 
-To integrate with NewRelic you may use the following example source (config/initializers/chewy.rb):
+To integrate with NewRelic you may use the following example source (config/initializers/HSChewy.rb):
 
 ```ruby
 require 'new_relic/agent/instrumentation/evented_subscriber'
@@ -870,11 +870,11 @@ class ChewySubscriber < NewRelic::Agent::Instrumentation::EventedSubscriber
     end
 
     def host
-      Chewy.client.transport.hosts.first[:host]
+      HSChewy.client.transport.hosts.first[:host]
     end
 
     def port
-      Chewy.client.transport.hosts.first[:port]
+      HSChewy.client.transport.hosts.first[:port]
     end
   end
 end
@@ -886,7 +886,7 @@ ActiveSupport::Notifications.subscribe(/.chewy$/, ChewySubscriber.new)
 
 Long story short: there is a new DSL that supports ES2 and ES5, the previous DSL version (which supports ES1 and ES2) documentation was moved to [LEGACY_DSL.md](LEGACY_DSL.md).
 
-If you want to use the old DSL - simply do `Chewy.search_class = HSChewy::Query` somewhere before indices are initialized.
+If you want to use the old DSL - simply do `HSChewy.search_class = HSChewy::Query` somewhere before indices are initialized.
 
 The new DSL is enabled by default, here is a quick introduction.
 
@@ -1069,17 +1069,17 @@ Just add `require 'hs_chewy/rspec'` to your spec_helper.rb and you will get addi
 
 Add `require 'hs_chewy/minitest'` to your test_helper.rb, and then for tests which you'd like indexing test hooks, `include HSChewy::Minitest::Helpers`.
 
-Since you can set `:bypass` strategy for test suites and manually handle import for the index and manually flush test indices using `Chewy.massacre`. This will help reduce unnecessary ES requests
+Since you can set `:bypass` strategy for test suites and manually handle import for the index and manually flush test indices using `HSChewy.massacre`. This will help reduce unnecessary ES requests
 
-But if you require chewy to index/update model regularly in your test suite then you can specify `:urgent` strategy for documents indexing. Add `Chewy.strategy(:urgent)` to test_helper.rb.
+But if you require chewy to index/update model regularly in your test suite then you can specify `:urgent` strategy for documents indexing. Add `HSChewy.strategy(:urgent)` to test_helper.rb.
 
 ### DatabaseCleaner
 
-If you use `DatabaseCleaner` in your tests with [the `transaction` strategy](https://github.com/DatabaseCleaner/database_cleaner#how-to-use), you may run into the problem that `ActiveRecord`'s models are not indexed automatically on save despite the fact that you set the callbacks to do this with the `update_index` method. The issue arises because `chewy` indices data on `after_commit` run as default, but all `after_commit` callbacks are not run with the `DatabaseCleaner`'s' `transaction` strategy. You can solve this issue by changing the `Chewy.use_after_commit_callbacks` option. Just add the following initializer in your Rails application:
+If you use `DatabaseCleaner` in your tests with [the `transaction` strategy](https://github.com/DatabaseCleaner/database_cleaner#how-to-use), you may run into the problem that `ActiveRecord`'s models are not indexed automatically on save despite the fact that you set the callbacks to do this with the `update_index` method. The issue arises because `chewy` indices data on `after_commit` run as default, but all `after_commit` callbacks are not run with the `DatabaseCleaner`'s' `transaction` strategy. You can solve this issue by changing the `HSChewy.use_after_commit_callbacks` option. Just add the following initializer in your Rails application:
 
 ```ruby
-#config/initializers/chewy.rb
-Chewy.use_after_commit_callbacks = !Rails.env.test?
+#config/initializers/HSChewy.rb
+HSChewy.use_after_commit_callbacks = !Rails.env.test?
 ```
 
 ## TODO a.k.a coming soon:

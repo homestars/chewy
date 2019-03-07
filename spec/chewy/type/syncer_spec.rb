@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Type::Syncer, :orm do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
   before do
     stub_model(:city)
     stub_index(:cities) do

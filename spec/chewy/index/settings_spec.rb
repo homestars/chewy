@@ -62,7 +62,7 @@ describe HSChewy::Index::Settings do
     end
 
     context do
-      before { Chewy.tokenizer :tokenizer1, options: 42 }
+      before { HSChewy.tokenizer :tokenizer1, options: 42 }
 
       specify do
         expect(described_class.new(number_of_nodes: 3, analysis: {
@@ -77,9 +77,9 @@ describe HSChewy::Index::Settings do
 
     context do
       before do
-        Chewy.filter :filter2, options: 42
-        Chewy.filter :filter3, options: 43
-        Chewy.filter :filter5, options: 44
+        HSChewy.filter :filter2, options: 42
+        HSChewy.filter :filter3, options: 43
+        HSChewy.filter :filter5, options: 44
       end
 
       specify do
@@ -96,8 +96,8 @@ describe HSChewy::Index::Settings do
 
     context do
       before do
-        Chewy.analyzer :analyzer1, options: 42, tokenizer: 'tokenizer1'
-        Chewy.tokenizer :tokenizer1, options: 43
+        HSChewy.analyzer :analyzer1, options: 42, tokenizer: 'tokenizer1'
+        HSChewy.tokenizer :tokenizer1, options: 43
       end
 
       specify do

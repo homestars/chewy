@@ -32,7 +32,7 @@ module HSChewy
             {}
           end
         mapping.reverse_merge!(options)
-        mapping.reverse_merge!(type: (children.present? ? 'object' : Chewy.default_field_type))
+        mapping.reverse_merge!(type: (children.present? ? 'object' : HSChewy.default_field_type))
 
         # This is done to support ES2 journaling and will be removed soon
         if mapping[:type] == 'keyword' && HSChewy::Runtime.version < '5.0'

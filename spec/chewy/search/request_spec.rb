@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Search::Request do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_index(:products) do
@@ -498,14 +498,14 @@ describe HSChewy::Search::Request do
       specify { expect(subject.none.count).to eq(0) }
 
       context do
-        before { expect(Chewy.client).to receive(:count).and_call_original }
+        before { expect(HSChewy.client).to receive(:count).and_call_original }
         specify { subject.count }
       end
 
       context do
         subject { described_class.new(ProductsIndex).limit(6) }
         before do
-          expect(Chewy.client).not_to receive(:count)
+          expect(HSChewy.client).not_to receive(:count)
           subject.total
         end
         specify { expect(subject.count).to eq(9) }
@@ -513,7 +513,7 @@ describe HSChewy::Search::Request do
     end
 
     describe '#exists?' do
-      before { expect(Chewy.client).to receive(:search).once.and_call_original }
+      before { expect(HSChewy.client).to receive(:search).once.and_call_original }
 
       specify { expect(subject.exists?).to be(true) }
       specify { expect(subject.filter(match: {name: 'foo'}).exist?).to be(false) }
@@ -528,7 +528,7 @@ describe HSChewy::Search::Request do
       subject { described_class.new(ProductsIndex).order(id: {order: 'desc'}) }
 
       context do
-        before { expect(Chewy.client).to receive(:search).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:search).once.and_call_original }
 
         specify { expect(subject.first).to be_a(ProductsIndex::Country).and have_attributes(id: 9) }
         specify { expect(subject.first(3).map(&:id)).to eq([9, 8, 7]) }
@@ -540,7 +540,7 @@ describe HSChewy::Search::Request do
       context do
         before do
           subject.response
-          expect(Chewy.client).not_to receive(:search)
+          expect(HSChewy.client).not_to receive(:search)
         end
 
         specify { expect(subject.first).to be_a(ProductsIndex::Country).and have_attributes(id: 9) }
@@ -557,7 +557,7 @@ describe HSChewy::Search::Request do
         subject { described_class.new(ProductsIndex).limit(5) }
         before do
           subject.response
-          expect(Chewy.client).to receive(:search).once.and_call_original
+          expect(HSChewy.client).to receive(:search).once.and_call_original
         end
         specify { expect(subject.first(10).map(&:id)).to have(9).items }
       end
@@ -577,14 +577,14 @@ describe HSChewy::Search::Request do
 
       context 'make sure it returns everything' do
         let(:countries) { Array.new(6) { |i| {id: (i.next + 6).to_i}.stringify_keys! } }
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
 
         specify { expect(subject.find((1..12).to_a)).to have(12).items }
       end
 
       context 'make sure it returns everything in batches if needed' do
         before { stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 5) }
-        before { expect(Chewy.client).to receive(:scroll).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:scroll).once.and_call_original }
 
         specify { expect(subject.find((1..9).to_a)).to have(9).items }
         specify { expect(subject.find((1..9).to_a)).to all be_a(HSChewy::Type) }
@@ -607,7 +607,7 @@ describe HSChewy::Search::Request do
 
       context 'make sure it returns everything in batches if needed' do
         before { stub_const("#{described_class}::DEFAULT_PLUCK_BATCH_SIZE", 5) }
-        before { expect(Chewy.client).to receive(:scroll).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:scroll).once.and_call_original }
 
         specify { expect(subject.pluck(:_id)).to eq((1..9).to_a.map(&:to_s)) }
       end
@@ -617,37 +617,37 @@ describe HSChewy::Search::Request do
       specify do
         expect do
           subject.none.delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.not_to change { described_class.new(ProductsIndex).total }.from(9)
       end
       specify do
         expect do
           subject.query(match: {name: 'name3'}).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(8)
       end
       specify do
         expect do
           subject.filter(range: {age: {gte: 10, lte: 20}}).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total_count }.from(9).to(7)
       end
       specify do
         expect do
           subject.types(:product).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex::Product).total_entries }.from(3).to(0)
       end
       specify do
         expect do
           subject.delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(0)
       end
       specify do
         expect do
           described_class.new(ProductsIndex::City).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(6)
       end
 

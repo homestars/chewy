@@ -68,9 +68,9 @@ describe HSChewy::Type::Observe do
     end
 
     context do
-      let!(:country1) { Chewy.strategy(:atomic) { Country.create!(id: 1, update_condition: update_condition) } }
-      let!(:country2) { Chewy.strategy(:atomic) { Country.create!(id: 2, update_condition: update_condition) } }
-      let!(:city) { Chewy.strategy(:atomic) { City.create!(id: 1, country: country1) } }
+      let!(:country1) { HSChewy.strategy(:atomic) { Country.create!(id: 1, update_condition: update_condition) } }
+      let!(:country2) { HSChewy.strategy(:atomic) { Country.create!(id: 2, update_condition: update_condition) } }
+      let!(:city) { HSChewy.strategy(:atomic) { City.create!(id: 1, country: country1) } }
 
       specify { expect { city.save! }.to update_index('cities#city').and_reindex(city).only }
       specify { expect { city.save! }.to update_index('countries#country').and_reindex(country1).only }
@@ -84,7 +84,7 @@ describe HSChewy::Type::Observe do
 
     context do
       let!(:country) do
-        Chewy.strategy(:atomic) do
+        HSChewy.strategy(:atomic) do
           cities = Array.new(2) { |i| City.create!(id: i) }
           if adapter == :sequel
             Country.create(id: 1, update_condition: update_condition).tap do |country|
@@ -112,7 +112,7 @@ describe HSChewy::Type::Observe do
       before { stub_index(:cities) { define_type City } }
 
       specify do
-        Chewy.strategy(:urgent) do
+        HSChewy.strategy(:urgent) do
           ActiveRecord::Base.transaction do
             expect { City.create! }.not_to update_index('cities#city')
           end
@@ -126,7 +126,7 @@ describe HSChewy::Type::Observe do
       before { stub_index(:cities) { define_type City } }
 
       specify do
-        Chewy.strategy(:urgent) do
+        HSChewy.strategy(:urgent) do
           ActiveRecord::Base.transaction do
             expect { City.create! }.to update_index('cities#city')
           end

@@ -10,9 +10,9 @@ module HSChewy
 
       def initialize(options = {})
         @options = options.merge(
-          query_mode: Chewy.query_mode,
-          filter_mode: Chewy.filter_mode,
-          post_filter_mode: Chewy.post_filter_mode || Chewy.filter_mode
+          query_mode: HSChewy.query_mode,
+          filter_mode: HSChewy.filter_mode,
+          post_filter_mode: HSChewy.post_filter_mode || HSChewy.filter_mode
         )
       end
 

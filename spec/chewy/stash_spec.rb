@@ -5,7 +5,7 @@ describe HSChewy::Stash::Journal, :orm do
     response['deleted'] || response['_indices']['_all']['deleted']
   end
 
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_model(:city)

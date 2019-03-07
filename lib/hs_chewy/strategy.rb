@@ -39,13 +39,13 @@ module HSChewy
   #
   #   User.first.save # Raises UndefinedUpdateStrategy exception
   #
-  #   Chewy.strategy(:atomic) do
+  #   HSChewy.strategy(:atomic) do
   #     User.last.save # Save user according to the `:atomic` strategy rules
   #   end
   #
   class Strategy
     def initialize
-      @stack = [resolve(Chewy.root_strategy).new]
+      @stack = [resolve(HSChewy.root_strategy).new]
     end
 
     def current
@@ -75,9 +75,9 @@ module HSChewy
   private
 
     def debug(string)
-      return unless Chewy.logger && Chewy.logger.debug?
+      return unless HSChewy.logger && HSChewy.logger.debug?
       line = caller.detect { |l| l !~ %r{lib/chewy/strategy.rb:|lib/hs_chewy.rb:} }
-      Chewy.logger.debug(["Chewy strategies stack: #{string}", line.sub(/:in\s.+$/, '')].join(' @ '))
+      HSChewy.logger.debug(["Chewy strategies stack: #{string}", line.sub(/:in\s.+$/, '')].join(' @ '))
     end
 
     def resolve(name)

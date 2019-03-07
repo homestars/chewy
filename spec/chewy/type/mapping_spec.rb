@@ -51,10 +51,10 @@ describe HSChewy::Type::Mapping do
 
     context 'default root options are set' do
       around do |example|
-        previous_options = Chewy.default_root_options
-        Chewy.default_root_options = {_all: {enabled: false}}
+        previous_options = HSChewy.default_root_options
+        HSChewy.default_root_options = {_all: {enabled: false}}
         example.run
-        Chewy.default_root_options = previous_options
+        HSChewy.default_root_options = previous_options
       end
 
       specify { expect(product.mappings_hash[:product]).to include(_all: {enabled: false}) }
@@ -106,7 +106,7 @@ describe HSChewy::Type::Mapping do
           expect(product.mappings_hash).to eq(product: {
             properties: {
               name: {type: 'integer'},
-              identifier: {type: Chewy.default_field_type}
+              identifier: {type: HSChewy.default_field_type}
             },
             other_option: 'option_value',
             _parent: {type: 'something_else'}

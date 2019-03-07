@@ -43,7 +43,7 @@ module HSChewy
       # @param indices [HSChewy::Index, Array<HSChewy::Index>]
       def self.for(*something)
         something = something.flatten.compact
-        types = something.flat_map { |s| Chewy.derive_types(s) }
+        types = something.flat_map { |s| HSChewy.derive_types(s) }
         return none if something.present? && types.blank?
         scope = all
         types.group_by(&:index).each do |index, index_types|
@@ -65,7 +65,7 @@ module HSChewy
         field :created_at, type: 'date'
 
         def type
-          @type ||= Chewy.derive_type("#{index_name}##{type_name}")
+          @type ||= HSChewy.derive_type("#{index_name}##{type_name}")
         end
 
         def references

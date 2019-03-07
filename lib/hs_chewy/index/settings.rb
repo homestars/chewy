@@ -5,8 +5,8 @@ module HSChewy
     # analysis options to the corresponding repository:
     #
     # @example
-    #   Chewy.analyzer :title_analyzer, type: 'custom', filter: %w(lowercase icu_folding title_nysiis)
-    #   Chewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
+    #   HSChewy.analyzer :title_analyzer, type: 'custom', filter: %w(lowercase icu_folding title_nysiis)
+    #   HSChewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
     #
     # `title_nysiis` filter here will be expanded automatically when
     # `title_analyzer` analyser will be used in index settings:
@@ -36,8 +36,8 @@ module HSChewy
 
         settings[:analysis] = resolve_analysis(settings[:analysis]) if settings[:analysis]
 
-        if settings[:index] || Chewy.configuration[:index]
-          settings[:index] = (Chewy.configuration[:index] || {})
+        if settings[:index] || HSChewy.configuration[:index]
+          settings[:index] = (HSChewy.configuration[:index] || {})
             .deep_merge((settings[:index] || {}).deep_symbolize_keys)
         end
 
@@ -47,11 +47,11 @@ module HSChewy
     private
 
       def resolve_analysis(analysis)
-        analyzer = resolve(analysis[:analyzer], Chewy.analyzers)
+        analyzer = resolve(analysis[:analyzer], HSChewy.analyzers)
 
         options = %i[tokenizer filter char_filter].each.with_object({}) do |type, result|
           dependencies = collect_dependencies(type, analyzer)
-          resolved = resolve(dependencies.push(analysis[type]), Chewy.send(type.to_s.pluralize))
+          resolved = resolve(dependencies.push(analysis[type]), HSChewy.send(type.to_s.pluralize))
           result.merge!(type => resolved) if resolved.present?
         end
 

@@ -123,18 +123,18 @@ describe Chewy do
   end
 
   describe '.massacre' do
-    before { Chewy.massacre }
+    before { HSChewy.massacre }
 
     before do
-      allow(Chewy).to receive_messages(configuration: Chewy.configuration.merge(prefix: 'prefix1'))
+      allow(Chewy).to receive_messages(configuration: HSChewy.configuration.merge(prefix: 'prefix1'))
       stub_index(:admins).create!
-      allow(Chewy).to receive_messages(configuration: Chewy.configuration.merge(prefix: 'prefix2'))
+      allow(Chewy).to receive_messages(configuration: HSChewy.configuration.merge(prefix: 'prefix2'))
       stub_index(:developers).create!
       stub_index(:companies).create!
 
-      Chewy.massacre
+      HSChewy.massacre
 
-      allow(Chewy).to receive_messages(configuration: Chewy.configuration.merge(prefix: 'prefix1'))
+      allow(Chewy).to receive_messages(configuration: HSChewy.configuration.merge(prefix: 'prefix1'))
     end
 
     specify { expect(AdminsIndex.exists?).to eq(true) }
@@ -174,7 +174,7 @@ describe Chewy do
       # To avoid flaky issues when previous specs were run
       allow(HSChewy::Index).to receive(:descendants).and_return([CitiesIndex, PlacesIndex])
 
-      Chewy.massacre
+      HSChewy.massacre
     end
 
     specify do
@@ -186,7 +186,7 @@ describe Chewy do
       expect(CitiesIndex.exists?).to eq true
       expect(PlacesIndex.exists?).to eq false
 
-      expect { Chewy.create_indices }.not_to raise_error
+      expect { HSChewy.create_indices }.not_to raise_error
 
       expect(CitiesIndex.exists?).to eq true
       expect(PlacesIndex.exists?).to eq true
@@ -196,12 +196,12 @@ describe Chewy do
       expect(CitiesIndex.exists?).to eq false
       expect(PlacesIndex.exists?).to eq false
 
-      expect { Chewy.create_indices! }.not_to raise_error
+      expect { HSChewy.create_indices! }.not_to raise_error
 
       expect(CitiesIndex.exists?).to eq true
       expect(PlacesIndex.exists?).to eq true
 
-      expect { Chewy.create_indices! }.to raise_error(Elasticsearch::Transport::Transport::Errors::BadRequest)
+      expect { HSChewy.create_indices! }.to raise_error(Elasticsearch::Transport::Transport::Errors::BadRequest)
     end
   end
 end

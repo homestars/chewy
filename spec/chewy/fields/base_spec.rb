@@ -136,10 +136,10 @@ describe HSChewy::Fields::Base do
       end
 
       around do |example|
-        previous_type = Chewy.default_field_type
-        Chewy.default_field_type = 'integer'
+        previous_type = HSChewy.default_field_type
+        HSChewy.default_field_type = 'integer'
         example.run
-        Chewy.default_field_type = previous_type
+        HSChewy.default_field_type = previous_type
       end
 
       specify do
@@ -300,7 +300,7 @@ describe HSChewy::Fields::Base do
             name: {
               type: 'integer',
               fields: {
-                raw: {analyzer: 'my_own', type: Chewy.default_field_type}
+                raw: {analyzer: 'my_own', type: HSChewy.default_field_type}
               }
             },
             category: {type: 'object'}

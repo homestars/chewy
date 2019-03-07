@@ -1,7 +1,7 @@
 module HSChewy
   class LogSubscriber < ActiveSupport::LogSubscriber
     def logger
-      Chewy.logger
+      HSChewy.logger
     end
 
     def import_objects(event)

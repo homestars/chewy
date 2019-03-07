@@ -74,12 +74,12 @@ module HSChewy
     end
 
     def transport_logger=(logger)
-      Chewy.client.transport.logger = logger
+      HSChewy.client.transport.logger = logger
       @transport_logger = logger
     end
 
     def transport_tracer=(tracer)
-      Chewy.client.transport.tracer = tracer
+      HSChewy.client.transport.tracer = tracer
       @transport_tracer = tracer
     end
 
@@ -88,8 +88,8 @@ module HSChewy
     end
 
     # Chewy core configurations. There is two ways to set it up:
-    # use `Chewy.settings=` method or, for Rails application,
-    # create `config/chewy.yml` file. Btw, `config/chewy.yml` supports
+    # use `HSChewy.settings=` method or, for Rails application,
+    # create `config/hs_chewy.yml` file. Btw, `config/hs_chewy.yml` supports
     # ERB the same way as ActiveRecord's config.
     #
     # Configuration options:

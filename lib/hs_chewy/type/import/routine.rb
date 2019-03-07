@@ -45,7 +45,7 @@ module HSChewy
           @type = type
           @options = options
           @options.reverse_merge!(@type._default_import_options)
-          @options.reverse_merge!(journal: Chewy.configuration[:journal])
+          @options.reverse_merge!(journal: HSChewy.configuration[:journal])
           @options.reverse_merge!(DEFAULT_OPTIONS)
           @bulk_options = @options.slice(*BULK_OPTIONS)
           @parallel_options = @options.delete(:parallel)
@@ -65,7 +65,7 @@ module HSChewy
         # @return [Object] whatever
         def create_indexes!
           HSChewy::Stash::Journal.create if @options[:journal]
-          return if Chewy.configuration[:skip_index_creation_on_import]
+          return if HSChewy.configuration[:skip_index_creation_on_import]
           @type.index.create!(@bulk_options.slice(:suffix)) unless @type.index.exists?
         end
 
@@ -101,7 +101,7 @@ module HSChewy
         def perform_bulk(body)
           response = bulk.perform(body)
           yield response if block_given?
-          Chewy.wait_for_status
+          HSChewy.wait_for_status
           @errors.concat(response)
           response.blank?
         end

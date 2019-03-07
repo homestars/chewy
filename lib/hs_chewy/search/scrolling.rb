@@ -126,7 +126,7 @@ module HSChewy
       def perform_scroll(body)
         ActiveSupport::Notifications.instrument 'search_query.chewy',
           notification_payload(request: body) do
-            Chewy.client.scroll(body)
+            HSChewy.client.scroll(body)
           end
       end
     end

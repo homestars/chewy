@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Index::Aliases do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before { stub_index :dummies }
 
@@ -15,7 +15,7 @@ describe HSChewy::Index::Aliases do
 
     context do
       before { DummiesIndex.create! }
-      before { Chewy.client.indices.put_alias index: 'dummies', name: 'dummies_2013' }
+      before { HSChewy.client.indices.put_alias index: 'dummies', name: 'dummies_2013' }
       specify { expect(DummiesIndex.indexes).to eq([]) }
     end
 
@@ -36,8 +36,8 @@ describe HSChewy::Index::Aliases do
 
     context do
       before { DummiesIndex.create! }
-      before { Chewy.client.indices.put_alias index: 'dummies', name: 'dummies_2013' }
-      before { Chewy.client.indices.put_alias index: 'dummies', name: 'dummies_2014' }
+      before { HSChewy.client.indices.put_alias index: 'dummies', name: 'dummies_2013' }
+      before { HSChewy.client.indices.put_alias index: 'dummies', name: 'dummies_2014' }
       specify { expect(DummiesIndex.aliases).to match_array(%w[dummies_2013 dummies_2014]) }
     end
 

@@ -20,34 +20,34 @@ module HSChewy
 
     # Analysers repository:
     #
-    #   Chewy.analyzer :my_analyzer2, {
+    #   HSChewy.analyzer :my_analyzer2, {
     #     type: custom,
     #     tokenizer: 'my_tokenizer1',
     #     filter : ['my_token_filter1', 'my_token_filter2']
     #     char_filter : ['my_html']
     #   }
-    #   Chewy.analyzer(:my_analyzer2) # => {type: 'custom', tokenizer: ...}
+    #   HSChewy.analyzer(:my_analyzer2) # => {type: 'custom', tokenizer: ...}
     #
     repository :analyzer
 
     # Tokenizers repository:
     #
-    #   Chewy.tokenizer :my_tokenizer1, {type: standard, max_token_length: 900}
-    #   Chewy.tokenizer(:my_tokenizer1) # => {type: standard, max_token_length: 900}
+    #   HSChewy.tokenizer :my_tokenizer1, {type: standard, max_token_length: 900}
+    #   HSChewy.tokenizer(:my_tokenizer1) # => {type: standard, max_token_length: 900}
     #
     repository :tokenizer
 
     # Token filters repository:
     #
-    #   Chewy.filter :my_token_filter1, {type: stop, stopwords: [stop1, stop2, stop3, stop4]}
-    #   Chewy.filter(:my_token_filter1) # => {type: stop, stopwords: [stop1, stop2, stop3, stop4]}
+    #   HSChewy.filter :my_token_filter1, {type: stop, stopwords: [stop1, stop2, stop3, stop4]}
+    #   HSChewy.filter(:my_token_filter1) # => {type: stop, stopwords: [stop1, stop2, stop3, stop4]}
     #
     repository :filter
 
     # Char filters repository:
     #
-    #   Chewy.char_filter :my_html, {type: html_strip, escaped_tags: [xxx, yyy], read_ahead: 1024}
-    #   Chewy.char_filter(:my_html) # => {type: html_strip, escaped_tags: [xxx, yyy], read_ahead: 1024}
+    #   HSChewy.char_filter :my_html, {type: html_strip, escaped_tags: [xxx, yyy], read_ahead: 1024}
+    #   HSChewy.char_filter(:my_html) # => {type: html_strip, escaped_tags: [xxx, yyy], read_ahead: 1024}
     #
     repository :char_filter
 

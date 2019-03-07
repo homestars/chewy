@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Type::Import::BulkBuilder do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   subject { described_class.new(type, index: index, delete: delete, fields: fields) }
   let(:type) { PlacesIndex::City }

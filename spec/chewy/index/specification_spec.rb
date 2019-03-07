@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Index::Specification do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   let(:index1) do
     stub_index(:places) do

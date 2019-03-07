@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Search::Loader do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_model(:city)

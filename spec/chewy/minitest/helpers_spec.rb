@@ -13,7 +13,7 @@ describe :minitest_helper do
   include ::HSChewy::Minitest::Helpers
 
   before do
-    Chewy.massacre
+    HSChewy.massacre
   end
 
   before do
@@ -72,17 +72,17 @@ describe :minitest_helper do
 
   context 'run_indexing' do
     specify 'pushes onto the chewy strategy stack' do
-      Chewy.strategy :bypass do
+      HSChewy.strategy :bypass do
         run_indexing do
-          expect(Chewy.strategy.current.name).to be(:atomic)
+          expect(HSChewy.strategy.current.name).to be(:atomic)
         end
       end
     end
 
     specify 'allows tester to specify the strategy' do
-      Chewy.strategy :atomic do
+      HSChewy.strategy :atomic do
         run_indexing strategy: :bypass do
-          expect(Chewy.strategy.current.name).to be(:bypass)
+          expect(HSChewy.strategy.current.name).to be(:bypass)
         end
       end
     end

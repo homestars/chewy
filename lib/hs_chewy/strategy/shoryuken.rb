@@ -3,7 +3,7 @@ module HSChewy
     # The strategy works the same way as atomic, but performs
     # async index update driven by shoryuken
     #
-    #   Chewy.strategy(:shoryuken) do
+    #   HSChewy.strategy(:shoryuken) do
     #     User.all.map(&:save) # Does nothing here
     #     Post.all.map(&:save) # And here
     #     # It imports all the changed users and posts right here
@@ -18,7 +18,7 @@ module HSChewy
 
         def perform(_sqs_msg, body)
           options = body['options'] || {}
-          options[:refresh] = !Chewy.disable_refresh_async if Chewy.disable_refresh_async
+          options[:refresh] = !HSChewy.disable_refresh_async if HSChewy.disable_refresh_async
           body['type'].constantize.import!(body['ids'], options.deep_symbolize_keys!)
         end
       end
@@ -33,7 +33,7 @@ module HSChewy
     private
 
       def shoryuken_queue
-        Chewy.settings.fetch(:shoryuken, {})[:queue] || 'chewy'
+        HSChewy.settings.fetch(:shoryuken, {})[:queue] || 'chewy'
       end
     end
   end

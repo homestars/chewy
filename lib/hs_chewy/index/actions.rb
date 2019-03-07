@@ -61,7 +61,7 @@ module HSChewy
           body[:aliases] = {general_name => {}} if options[:alias] && suffixed_name != general_name
           result = client.indices.create(index: suffixed_name, body: body)
 
-          Chewy.wait_for_status if result
+          HSChewy.wait_for_status if result
           result
         end
 
@@ -75,7 +75,7 @@ module HSChewy
         #
         def delete(suffix = nil)
           result = client.indices.delete index: index_name(suffix: suffix)
-          Chewy.wait_for_status if result
+          HSChewy.wait_for_status if result
           result
           # es-ruby >= 1.0.10 handles Elasticsearch::Transport::Transport::Errors::NotFound
           # by itself, rescue is for previous versions
@@ -179,7 +179,7 @@ module HSChewy
             suffixed_name = index_name(suffix: suffix)
 
             optimize_index_settings suffixed_name
-            result = import import_options.merge(suffix: suffix, journal: journal, refresh: !Chewy.reset_disable_refresh_interval)
+            result = import import_options.merge(suffix: suffix, journal: journal, refresh: !HSChewy.reset_disable_refresh_interval)
             original_index_settings suffixed_name
 
             delete if indexes.blank?
@@ -213,18 +213,18 @@ module HSChewy
 
         def optimize_index_settings(index_name)
           settings = {}
-          settings[:refresh_interval] = -1 if Chewy.reset_disable_refresh_interval
-          settings[:number_of_replicas] = 0 if Chewy.reset_no_replicas
+          settings[:refresh_interval] = -1 if HSChewy.reset_disable_refresh_interval
+          settings[:number_of_replicas] = 0 if HSChewy.reset_no_replicas
           update_settings index_name, settings: settings if settings.any?
         end
 
         def original_index_settings(index_name)
           settings = {}
-          if Chewy.reset_disable_refresh_interval
+          if HSChewy.reset_disable_refresh_interval
             settings.merge! index_settings(:refresh_interval)
             settings[:refresh_interval] = '1s' if settings.empty?
           end
-          settings.merge! index_settings(:number_of_replicas) if Chewy.reset_no_replicas
+          settings.merge! index_settings(:number_of_replicas) if HSChewy.reset_no_replicas
           update_settings index_name, settings: settings if settings.any?
         end
 

@@ -59,7 +59,7 @@ module HSChewy
       # @return [Hash] the request result
       def search_string(query, options = {})
         options = options.merge(all.render.slice(:index, :type).merge(q: query))
-        Chewy.client.search(options)
+        HSChewy.client.search(options)
       end
 
       # Delegates methods from the request class to the index or type class
@@ -82,7 +82,7 @@ module HSChewy
     private
 
       def search_class
-        @search_class ||= build_search_class(Chewy.search_class)
+        @search_class ||= build_search_class(HSChewy.search_class)
       end
 
       def build_search_class(base)

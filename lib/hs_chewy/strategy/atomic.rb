@@ -4,7 +4,7 @@ module HSChewy
     # indexing and fires index process when strategy is popped
     # from the strategies stack.
     #
-    #   Chewy.strategy(:atomic) do
+    #   HSChewy.strategy(:atomic) do
     #     User.all.map(&:save) # Does nothing here
     #     Post.all.map(&:save) # And here
     #     # It imports all the changed users and posts right here

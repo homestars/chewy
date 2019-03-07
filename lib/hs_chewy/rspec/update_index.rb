@@ -98,7 +98,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}| # rubocop:disa
     @missed_reindex = []
     @missed_delete = []
 
-    type = Chewy.derive_type(type_name)
+    type = HSChewy.derive_type(type_name)
     if defined?(Mocha) && RSpec.configuration.mock_framework.to_s == 'RSpec::Core::MockingAdapters::Mocha'
       HSChewy::Type::Import::BulkRequest.stubs(:new).with(type, any_parameters).returns(mock_bulk_request)
     else
@@ -107,7 +107,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}| # rubocop:disa
       allow(HSChewy::Type::Import::BulkRequest).to receive(:new).with(type, any_args).and_return(mock_bulk_request)
     end
 
-    Chewy.strategy(options[:strategy] || :atomic) { block.call }
+    HSChewy.strategy(options[:strategy] || :atomic) { block.call }
 
     mock_bulk_request.updates.each do |updated_document|
       if (body = updated_document[:index])

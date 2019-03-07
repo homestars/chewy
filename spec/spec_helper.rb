@@ -21,7 +21,7 @@ require 'support/class_helpers'
 
 require 'hs_chewy/rspec'
 
-Chewy.settings = {
+HSChewy.settings = {
   host: 'localhost:9250',
   wait_for_status: 'green',
   index: {
@@ -30,8 +30,8 @@ Chewy.settings = {
   }
 }
 
-Chewy.default_field_type = 'string' if HSChewy::Runtime.version < '5.0'
-# Chewy.transport_logger = Logger.new(STDERR)
+HSChewy.default_field_type = 'string' if HSChewy::Runtime.version < '5.0'
+# HSChewy.transport_logger = Logger.new(STDERR)
 
 KEYWORD_FIELD = if HSChewy::Runtime.version < '5.0'
   {type: 'string', index: 'not_analyzed'}

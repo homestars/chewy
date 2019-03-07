@@ -4,7 +4,7 @@ if defined?(::Shoryuken)
   require 'aws-sdk-sqs'
 
   describe HSChewy::Strategy::Shoryuken do
-    around { |example| Chewy.strategy(:bypass) { example.run } }
+    around { |example| HSChewy.strategy(:bypass) { example.run } }
     before { ::Shoryuken.groups.clear }
     before do
       stub_model(:city) do
@@ -31,10 +31,10 @@ if defined?(::Shoryuken)
     end
 
     specify do
-      Chewy.settings[:shoryuken] = {queue: 'low'}
+      HSChewy.settings[:shoryuken] = {queue: 'low'}
       expect(HSChewy::Strategy::Shoryuken::Worker).to receive(:perform_async)
         .with(hash_including(type: 'CitiesIndex::City', ids: [city.id, other_city.id]), hash_including(queue: 'low'))
-      Chewy.strategy(:shoryuken) do
+      HSChewy.strategy(:shoryuken) do
         [city, other_city].map(&:save!)
       end
     end

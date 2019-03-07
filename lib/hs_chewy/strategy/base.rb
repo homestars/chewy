@@ -3,7 +3,7 @@ module HSChewy
     # This strategy raises exception on every index update
     # asking to choose some other strategy.
     #
-    #   Chewy.strategy(:base) do
+    #   HSChewy.strategy(:base) do
     #     User.all.map(&:save) # Raises UndefinedUpdateStrategy exception
     #   end
     #

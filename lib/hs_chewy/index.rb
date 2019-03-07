@@ -40,7 +40,7 @@ module HSChewy
       #     class UsersIndex < HSChewy::Index
       #     end
       #
-      #     Chewy.settings = {prefix: 'test'}
+      #     HSChewy.settings = {prefix: 'test'}
       #     UsersIndex.index_name # => 'test_users'
       #     UsersIndex.index_name(prefix: 'foobar') # => 'foobar_users'
       #     UsersIndex.index_name(suffix: '2017') # => 'test_users_2017'
@@ -108,7 +108,7 @@ module HSChewy
       #
       # @return [String] prefix
       def prefix
-        Chewy.configuration[:prefix]
+        HSChewy.configuration[:prefix]
       end
 
       # Defines type for the index. Arguments depends on adapter used. For
@@ -146,7 +146,7 @@ module HSChewy
       # passed.
       #
       def define_type(target, options = {}, &block)
-        type_class = Chewy.create_type(self, target, options, &block)
+        type_class = HSChewy.create_type(self, target, options, &block)
         self.type_hash = type_hash.merge(type_class.type_name => type_class)
       end
 

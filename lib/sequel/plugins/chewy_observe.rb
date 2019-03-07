@@ -47,14 +47,14 @@ module Sequel
         def after_save
           run_callbacks(:save) do
             super
-            db.after_commit {} if Chewy.use_after_commit_callbacks
+            db.after_commit {} if HSChewy.use_after_commit_callbacks
           end
         end
 
         def after_destroy
           run_callbacks(:destroy) do
             super
-            db.after_commit {} if Chewy.use_after_commit_callbacks
+            db.after_commit {} if HSChewy.use_after_commit_callbacks
           end
         end
       end

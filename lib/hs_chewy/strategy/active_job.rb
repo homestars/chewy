@@ -3,7 +3,7 @@ module HSChewy
     # The strategy works the same way as atomic, but performs
     # async index update driven by active_job
     #
-    #   Chewy.strategy(:active_job) do
+    #   HSChewy.strategy(:active_job) do
     #     User.all.map(&:save) # Does nothing here
     #     Post.all.map(&:save) # And here
     #     # It imports all the changed users and posts right here
@@ -14,7 +14,7 @@ module HSChewy
         queue_as :chewy
 
         def perform(type, ids, options = {})
-          options[:refresh] = !Chewy.disable_refresh_async if Chewy.disable_refresh_async
+          options[:refresh] = !HSChewy.disable_refresh_async if HSChewy.disable_refresh_async
           type.constantize.import!(ids, options)
         end
       end

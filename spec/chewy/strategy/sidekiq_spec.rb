@@ -4,7 +4,7 @@ if defined?(::Sidekiq)
   require 'sidekiq/testing'
 
   describe HSChewy::Strategy::Sidekiq do
-    around { |example| Chewy.strategy(:bypass) { example.run } }
+    around { |example| HSChewy.strategy(:bypass) { example.run } }
     before { ::Sidekiq::Worker.clear_all }
     before do
       stub_model(:city) do
@@ -25,7 +25,7 @@ if defined?(::Sidekiq)
     end
 
     specify do
-      Chewy.settings[:sidekiq] = {queue: 'low'}
+      HSChewy.settings[:sidekiq] = {queue: 'low'}
       expect(::Sidekiq::Client).to receive(:push).with(hash_including('queue' => 'low')).and_call_original
       ::Sidekiq::Testing.inline! do
         expect { [city, other_city].map(&:save!) }

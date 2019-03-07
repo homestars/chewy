@@ -2,7 +2,7 @@ module HSChewy
   class Strategy
     # This strategy basically does nothing.
     #
-    #   Chewy.strategy(:bypass) do
+    #   HSChewy.strategy(:bypass) do
     #     User.all.map(&:save) # Does nothing here
     #     # Does not update index all over the block.
     #   end

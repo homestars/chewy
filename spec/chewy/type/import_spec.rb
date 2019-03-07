@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Type::Import do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_model(:city)
@@ -50,10 +50,10 @@ describe HSChewy::Type::Import do
       before do
         # To avoid flaky issues when previous specs were run
         expect(HSChewy::Index).to receive(:descendants).and_return([CitiesIndex])
-        Chewy.create_indices
-        Chewy.config.settings[:skip_index_creation_on_import] = true
+        HSChewy.create_indices
+        HSChewy.config.settings[:skip_index_creation_on_import] = true
       end
-      after { Chewy.config.settings[:skip_index_creation_on_import] = nil }
+      after { HSChewy.config.settings[:skip_index_creation_on_import] = nil }
 
       specify do
         expect(CitiesIndex).not_to receive(:exists?)
@@ -123,7 +123,7 @@ describe HSChewy::Type::Import do
       specify { expect { import(dummy_cities, bulk_size: 1.2.kilobyte) }.to update_index(CitiesIndex::City).and_reindex(dummy_cities) }
 
       context do
-        before { expect(Chewy.client).to receive(:bulk).exactly(3).times.and_call_original }
+        before { expect(HSChewy.client).to receive(:bulk).exactly(3).times.and_call_original }
         specify { expect(import(dummy_cities, bulk_size: 1.2.kilobyte)).to eq(true) }
       end
     end
@@ -212,13 +212,13 @@ describe HSChewy::Type::Import do
       before { CitiesIndex::City.import!(dummy_cities.first(2)) }
 
       context do
-        before { expect(Chewy.client).to receive(:bulk).twice.and_call_original }
+        before { expect(HSChewy.client).to receive(:bulk).twice.and_call_original }
         specify { expect(import(dummy_cities, update_fields: [:name])).to eq(true) }
       end
 
       context do
         before { CitiesIndex::City.import!(dummy_cities.last) }
-        before { expect(Chewy.client).to receive(:bulk).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:bulk).once.and_call_original }
         specify { expect(import(dummy_cities, update_fields: [:name])).to eq(true) }
       end
     end
@@ -253,7 +253,7 @@ describe HSChewy::Type::Import do
       specify do
         payload = subscribe_notification
 
-        expect(Chewy.client).to receive(:bulk).twice.and_call_original
+        expect(HSChewy.client).to receive(:bulk).twice.and_call_original
         import(objects, update_fields: %i[name])
 
         expect(payload).to eq(
@@ -271,7 +271,7 @@ describe HSChewy::Type::Import do
       specify do
         payload = subscribe_notification
 
-        expect(Chewy.client).to receive(:bulk).at_least(4).at_most(6).times.and_call_original
+        expect(HSChewy.client).to receive(:bulk).at_least(4).at_most(6).times.and_call_original
         import(objects, batch_size: 2, update_fields: %i[name])
 
         expect(payload).to eq(
@@ -292,7 +292,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).at_least(3).at_most(5).times.and_call_original
+          expect(HSChewy.client).to receive(:bulk).at_least(3).at_most(5).times.and_call_original
           import(objects, batch_size: 2, update_fields: %i[name])
 
           expect(payload).to eq(
@@ -314,7 +314,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).twice.and_call_original
+          expect(HSChewy.client).to receive(:bulk).twice.and_call_original
           import(objects, update_fields: %i[name])
 
           expect(payload).to eq(
@@ -333,7 +333,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).at_least(3).at_most(5).times.and_call_original
+          expect(HSChewy.client).to receive(:bulk).at_least(3).at_most(5).times.and_call_original
           import(objects, batch_size: 2, update_fields: %i[name])
 
           expect(payload).to eq(
@@ -352,7 +352,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).once.and_call_original
+          expect(HSChewy.client).to receive(:bulk).once.and_call_original
           import(objects, update_fields: %i[name], update_failover: false)
 
           # Full match doesn't work here.
@@ -375,7 +375,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).once.and_call_original
+          expect(HSChewy.client).to receive(:bulk).once.and_call_original
           import(objects, update_fields: %i[name])
 
           expect(payload).to eq(
@@ -399,7 +399,7 @@ describe HSChewy::Type::Import do
         specify do
           payload = subscribe_notification
 
-          expect(Chewy.client).to receive(:bulk).once.and_call_original
+          expect(HSChewy.client).to receive(:bulk).once.and_call_original
           import(objects, update_fields: %i[object])
 
           expect(payload).to eq(

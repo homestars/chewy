@@ -2,9 +2,9 @@ require 'spec_helper'
 
 if defined?(::ActiveJob)
   describe HSChewy::Strategy::ActiveJob do
-    around { |example| Chewy.strategy(:bypass) { example.run } }
+    around { |example| HSChewy.strategy(:bypass) { example.run } }
     before(:all) do
-      ::ActiveJob::Base.logger = Chewy.logger
+      ::ActiveJob::Base.logger = HSChewy.logger
     end
     before do
       ::ActiveJob::Base.queue_adapter = :test
@@ -31,7 +31,7 @@ if defined?(::ActiveJob)
     end
 
     specify do
-      Chewy.strategy(:active_job) do
+      HSChewy.strategy(:active_job) do
         [city, other_city].map(&:save!)
       end
       enqueued_job = ::ActiveJob::Base.queue_adapter.enqueued_jobs.first

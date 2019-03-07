@@ -6,7 +6,7 @@
 
   * Try to align the gem version with the ElasticSearch version we support
 
-  * `Chewy.default_field_type` is `text` now.
+  * `HSChewy.default_field_type` is `text` now.
 
   * `HSChewy::Stash` was split onto two indexes - `HSChewy::Stash::Specification` and `HSChewy::Stash::Journal`
 
@@ -109,7 +109,7 @@
 
   * Add the `track_scores` option to the query; `_score` to be computed and tracked even when there are no `_score` in sort. (@dmitry, #417)
 
-  * Confugurable `Chewy.indices_path` (@robacarp, #414, #433, #439)
+  * Confugurable `HSChewy.indices_path` (@robacarp, #414, #433, #439)
 
   * [Journaling](https://github.com/toptal/chewy/#journaling) implementation (@sergey-kintsel, #409, #425, #428, #432, #434, #463)
 
@@ -187,7 +187,7 @@
 
 ## Breaking changes:
 
-  * `Chewy.atomic` and `Chewy.urgent_update=` methods was removed from the codebase, use `Chewy.strategy` block instead.
+  * `HSChewy.atomic` and `HSChewy.urgent_update=` methods was removed from the codebase, use `HSChewy.strategy` block instead.
 
   * `delete_from_index?` hook is removed from the codebase.
 
@@ -270,7 +270,7 @@
 
 ## Breaking changes:
 
-  * `Chewy.use_after_commit_callbacks = false` returns previous RDBMS behavior
+  * `HSChewy.use_after_commit_callbacks = false` returns previous RDBMS behavior
   in tests
 
   * ActiveRecord import is now called after_commit instead of after_save and after_destroy
@@ -285,9 +285,9 @@
       end
     ```
 
-  * `Chewy.request_strategy` to configure action controller's request wrapping strategy
+  * `HSChewy.request_strategy` to configure action controller's request wrapping strategy
 
-  * `Chewy.root_strategy` to configure the first strategy in stack
+  * `HSChewy.root_strategy` to configure the first strategy in stack
 
   * Default strategy for controller actions is `:atomic`
 
@@ -297,11 +297,11 @@
 
   * Default strategy for rails console is `:urgent`
 
-  * `Chewy.configuration` was renamed to `Chewy.settings`
+  * `HSChewy.configuration` was renamed to `HSChewy.settings`
 
-  * Reworked index update strategies implementation. `Chewy.atomic`
-  and `Chewy.urgent_update` are now deprecated in favour of the new
-  `Chewy.strategy` API.
+  * Reworked index update strategies implementation. `HSChewy.atomic`
+  and `HSChewy.urgent_update` are now deprecated in favour of the new
+  `HSChewy.strategy` API.
 
   * Loading objects for object-sourced types using `wrap` method is
   deprecated, `load_one` method should be used instead. Or method name
@@ -405,7 +405,7 @@
 
   * Mongoid support YaY! (@fabiotomio, @leemhenson)
 
-  * `urgent: true` option for `update_index` is deprecated and will be removed soon, use `Chewy.atomic` instead
+  * `urgent: true` option for `update_index` is deprecated and will be removed soon, use `HSChewy.atomic` instead
 
   * `timeout` and `timed_out` support (@MarkMurphy)
 
@@ -423,7 +423,7 @@
 
 ## Changes
 
-  * `Chewy.massacre` aliased to `Chewy.delete_all` method deletes all the indexes with current prefix
+  * `HSChewy.massacre` aliased to `HSChewy.delete_all` method deletes all the indexes with current prefix
 
 ## Bugfixes:
 
@@ -435,7 +435,7 @@
 
 ## Changes:
 
-  * `chewy.yml` Rails generator (@jirikolarik)
+  * `HSChewy.yml` Rails generator (@jirikolarik)
 
   * Parent-child mappings feature support (@inbeom)
 
@@ -487,7 +487,7 @@
 
   * `highlight` and `rescore` query options support.
 
-  * config/chewy.yml ERB support.
+  * config/HSChewy.yml ERB support.
 
 ## Bugfixes:
 
@@ -517,13 +517,13 @@
 
   * `import` now creates index before performing.
 
-  * `Chewy.configuration[:wait_for_status]` option. Can be set to `red`, `yellow` or `green`. If set - chewy will wait for cluster status before creating, deleting index and import. Useful for specs.
+  * `HSChewy.configuration[:wait_for_status]` option. Can be set to `red`, `yellow` or `green`. If set - chewy will wait for cluster status before creating, deleting index and import. Useful for specs.
 
 # Version 0.3.0
 
-  * Added `Chewy.configuration[:index]` config to setup common indexes options.
+  * Added `HSChewy.configuration[:index]` config to setup common indexes options.
 
-  * `Chewy.client_options` replaced with `Chewy.configuration`
+  * `HSChewy.client_options` replaced with `HSChewy.configuration`
 
   * Using source filtering instead of fields filter (http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html).
 
@@ -541,8 +541,8 @@
 
     ```ruby
       # Setting up analyzers repository:
-      Chewy.analyzer :title_analyzer, type: 'custom', filter: %w(lowercase icu_folding title_nysiis)
-      Chewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
+      HSChewy.analyzer :title_analyzer, type: 'custom', filter: %w(lowercase icu_folding title_nysiis)
+      HSChewy.filter :title_nysiis, type: 'phonetic', encoder: 'nysiis', replace: false
 
       # Using analyzers from repository in index classes
       class ProductsIndex < HSChewy::Index
@@ -588,14 +588,14 @@
 
   * Added query `merge` method
 
-  * `update_index` matcher now wraps expected block in `Chewy.atomic` by default.
+  * `update_index` matcher now wraps expected block in `HSChewy.atomic` by default.
     This behaviour can be prevented with `atomic: false` option passing
 
     ```ruby
       expect { user.save! }.to update_index('users#user', atomic: false)
     ```
 
-  * Renamed `Chewy.observing_enabled` to `Chewy.urgent_update` with `false` as default
+  * Renamed `HSChewy.observing_enabled` to `HSChewy.urgent_update` with `false` as default
 
   * `update_elasticsearch` renamed to `update_index`, added `update_index`
     `:urgent` option

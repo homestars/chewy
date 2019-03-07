@@ -148,11 +148,11 @@ module HSChewy
     #            }}
     #
     # Default value for `:query_mode` might be changed
-    # with `Chewy.query_mode` config option.
+    # with `HSChewy.query_mode` config option.
     #
     # @example
-    #   Chewy.query_mode = :dis_max
-    #   Chewy.query_mode = '50%'
+    #   HSChewy.query_mode = :dis_max
+    #   HSChewy.query_mode = '50%'
     #
     def query_mode(value)
       chain { criteria.update_options query_mode: value }
@@ -216,19 +216,19 @@ module HSChewy
     #            }}}}
     #
     # Default value for `:filter_mode` might be changed
-    # with `Chewy.filter_mode` config option.
+    # with `HSChewy.filter_mode` config option.
     #
     # @example
-    #   Chewy.filter_mode = :should
-    #   Chewy.filter_mode = '50%'
+    #   HSChewy.filter_mode = :should
+    #   HSChewy.filter_mode = '50%'
     #
     def filter_mode(value)
       chain { criteria.update_options filter_mode: value }
     end
 
     # Acts the same way as `filter_mode`, but used for `post_filter`.
-    # Note that it fallbacks by default to `Chewy.filter_mode` if
-    # `Chewy.post_filter_mode` is nil.
+    # Note that it fallbacks by default to `HSChewy.filter_mode` if
+    # `HSChewy.post_filter_mode` is nil.
     #
     # @example
     #   UsersIndex.post_filter{ name == 'Johny' }.post_filter{ age <= 42 }.post_filter_mode(:and)
@@ -793,7 +793,7 @@ module HSChewy
     #   Min of query and function score.
     #
     # Default value for `:boost_mode` might be changed
-    # with `Chewy.score_mode` config option.
+    # with `HSChewy.score_mode` config option.
     def boost_mode(value)
       chain { criteria.update_options boost_mode: value }
     end
@@ -829,10 +829,10 @@ module HSChewy
     #   Minimum score is used
     #
     # Default value for `:score_mode` might be changed
-    # with `Chewy.score_mode` config option.
+    # with `HSChewy.score_mode` config option.
     #
     # @example
-    #   Chewy.score_mode = :first
+    #   HSChewy.score_mode = :first
     #
     def score_mode(value)
       chain { criteria.update_options score_mode: value }
@@ -979,7 +979,7 @@ module HSChewy
     #
     def delete_all
       if Runtime.version >= '2.0'
-        plugins = Chewy.client.nodes.info(plugins: true)['nodes'].values.map { |item| item['plugins'] }.flatten
+        plugins = HSChewy.client.nodes.info(plugins: true)['nodes'].values.map { |item| item['plugins'] }.flatten
         raise PluginMissing, 'install delete-by-query plugin' unless plugins.find { |item| item['name'] == 'delete-by-query' }
       end
 
@@ -995,9 +995,9 @@ module HSChewy
               Elasticsearch::API::Utils.__listify(request[:type]),
               '/_query'
             )
-            Chewy.client.perform_request(Elasticsearch::API::HTTP_DELETE, path, {}, request[:body]).body
+            HSChewy.client.perform_request(Elasticsearch::API::HTTP_DELETE, path, {}, request[:body]).body
           else
-            Chewy.client.delete_by_query(request)
+            HSChewy.client.delete_by_query(request)
           end
         end
     end
@@ -1101,7 +1101,7 @@ module HSChewy
         index: _indexes.one? ? _indexes.first : _indexes,
         type: _types.one? ? _types.first : _types do
         begin
-          Chewy.client.search(_request)
+          HSChewy.client.search(_request)
         rescue Elasticsearch::Transport::Transport::Errors::NotFound => e
           raise e if e.message !~ /IndexMissingException/ && e.message !~ /index_not_found_exception/
           {}

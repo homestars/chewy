@@ -21,13 +21,13 @@ describe HSChewy::Journal do
             end
           end
 
-          Chewy.massacre
-          Chewy.settings[:prefix] = 'some_prefix'
+          HSChewy.massacre
+          HSChewy.settings[:prefix] = 'some_prefix'
           Timecop.freeze(time)
         end
 
         after do
-          Chewy.settings[:prefix] = nil
+          HSChewy.settings[:prefix] = nil
           Timecop.return
         end
 
@@ -42,7 +42,7 @@ describe HSChewy::Journal do
 
         specify do
           places_index = namespace.present? ? Namespace::PlacesIndex : PlacesIndex
-          Chewy.strategy(:urgent) do
+          HSChewy.strategy(:urgent) do
             cities = Array.new(2) { |i| City.create!(id: i + 1) }
             countries = Array.new(2) { |i| Country.create!(id: i + 1) }
             Country.create!(id: 3)
@@ -133,7 +133,7 @@ describe HSChewy::Journal do
             expect(journal_entries.size).to eq 4
 
             # simulate lost data
-            Chewy.client.delete(index: "#{Chewy.settings[:prefix]}_places", type: 'city', id: 1, refresh: true)
+            HSChewy.client.delete(index: "#{HSChewy.settings[:prefix]}_places", type: 'city', id: 1, refresh: true)
             expect(places_index::City.count).to eq 1
 
             described_class.new.apply(time)
@@ -141,7 +141,7 @@ describe HSChewy::Journal do
 
             clean_response = described_class.new.clean(import_time)
             expect(clean_response['deleted'] || clean_response['_indices']['_all']['deleted']).to eq 7
-            Chewy.client.indices.refresh
+            HSChewy.client.indices.refresh
             expect(HSChewy::Stash::Journal.count).to eq 2
 
             Timecop.return
@@ -152,7 +152,7 @@ describe HSChewy::Journal do
   end
 
   context do
-    before { Chewy.massacre }
+    before { HSChewy.massacre }
     before do
       stub_model(:city) do
         update_index 'cities', :self
@@ -183,13 +183,13 @@ describe HSChewy::Journal do
         after { Timecop.return }
 
         specify do
-          Chewy.strategy(:urgent) do
+          HSChewy.strategy(:urgent) do
             Array.new(2) { |i| City.create!(id: i + 1) }
             Array.new(2) { |i| Country.create!(id: i + 1) }
 
             # simulate lost data
-            Chewy.client.delete(index: 'cities', type: 'city', id: 1, refresh: true)
-            Chewy.client.delete(index: 'countries', type: 'country', id: 1, refresh: true)
+            HSChewy.client.delete(index: 'cities', type: 'city', id: 1, refresh: true)
+            HSChewy.client.delete(index: 'countries', type: 'country', id: 1, refresh: true)
             expect(CitiesIndex.all.to_a.length).to eq 1
             expect(CountriesIndex.all.to_a.length).to eq 1
 
@@ -199,7 +199,7 @@ describe HSChewy::Journal do
             expect(CountriesIndex.all.to_a.length).to eq 1
 
             # Replay on both
-            Chewy.client.delete(index: 'cities', type: 'city', id: 1, refresh: true)
+            HSChewy.client.delete(index: 'cities', type: 'city', id: 1, refresh: true)
             expect(CitiesIndex.all.to_a.length).to eq 1
             expect(described_class.new(CitiesIndex, CountriesIndex).apply(time)).to eq(4)
             expect(CitiesIndex.all.to_a.length).to eq 2
@@ -212,12 +212,12 @@ describe HSChewy::Journal do
         let(:time) { Time.now.to_i }
         before do
           Timecop.freeze
-          Chewy.strategy(:urgent)
+          HSChewy.strategy(:urgent)
           City.create!(id: 1)
         end
 
         after do
-          Chewy.strategy.pop
+          HSChewy.strategy.pop
           Timecop.return
         end
 

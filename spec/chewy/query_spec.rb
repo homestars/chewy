@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe HSChewy::Query do
   if HSChewy::Runtime.version < '5.0'
-    before { Chewy.massacre }
+    before { HSChewy.massacre }
 
     before do
       stub_index(:products) do
@@ -362,31 +362,31 @@ describe HSChewy::Query do
       specify do
         expect do
           subject.query(match: {name: 'name3'}).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(8)
       end
       specify do
         expect do
           subject.filter { age == [10, 20] }.delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total_count }.from(9).to(7)
       end
       specify do
         expect do
           subject.types(:product).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex::Product).total_entries }.from(3).to(0)
       end
       specify do
         expect do
           subject.delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(0)
       end
       specify do
         expect do
           described_class.new(ProductsIndex::City).delete_all
-          Chewy.client.indices.refresh(index: 'products')
+          HSChewy.client.indices.refresh(index: 'products')
         end.to change { described_class.new(ProductsIndex).total }.from(9).to(6)
       end
     end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_examples :kaminari do |request_base_class|
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_index(:products) do

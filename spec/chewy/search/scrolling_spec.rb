@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Search::Scrolling, :orm do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_model(:city)
@@ -32,7 +32,7 @@ describe HSChewy::Search::Scrolling, :orm do
 
     describe '#scroll_batches' do
       context do
-        before { expect(Chewy.client).to receive(:scroll).twice.and_call_original }
+        before { expect(HSChewy.client).to receive(:scroll).twice.and_call_original }
         specify do
           expect(request.scroll_batches(batch_size: 2).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -41,7 +41,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).to receive(:scroll).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:scroll).once.and_call_original }
         specify do
           expect(request.scroll_batches(batch_size: 3).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -50,7 +50,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).to receive(:scroll).once.and_call_original }
+        before { expect(HSChewy.client).to receive(:scroll).once.and_call_original }
         it 'respects limit' do
           expect(request.limit(4).scroll_batches(batch_size: 3).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -59,7 +59,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
         it 'respects limit and terminate_after' do
           expect(request.terminate_after(2).limit(4).scroll_batches(batch_size: 3).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -68,7 +68,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
         it 'respects limit' do
           expect(request.limit(3).scroll_batches(batch_size: 3).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -77,7 +77,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
         it 'respects limit' do
           expect(request.limit(2).scroll_batches(batch_size: 3).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -86,7 +86,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
         specify do
           expect(request.scroll_batches(batch_size: 5).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -95,7 +95,7 @@ describe HSChewy::Search::Scrolling, :orm do
       end
 
       context do
-        before { expect(Chewy.client).not_to receive(:scroll) }
+        before { expect(HSChewy.client).not_to receive(:scroll) }
         specify do
           expect(request.scroll_batches(batch_size: 10).map do |batch|
             batch.map { |hit| hit['_source']['rating'] }
@@ -132,7 +132,7 @@ describe HSChewy::Search::Scrolling, :orm do
     end
 
     describe '#scroll_hits' do
-      before { expect(Chewy.client).to receive(:scroll).twice.and_call_original }
+      before { expect(HSChewy.client).to receive(:scroll).twice.and_call_original }
       specify do
         expect(request.scroll_hits(batch_size: 2).map do |hit|
           hit['_source']['rating']
@@ -141,7 +141,7 @@ describe HSChewy::Search::Scrolling, :orm do
     end
 
     describe '#scroll_wrappers' do
-      before { expect(Chewy.client).to receive(:scroll).twice.and_call_original }
+      before { expect(HSChewy.client).to receive(:scroll).twice.and_call_original }
 
       specify do
         expect(request.scroll_wrappers(batch_size: 2).map(&:rating))
@@ -154,7 +154,7 @@ describe HSChewy::Search::Scrolling, :orm do
     end
 
     describe '#scroll_objects' do
-      before { expect(Chewy.client).to receive(:scroll).twice.and_call_original }
+      before { expect(HSChewy.client).to receive(:scroll).twice.and_call_original }
 
       specify do
         expect(request.scroll_objects(batch_size: 2).map(&:rating))

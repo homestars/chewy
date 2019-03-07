@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # TODO: add more specs here later
 describe HSChewy::Type::Import::Routine do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
   before do
     stub_index(:cities) do
       define_type :city do
@@ -41,7 +41,7 @@ describe HSChewy::Type::Import::Routine do
     end
 
     context do
-      before { allow(Chewy).to receive_messages(configuration: Chewy.configuration.merge(journal: true)) }
+      before { allow(Chewy).to receive_messages(configuration: HSChewy.configuration.merge(journal: true)) }
       specify do
         expect(described_class.new(CitiesIndex::City).options).to eq(
           journal: true,

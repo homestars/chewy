@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HSChewy::Type::Import::BulkRequest do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   subject { described_class.new(type, suffix: suffix, bulk_size: bulk_size, **bulk_options) }
   let(:suffix) {}
@@ -25,12 +25,12 @@ describe HSChewy::Type::Import::BulkRequest do
     end
 
     specify do
-      expect(Chewy.client).not_to receive(:bulk)
+      expect(HSChewy.client).not_to receive(:bulk)
       subject.perform([])
     end
 
     specify do
-      expect(Chewy.client).to receive(:bulk).with(
+      expect(HSChewy.client).to receive(:bulk).with(
         index: 'places',
         type: 'city',
         body: [{index: {id: 42, data: {name: 'Name'}}}]
@@ -42,7 +42,7 @@ describe HSChewy::Type::Import::BulkRequest do
       let(:suffix) { 'suffix' }
 
       specify do
-        expect(Chewy.client).to receive(:bulk).with(
+        expect(HSChewy.client).to receive(:bulk).with(
           index: 'places_suffix',
           type: 'city',
           body: [{index: {id: 42, data: {name: 'Name'}}}]
@@ -55,7 +55,7 @@ describe HSChewy::Type::Import::BulkRequest do
       let(:bulk_size) { 1.2.kilobyte }
 
       specify do
-        expect(Chewy.client).to receive(:bulk).with(
+        expect(HSChewy.client).to receive(:bulk).with(
           index: 'places',
           type: 'city',
           body: "{\"index\":{\"id\":42}}\n{\"name\":\"#{'Name' * 10}\"}\n{\"index\":{\"id\":43}}\n{\"name\":\"#{'Shame' * 10}\"}\n"
@@ -67,17 +67,17 @@ describe HSChewy::Type::Import::BulkRequest do
       end
 
       specify do
-        expect(Chewy.client).to receive(:bulk).with(
+        expect(HSChewy.client).to receive(:bulk).with(
           index: 'places',
           type: 'city',
           body: "{\"index\":{\"id\":42}}\n{\"name\":\"#{'Name' * 30}\"}\n"
         )
-        expect(Chewy.client).to receive(:bulk).with(
+        expect(HSChewy.client).to receive(:bulk).with(
           index: 'places',
           type: 'city',
           body: "{\"index\":{\"id\":43}}\n{\"name\":\"#{'Shame' * 100}\"}\n"
         )
-        expect(Chewy.client).to receive(:bulk).with(
+        expect(HSChewy.client).to receive(:bulk).with(
           index: 'places',
           type: 'city',
           body: "{\"index\":{\"id\":44}}\n{\"name\":\"#{'Blame' * 30}\"}\n"
@@ -94,7 +94,7 @@ describe HSChewy::Type::Import::BulkRequest do
       let(:bulk_options) { {refresh: true} }
 
       specify do
-        expect(Chewy.client).to receive(:bulk).with(hash_including(bulk_options))
+        expect(HSChewy.client).to receive(:bulk).with(hash_including(bulk_options))
         subject.perform([{index: {id: 42, data: {name: 'Name'}}}])
       end
     end

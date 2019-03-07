@@ -811,7 +811,7 @@ module HSChewy
         if performed?
           total
         else
-          Chewy.client.count(only(WHERE_STORAGES).render)['count']
+          HSChewy.client.count(only(WHERE_STORAGES).render)['count']
         end
       rescue Elasticsearch::Transport::Transport::Errors::NotFound
         0
@@ -943,7 +943,7 @@ module HSChewy
             if Runtime.version < '5.0'
               delete_by_query_plugin(request_body)
             else
-              Chewy.client.delete_by_query(request_body)
+              HSChewy.client.delete_by_query(request_body)
             end
           end
       end
@@ -978,7 +978,7 @@ module HSChewy
         ActiveSupport::Notifications.instrument 'search_query.chewy',
           notification_payload(request: request_body) do
             begin
-              Chewy.client.search(request_body)
+              HSChewy.client.search(request_body)
             rescue Elasticsearch::Transport::Transport::Errors::NotFound
               {}
             end
@@ -1015,7 +1015,7 @@ module HSChewy
           Elasticsearch::API::Utils.__listify(request[:type]),
           '_query'
         )
-        Chewy.client.perform_request(Elasticsearch::API::HTTP_DELETE, path, {}, request[:body]).body
+        HSChewy.client.perform_request(Elasticsearch::API::HTTP_DELETE, path, {}, request[:body]).body
       end
 
       def loader

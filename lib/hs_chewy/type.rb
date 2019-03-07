@@ -31,13 +31,13 @@ module HSChewy
     self._default_import_options = {}
 
     class << self
-      # Chewy index current type belongs to. Defined inside `Chewy.create_type`
+      # Chewy index current type belongs to. Defined inside `HSChewy.create_type`
       #
       def index
         raise NotImplementedError, 'Looks like this type was defined outside the index scope and `.index` method is undefined for it'
       end
 
-      # Current type adapter. Defined inside `Chewy.create_type`, derived from
+      # Current type adapter. Defined inside `HSChewy.create_type`, derived from
       # `HSChewy::Index.define_type` arguments.
       #
       def adapter

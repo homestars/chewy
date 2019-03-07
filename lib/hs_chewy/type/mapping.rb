@@ -35,7 +35,7 @@ module HSChewy
         #   end
         #
         def root(**options)
-          self.root_object ||= HSChewy::Fields::Root.new(type_name, Chewy.default_root_options.merge(options))
+          self.root_object ||= HSChewy::Fields::Root.new(type_name, HSChewy.default_root_options.merge(options))
           root_object.update_options!(options)
           yield if block_given?
           root_object

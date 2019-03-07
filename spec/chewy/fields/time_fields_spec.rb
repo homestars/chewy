@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Time fields' do
-  before { Chewy.massacre }
+  before { HSChewy.massacre }
 
   before do
     stub_index(:posts) do

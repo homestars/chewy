@@ -19,9 +19,9 @@ module HSChewy
               type_name
             end
 
-            type = Chewy.derive_type(reference)
+            type = HSChewy.derive_type(reference)
 
-            next if Chewy.strategy.current.name == :bypass
+            next if HSChewy.strategy.current.name == :bypass
 
             backreference = if method && method.to_s == 'self'
               self
@@ -62,7 +62,7 @@ module HSChewy
           callback_options = Observe.extract_callback_options!(args)
           update_proc = Observe.update_proc(type_name, *args, &block)
 
-          if Chewy.use_after_commit_callbacks
+          if HSChewy.use_after_commit_callbacks
             after_commit(callback_options, &update_proc)
           else
             after_save(callback_options, &update_proc)
@@ -73,7 +73,7 @@ module HSChewy
 
       module ClassMethods
         def update_index(objects, options = {})
-          Chewy.strategy.current.update(self, objects, options)
+          HSChewy.strategy.current.update(self, objects, options)
           true
         end
       end

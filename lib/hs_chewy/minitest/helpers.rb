@@ -15,7 +15,7 @@ module HSChewy
       # @return [SearchIndexReceiver] for optional further assertions on the nature of the index changes.
       #
       def assert_indexes(index, strategy: :atomic, bypass_actual_index: true)
-        type = Chewy.derive_type index
+        type = HSChewy.derive_type index
         receiver = SearchIndexReceiver.new
 
         bulk_method = type.method :bulk
@@ -30,7 +30,7 @@ module HSChewy
 
         type.define_singleton_method :bulk, bulk_mock
 
-        Chewy.strategy(strategy) do
+        HSChewy.strategy(strategy) do
           yield
         end
 
@@ -45,7 +45,7 @@ module HSChewy
       # By default, indexing is run at the end of the block.
       # @param strategy [Symbol] the Chewy index update strategy see Chewy docs.
       def run_indexing(strategy: :atomic)
-        Chewy.strategy strategy do
+        HSChewy.strategy strategy do
           yield
         end
       end
@@ -56,11 +56,11 @@ module HSChewy
         # Use with trepidation.
         def index_everything!
           setup do
-            Chewy.strategy :urgent
+            HSChewy.strategy :urgent
           end
 
           teardown do
-            Chewy.strategy.pop
+            HSChewy.strategy.pop
           end
         end
       end
@@ -69,7 +69,7 @@ module HSChewy
         teardown do
           # always destroy indexes between tests
           # Prevent croll pollution of test cases due to indexing
-          Chewy.massacre
+          HSChewy.massacre
         end
       end
     end
