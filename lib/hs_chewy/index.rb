@@ -10,7 +10,7 @@ module HSChewy
     include Actions
     include Aliases
 
-    singleton_class.delegate :client, to: 'Chewy'
+    singleton_class.delegate :client, to: 'HSChewy'
 
     class_attribute :type_hash
     self.type_hash = {}
